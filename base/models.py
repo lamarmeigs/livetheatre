@@ -105,6 +105,15 @@ class ProductionCompany(models.Model):
         return unicode(self.name)
 
 
+class ProductionManager(models.Manager):
+    def filter_in_range(self, start_date, end_date):
+        """Return Productions occurring in range [start_date, end_date]"""
+        after_start = self.filter(start_date__gte=start_date)
+        return after_start.filter(
+            Q(end_date__isnull=False, end_date__lte=end_date) |
+            Q(end_date__isnull=True, start_date__lte=end_date))
+
+
 class Production(models.Model):
     """A company's interpretation & performance of a play"""
     play = models.ForeignKey('Play')
@@ -121,6 +130,8 @@ class Production(models.Model):
         'schedule, ticket prices, or venue details.')
 
     description = models.TextField(null=True, blank=True)
+
+    objects = ProductionManager()
 
     def __unicode__(self):
         return u'%s by %s' % (self.play, self.production_company)
