@@ -1,0 +1,45 @@
+{% extends base.html %}
+
+{% block body_content %}
+    <div class="container">
+        <div class="row">
+            <div id="main-content" class="col-md-9">
+                {% block main_content %}
+                {% block main_title %}
+                <h2>
+                    {% block main_primary_title %}{% endblock %}<br />
+                    <small>{% block main_secondary_title %}{% endblock %}</small>
+                </h2>
+                {% endblock %}
+                {% block main_image %}{% endblock %}
+
+                {% block article_content %}{% endblock %}
+                {% endblock %}
+            </div>
+            <div id="sidebar" class="col-md-3">
+                {% block sidebar_content %} {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {% block extra_content %}
+    <div class="extra-content">
+    <div class="container">
+        <div class="row">
+            <h2>{% block extra_content_title %}{% endblock %}</h2>
+        </div>
+        <div class="row">
+            {% block extra_content_content %}
+            {% endblock %}
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                {% block extra_content_more %}
+                <h4 class="more">{% block extra_content_more_link %}{% endblock %}</h4>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    </div>
+    {% endblock %}
+{% endblock %}

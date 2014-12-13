@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+    {% block meta %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="{% block meta_title %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+    {% endblock %}
+    {% block extra_meta %}{% endblock %}
+
+    <title>{% block page_title %}{% endblock %}{% block site_title %}CTX Live Theatre{% endblock %}</title>
+
+    {% block base_stylesheets %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}/css/livetheatre.css">
+    {% endblock %}
+
+    {% block extra_stylesheets %}{% endblock %}
+
+    {% block extra_head %}{% endblock %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% endblock %}
+  </head>
+
+  {% block body %}
+  <body id="{% block body_id %}{% endblock %}" {% block body_attributes %}{% endblock %}>
+
+    {% block navbar %}
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">{% block brand_name %}CTX Live Theatre{% endblock %}</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a class="scroll" href="#reviews-container">Reviews</a></li>
+            <li><a class="scroll" href="#auditions-container">Auditions</a></li>
+            <li><a class="scroll" href="#news-container">News</a></li>
+            <li><a class="scroll" href="#performances-container">Performances</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Local Theatres</a></li>
+            <li class="hidden-xs"><a id="search-toggle" href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+          </ul>
+          <form id="search-form" class="navbar-form navbar-right hidden-sm hidden-md hidden-lg">
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search...">
+              </div>
+              <div class="form-group">
+                  <button class="btn btn-default search glyphicon glyphicon-search"></button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </nav>
+    {% endblock %}
+
+    {% block body_content %}
+    {% endblock %}
+
+
+    {% block footer %}
+    <!-- Foobar -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted">CTX Live Theatre is a project &mdash; or maybe no more than a hobby, bordering on a quiet
+                    obsession &mdash; devoted to supporting live narrative theatre in Central Texas. It is 
+                    maintained by Michael Meigs and fueled by the passion of the theatre community in
+                    the Austin&ndash;San Antonio area.</p>
+
+                    <h5>Find Us On:</h5>
+                    <ul>
+                        <li><a href="https://www.facebook.com/AustinLiveTheatre">Facebook</a></li>
+                        <li><a href="https://twitter.com/ALTcom">Twitter (for reviews)</a></li>
+                        <li><a href="https://twitter.com/CTXLT_Auditions">Twitter (for auditions)</a></li>
+                    </ul>
+                    <p>Or email us at <a href="mailto:ctxlivetheatre@gmail.com">ctxlivetheatre@gmail.com</a>.</p>
+                </div>
+                <div class="col-md-4 col-md-offset-2">
+                    <p class="text-muted small">All reviews, images, profiles and compendium calendars &copy; Michael Meigs, except as noted otherwise.</p>
+
+                    <p class="text-muted small">"Upcoming" items and similar pieces are drawn from material published or distributed by credited arts organizations or individuals and may have been lightly edited.</p>
+
+                    <p class="text-muted small">CTX Live Theatre always credits photos and images from other sources when information is available; CTX Live Theatre acknowledges rights of artists and producing organizations to production images.</p>
+ 
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+
+
+    {% block base_scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}/js/jquery.min.js"><\/script>')</script>
+    <script src="{{ STATIC_URL }}/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}/js/livetheatre.js"></script>
+    {% endblock %}
+    {% block extra_scripts %}{% endblock %}
+
+    {% endblock %}
+  </body>
+</html>
