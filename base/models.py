@@ -1,4 +1,6 @@
+from datetime import date
 from django.db import models
+from django.utils.text import slugify
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
     'Venue', 'Address', 'ArtsNews', 'Festival']
@@ -6,7 +8,7 @@ __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
 class Review(models.Model):
     """A written review of a production"""
     title = models.CharField(max_length=150, null=True, blank=True,
-        help_text="If none, defaults to 'Review: <production>'")
+        help_text="If blank, defaults to 'Review: <production>'")
 
     cover_image = models.ImageField(null=True, blank=True,
         help_text='Image to display at the top of the review and in the '
@@ -15,12 +17,27 @@ class Review(models.Model):
     production = models.ForeignKey('Production')
     content = models.TextField()
 
+    lede = models.CharField(max_length=300, null=True, blank=True,
+        help_text='Enter a brief (< 300 character) introduction to the review. '
+        'If blank, the first 50 words of the content will be used on the '
+        'homepage.')
+
     is_published = models.BooleanField(default=False, verbose_name='Published',
         help_text='If false, this review will not be visible on the site')
+
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this review's page.")
+
+    def save(self, *args, **kwargs):
+        self.slug = self.get_slug()
+        return super(Review, self).save(**kwargs)
 
     def get_title(self):
         title = self.title if self.title else 'Review: %s' % self.production
         return title
+
+    def get_slug(self):
+        return slugify(self.get_title())[:50]
 
     def __unicode__(self):
         return unicode(self.get_title)
@@ -61,6 +78,8 @@ class Audition(models.Model):
         'relevant to the event, such as available roles, required experience '
         'or additional information about the production.')
 
+    poster = models.ImageField(null=True, blank=True)
+
     objects = AuditionManager()
 
     def get_title(self):
@@ -79,6 +98,35 @@ class Audition(models.Model):
         else:
             title = 'Audition'
         return unicode(title)
+
+    def get_alt_description(self):
+        """
+        To be used if self.content is empty, this method will return a rough
+        description of the record based on other field values
+        """
+        description = 'Audition'
+        if self.play:
+            description += ' for a role in %s' % self.play
+
+        if self.production_company:
+            description += ' with %s' % self.production_company
+
+        description += ' on %s' % self.start_date.strftime('%b %d')
+        if self.end_date:
+            description += ' through %s' % self.end_date.strftime('%b %d')
+        description += '.'
+
+        return description
+
+    def duration(self, date_format='%b. %d'):
+        """
+        Return a string representing the date range during which the audition
+        is held. The dates will be formatted with date_format.
+        """
+        duration = self.start_date.strftime(date_format)
+        if self.end_date:
+            duration.append(' - %s' % self.end_date.strftime(date_format))
+        return duration
 
     def __unicode(self):
         return unicode(self.get_title)
@@ -101,6 +149,9 @@ class ProductionCompany(models.Model):
         verbose_name='Company Website', help_text="Enter the full URL to the "
         "company's website.")
 
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this company's detail page.")
+
     def __unicode__(self):
         return unicode(self.name)
 
@@ -108,10 +159,16 @@ class ProductionCompany(models.Model):
 class ProductionManager(models.Manager):
     def filter_in_range(self, start_date, end_date):
         """Return Productions occurring in range [start_date, end_date]"""
-        after_start = self.filter(start_date__gte=start_date)
-        return after_start.filter(
-            Q(end_date__isnull=False, end_date__lte=end_date) |
-            Q(end_date__isnull=True, start_date__lte=end_date))
+        return self.filter(
+            Q(start_date__gte=start_date, start_date__lte=end_date) |
+            Q(start_date__lte=start_date, end_date__isnull=False,
+                end_date__gte=start_date))
+
+    def filter_current(self):
+        """Return Productions that are occuring today """
+        today = date.today()
+        return self.filter(Q(start_date__lte=today),
+            Q(end_date__gte=today) | Q(end_date__isnull=True))
 
 
 class Production(models.Model):
@@ -130,11 +187,41 @@ class Production(models.Model):
         'schedule, ticket prices, or venue details.')
 
     description = models.TextField(null=True, blank=True)
+    poster = models.ImageField(null=True, blank=True)
+
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this production's detail page.")
 
     objects = ProductionManager()
 
+    @property
+    def title(self):
+        return '%s by %s' % (self.play, self.production_company)
+
+    def save(self, *args, **kwargs):
+        self.slug = self.get_slug()
+        return super(Review, self).save(**kwargs)
+
+    def duration(self, date_format='%b. %d'):
+        """
+        Return a string representing the date range during which the production
+        occurs. The dates will be formatted with date_format.
+        """
+        duration = self.start_date.strftime(date_format)
+        if self.end_date:
+            duration.append(' - %s' % self.end_date.strftime(date_format))
+        return duration
+
+    def get_slug(self):
+        """Return a unique slug for this Production"""
+        slug = slugify(self.title)
+        previous_productions = Production.objects.filter(slug=slug).count()
+        if previous_productions:
+            slug += previous_production
+        return slug
+
     def __unicode__(self):
-        return u'%s by %s' % (self.play, self.production_company)
+        return unicode(self.title)
 
 
 class Play(models.Model):
@@ -152,6 +239,8 @@ class Venue(models.Model):
     name = models.CharField(max_length=80)
     address = models.OneToOneField('Address')
     map_url = models.URLField(null=True, blank=True)
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this venue's detail page.")
 
     def __unicode__(self):
         return unicode(name)
@@ -179,6 +268,9 @@ class ArtsNews(models.Model):
         'the full URL.')
 
     created_on = models.DateTimeField(auto_now_add=True)
+
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this news item's detail page.")
 
     def __unicode__(self):
         title = (self.title 
