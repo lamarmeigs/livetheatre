@@ -25,6 +25,9 @@ class Review(models.Model):
     is_published = models.BooleanField(default=False, verbose_name='Published',
         help_text='If false, this review will not be visible on the site')
 
+    published_on = models.DateTimeField(null=True, blank=True,
+        help_text='Stores the time when this review was published.')
+
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this review's page.")
 

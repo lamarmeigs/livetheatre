@@ -116,6 +116,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField()),
                 ('lede', models.CharField(help_text=b'Enter a brief (< 300 character) introduction to the review. If blank, the first 50 words of the content will be used on the homepage.', max_length=300, null=True, blank=True)),
                 ('is_published', models.BooleanField(default=False, help_text=b'If false, this review will not be visible on the site', verbose_name=b'Published')),
+                ('published_on', models.DateTimeField(help_text=b'Stores the time when this review was published.', null=True, blank=True)),
                 ('slug', models.SlugField(help_text=b"This field will be used in the URL for this review's page.")),
                 ('production', models.ForeignKey(to='base.Production')),
             ],
