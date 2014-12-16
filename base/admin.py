@@ -1,5 +1,7 @@
 from datetime import datetime
 from django.contrib import admin
+from django.db import models
+from tinymce.widgets import TinyMCE
 
 from base.models import *
 
@@ -17,6 +19,10 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['title', 'production__play__title',
         'production__production_company__name']
     actions = ['publish_reviews', 'unpublish_reviews']
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
 
     def publish_reviews(self, request, queryset):
         rows_updated = queryset.update(
@@ -42,6 +48,10 @@ class AuditionAdmin(admin.ModelAdmin):
 
     search_fields = ['title', 'production_company__name', 'play__title']
 
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
+
 
 class ProductionCompanyAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
@@ -50,6 +60,10 @@ class ProductionCompanyAdmin(admin.ModelAdmin):
 
     list_display = ('name',)
     search_fields = ['name', 'company_site']
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
 
 
 class ProductionAdmin(admin.ModelAdmin):
@@ -64,6 +78,10 @@ class ProductionAdmin(admin.ModelAdmin):
 
     search_fields = ['play__title', 'production_company__name', 'venue__name']
 
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
+
 
 class PlayAdmin(admin.ModelAdmin):
     actions_on_bottom = True
@@ -71,6 +89,10 @@ class PlayAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'playwright')
     search_fields = ['title', 'playwright']
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
 
 
 class VenueAdmin(admin.ModelAdmin):
@@ -83,6 +105,10 @@ class VenueAdmin(admin.ModelAdmin):
 
     search_fields = ['name', 'address__line_1', 'address__city']
 
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
+
 
 class ArtsNewsAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
@@ -93,6 +119,10 @@ class ArtsNewsAdmin(admin.ModelAdmin):
     ordering = ('created_on',)
 
     search_fields = ['title', 'external_url']
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
 
 
 class FestivalAdmin(admin.ModelAdmin):
@@ -106,6 +136,10 @@ class FestivalAdmin(admin.ModelAdmin):
     search_fields = ['title', 'productions__play__title',
         'productions__production_company__name', 'plays__title',
         'production_companies__title', 'venues__name']
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
 
 
 admin.site.register(Review, ReviewAdmin)
