@@ -12,8 +12,8 @@ class Review(models.Model):
         help_text="If blank, defaults to 'Review: <production>'")
 
     cover_image = models.ImageField(null=True, blank=True,
-        help_text='Image to display at the top of the review and in the '
-        'homepage feature area')
+        upload_to='review_covers', help_text='Image to display at the top of '
+        'the review and in the homepage feature area')
 
     production = models.ForeignKey('Production')
     content = models.TextField()
@@ -95,7 +95,7 @@ class Audition(models.Model):
         'relevant to the event, such as available roles, required experience '
         'or additional information about the production.')
 
-    poster = models.ImageField(null=True, blank=True)
+    poster = models.ImageField(null=True, blank=True, upload_to='posters')
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this auditions's detail page.")
@@ -221,7 +221,7 @@ class Production(models.Model):
         'schedule, ticket prices, or venue details.')
 
     description = models.TextField(null=True, blank=True)
-    poster = models.ImageField(null=True, blank=True)
+    poster = models.ImageField(null=True, blank=True, upload_to='posters')
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this production's detail page.")
