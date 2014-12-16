@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
@@ -31,16 +32,29 @@ class Review(models.Model):
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this review's page.")
 
-    def save(self, *args, **kwargs):
-        self.slug = self.get_slug()
-        return super(Review, self).save(**kwargs)
-
     def get_title(self):
         title = self.title if self.title else 'Review: %s' % self.production
         return title
 
     def get_slug(self):
         return slugify(self.get_title())[:50]
+
+    def publish(self):
+        self.is_published = True
+        self.published_on = datetime.now()
+        self.save()
+
+    def unpublish(self):
+        self.is_published = False
+        self.save()
+
+    def save(self, *args, **kwargs):
+        self.title = self.get_title()
+        self.slug = self.get_slug()
+        return super(Review, self).save(**kwargs)
+
+    def get_absolute_url(self):
+        return reverse('review_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
         return unicode(self.get_title)
@@ -82,6 +96,9 @@ class Audition(models.Model):
         'or additional information about the production.')
 
     poster = models.ImageField(null=True, blank=True)
+
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this auditions's detail page.")
 
     objects = AuditionManager()
 
@@ -131,6 +148,17 @@ class Audition(models.Model):
             duration.append(' - %s' % self.end_date.strftime(date_format))
         return duration
 
+    def save(self, *args, **kwargs):
+        self.title = self.get_title()
+        self.slug = self.get_slug()
+        return super(Review, self).save(**kwargs)
+
+    def get_slug(self):
+        return slugify(self.get_title())[:50]
+
+    def get_absolute_url(self):
+        return reverse('audition_detail', kwargs={'slug':self.slug})
+
     def __unicode(self):
         return unicode(self.get_title)
 
@@ -138,7 +166,7 @@ class Audition(models.Model):
 class ProductionCompany(models.Model):
     """A company or theatre group -- those who put on the show """
     name = models.CharField(max_length=150)
-    home_venue = models.ManyToManyField('Venue', null=True, blank=True,
+    home_venues = models.ManyToManyField('Venue', null=True, blank=True,
         help_text='List any venues at which this company regularly performs.')
 
     description = models.TextField(null=True, blank=True,
@@ -154,6 +182,9 @@ class ProductionCompany(models.Model):
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this company's detail page.")
+
+    def get_absolute_url(self):
+        return reverse('production_company', kwargs={'slug':self.slug})
 
     def __unicode__(self):
         return unicode(self.name)
@@ -223,6 +254,9 @@ class Production(models.Model):
             slug += previous_production
         return slug
 
+    def get_absolute_url(self):
+        return reverse('production_detail', kwargs={'slug':self.slug})
+
     def __unicode__(self):
         return unicode(self.title)
 
@@ -244,6 +278,9 @@ class Venue(models.Model):
     map_url = models.URLField(null=True, blank=True)
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this venue's detail page.")
+
+    def get_absolute_url(self):
+        return reverse('venue_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
         return unicode(name)
@@ -274,6 +311,9 @@ class ArtsNews(models.Model):
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this news item's detail page.")
+
+    def get_absolute_url(self):
+        return reverse('news_item', kwargs={'slug':self.slug})
 
     def __unicode__(self):
         title = (self.title 
@@ -306,6 +346,9 @@ class Festival(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True,
         help_text='Leave blank for one-day festivals.')
+
+    slug = models.SlugField(help_text='This field will be used in the URL for '
+        "this review's page.")
 
     def __unicode__(self):
         return unicode(self.title)
