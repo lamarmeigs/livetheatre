@@ -78,6 +78,10 @@ urlpatterns = patterns('',
         views.WeekPerformanceView.as_view(),
         name='production_weekly'),
 
+    url(r'^productions/(?P<slug>\w+)$',
+        views.ProductionDetailView.as_view(),
+        name='production_detail'),
+
 
     # Venue pages
     url(r'^venues$',
