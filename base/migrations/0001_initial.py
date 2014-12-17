@@ -46,7 +46,8 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateField(help_text=b'Leave blank if the auditions last a single day', null=True, blank=True)),
                 ('event_details', models.TextField(help_text=b'Use this field to provide additional event information, such as where the event occurs, at what time, or any relevant contact information.', null=True, blank=True)),
                 ('content', models.TextField(help_text=b'Use this field to provide information not directly relevant to the event, such as available roles, required experience or additional information about the production.', null=True, blank=True)),
-                ('poster', models.ImageField(null=True, upload_to=b'', blank=True)),
+                ('poster', models.ImageField(null=True, upload_to=b'posters', blank=True)),
+                ('slug', models.SlugField(help_text=b"This field will be used in the URL for this auditions's detail page.")),
             ],
             options={
             },
@@ -60,6 +61,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(null=True, blank=True)),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField(help_text=b'Leave blank for one-day festivals.', null=True, blank=True)),
+                ('slug', models.SlugField(help_text=b"This field will be used in the URL for this review's page.")),
             ],
             options={
             },
@@ -85,7 +87,7 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateField(help_text=b'Leave blank for productions with a single performance.', null=True, verbose_name=b'Date of last performance', blank=True)),
                 ('event_details', models.TextField(help_text=b'Provide additional event information, such as a weekly schedule, ticket prices, or venue details.', null=True, blank=True)),
                 ('description', models.TextField(null=True, blank=True)),
-                ('poster', models.ImageField(null=True, upload_to=b'', blank=True)),
+                ('poster', models.ImageField(null=True, upload_to=b'posters', blank=True)),
                 ('slug', models.SlugField(help_text=b"This field will be used in the URL for this production's detail page.")),
                 ('play', models.ForeignKey(to='base.Play')),
             ],
@@ -112,7 +114,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(help_text=b"If blank, defaults to 'Review: <production>'", max_length=150, null=True, blank=True)),
-                ('cover_image', models.ImageField(help_text=b'Image to display at the top of the review and in the homepage feature area', null=True, upload_to=b'', blank=True)),
+                ('cover_image', models.ImageField(help_text=b'Image to display at the top of the review and in the homepage feature area', null=True, upload_to=b'review_covers', blank=True)),
                 ('content', models.TextField()),
                 ('lede', models.CharField(help_text=b'Enter a brief (< 300 character) introduction to the review. If blank, the first 50 words of the content will be used on the homepage.', max_length=300, null=True, blank=True)),
                 ('is_published', models.BooleanField(default=False, help_text=b'If false, this review will not be visible on the site', verbose_name=b'Published')),
@@ -139,7 +141,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='productioncompany',
-            name='home_venue',
+            name='home_venues',
             field=models.ManyToManyField(help_text=b'List any venues at which this company regularly performs.', to='base.Venue', null=True, blank=True),
             preserve_default=True,
         ),
