@@ -43,7 +43,7 @@ class AuditionAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     save_on_top = True
 
-    list_display = ('name', 'start_date', 'end_date')
+    list_display = ('title', 'start_date', 'end_date')
     ordering = ('start_date',)
 
     search_fields = ['title', 'production_company__name', 'play__title']
@@ -67,12 +67,11 @@ class ProductionCompanyAdmin(admin.ModelAdmin):
 
 
 class ProductionAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    exclude = ('slug',)
     actions_on_bottom = True
     save_on_top = True
 
-    list_display = ('play__title', 'production_company__name',
-        'start_date', 'end_date')
+    list_display = ('play', 'production_company', 'start_date', 'end_date')
     list_filter = ('play__title', 'production_company__name', 'venue__name')
     ordering = ('start_date',)
 
@@ -100,7 +99,7 @@ class VenueAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     save_on_top = True
 
-    list_display = ('name', 'address__line_1', 'address__city')
+    list_display = ('name', 'address')
     list_filter = ('address__city',)
 
     search_fields = ['name', 'address__line_1', 'address__city']
