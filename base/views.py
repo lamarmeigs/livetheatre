@@ -48,48 +48,57 @@ class ReviewDetailView(DetailView):
     """Display the full content of a Review object"""
     model = Review
     queryset = Review.objects.filter(is_published=True)
+    template_name = 'reviews/detail.html'
 
 
 class ReviewListView(ListView):
     """Display all published Review objects, paginated"""
     model = Review
     queryset = Review.objects.filter(is_published=True)
+    template_name = 'reviews/list.html'
 
 
 class ProductionCompanyView(DetailView):
     """Display the details of a ProductionCompany object"""
     model = ProductionCompany
+    template_name = 'companies/detail.html'
 
 
 class LocalTheatersView(ListView):
     """Display all ProductionCompany objects"""
     model = ProductionCompany
     queryset = ProductionCompany.objects.order_by('name')
+    template_name = 'companies/list.html'
 
 
 class AuditionDetailView(DetailView):
     """Display all details about an Audition object"""
     model = Audition
+    template_name = 'auditions/detail.html'
 
 
 class AuditionListView(ListView):
     """Display all Audition objects, paginated"""
     model = Audition
+    template_name = 'auditions/list.html'
 
 
 class NewsDetailView(DetailView):
     """Display all details about an ArtsNews object"""
     model = ArtsNews
+    template_name = 'news/detail.html'
 
 
 class NewsListView(ListView):
     """Display all ArtsNews objects, paginated"""
     model = ArtsNew
+    template_name = 'news/list.html'
 
 
 class ProductionDetailView(DetailView):
     """Display all details about a Production object"""
     model = Production
+    template_name = 'productions/detail.html'
 
 
 class DateRangePerformanceView(TemplateView):
@@ -145,18 +154,18 @@ class DateRangePerformanceView(TemplateView):
 class UpcomingPerformanceView(DateRangePerforamnceView):
     """Dislay performances for the next 60 days"""
     date_in_range = 60
-    template_name = ''
+    template_name = 'productions/upcoming.html'
 
 
 class WeekPerformanceView(DateRangePerformanceView):
     """Display performances in the next week"""
     days_in_range = 7
-    template_name = ''
+    template_name = 'productions/weekly.html'
 
 
 class MonthPerformanceView(DateRangePerformanceView):
     """Display performances in a given month"""
-    template = ''
+    template_name = 'productions/monthly.html'
 
     def _get_start_date(self):
         today = date.today()
@@ -214,12 +223,14 @@ class CompanyProductionListView(CompanyObjectListView):
     """Display all Productions by a Production Company"""
     model = Production
     order_by = '-start_date'
+    template_name = 'productions/company.html'
 
 
 class CompanyReviewListView(CompanyObjectListView):
     """Display all published Review objects for a Production Company"""
     model = Review
     order_by = 'id'
+    template_name = 'reviews/company.html'
 
     def get_queryset(self):
         queryset =  Review.objects.filter(
@@ -232,21 +243,25 @@ class CompanyAuditionListView(CompanyObjectListView):
     """Display all Auditions for a Production Company"""
     model = Audition
     order_by = 'start_date'
+    template_name = 'auditions/company.html'
 
 
 class VenueListview(ListView):
     """Display all Venue records"""
     model = Venue
+    template_name = 'venues/list.html'
 
 
 class VenueDetailView(DetailView):
     """Display all details about a venue"""
     model = Venue
+    template_name = 'venues/detail.html'
 
 
 class VenueProductionListview(ListView):
     """Diplay all Production occurring at a Venue"""
     model = Production
+    template_name = 'productions/venue.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.venue = Venue.objects.get(name=reques.kwargs.get('slug'))
