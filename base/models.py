@@ -313,7 +313,10 @@ class ArtsNews(models.Model):
         "this news item's detail page.")
 
     def get_absolute_url(self):
-        return reverse('news_item', kwargs={'slug':self.slug})
+        url = self.external_url \
+            if self.external_url \
+            else reverse('news_item', kwargs={'slug':self.slug})
+        return url
 
     def __unicode__(self):
         title = (self.title 
