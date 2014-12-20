@@ -3,8 +3,8 @@ from datetime import date, datetime, timedelta
 from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from django.views.generic.detail import Detailview
-from django.views.generic.list import Listview
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
 from base import utils
 from base.models import *
@@ -21,25 +21,32 @@ class HomepageView(TemplateView):
         today = date.today()
         published_reviews = Review.objects.filter(is_published=True)
         current_productions = Production.objects.filter_current().exclude(
-            cover_image__isnull=True)
+            poster__isnull=True)
         upcoming_auditions = Audition.objects.filter(
             start_date__gte=date.today())
         news = ArtsNews.objects.all()
 
-        # format data for display in columns, etc.
+        # limit records displayed on page
         reviews = published_reviews.order_by('-id')[:4]
         productions = current_productions.order_by('-start_date')[:24]
+
+        # format data for display in columns, etc.
         auditions = upcoming_auditions.order_by('-start_date')[:8]
         auditions_col_len = len(auditions)/2
+        audition_groups = utils.chunks(auditions, auditions_col_len) \
+            if auditions_col_len else list(auditions)
+            
         news = news.order_by('-id')[:21]
         news_col_len = len(news)/3
+        news_groups = utils.chunks(news, news_col_len) \
+            if news_col_len else [list(news)]
 
         # order & limit number of items to display
         context.update({
             'reviews': reviews,
             'productions': productions,
-            'audition_groups': utils.chunks(auditions, auditions_col_len),
-            'news_groups': utils.chunks(news, news_col_len),
+            'audition_groups': audition_groups,
+            'news_groups': news_groups,
         })
         return context
 
@@ -64,7 +71,7 @@ class ProductionCompanyView(DetailView):
     template_name = 'companies/detail.html'
 
 
-class LocalTheatersView(ListView):
+class LocalTheatresView(ListView):
     """Display all ProductionCompany objects"""
     model = ProductionCompany
     queryset = ProductionCompany.objects.order_by('name')
@@ -91,7 +98,7 @@ class NewsDetailView(DetailView):
 
 class NewsListView(ListView):
     """Display all ArtsNews objects, paginated"""
-    model = ArtsNew
+    model = ArtsNews
     template_name = 'news/list.html'
 
 
@@ -151,7 +158,7 @@ class DateRangePerformanceView(TemplateView):
         return context
 
 
-class UpcomingPerformanceView(DateRangePerforamnceView):
+class UpcomingPerformanceView(DateRangePerformanceView):
     """Dislay performances for the next 60 days"""
     date_in_range = 60
     template_name = 'productions/upcoming.html'
@@ -214,7 +221,7 @@ class CompanyObjectListView(ListView):
         return self.order_queryset(queryset)
 
     def order_queryset(self, queryset):
-        if self.order_by
+        if self.order_by:
             queryset = queryset.order_by(self.order_by)
         return queryset
 
@@ -246,7 +253,7 @@ class CompanyAuditionListView(CompanyObjectListView):
     template_name = 'auditions/company.html'
 
 
-class VenueListview(ListView):
+class VenueListView(ListView):
     """Display all Venue records"""
     model = Venue
     template_name = 'venues/list.html'
@@ -258,7 +265,7 @@ class VenueDetailView(DetailView):
     template_name = 'venues/detail.html'
 
 
-class VenueProductionListview(ListView):
+class VenueProductionListView(ListView):
     """Diplay all Production occurring at a Venue"""
     model = Production
     template_name = 'productions/venue.html'

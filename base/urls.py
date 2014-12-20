@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from base import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.Homepage.as_view(), name='home'),
+    url(r'^$', views.HomepageView.as_view(), name='home'),
 
     # Review pages
     url(r'^reviews$',
@@ -30,7 +30,7 @@ urlpatterns = patterns('',
         views.LocalTheatresView.as_view(),
         name='local_theatres'),
 
-    url(r'^local_theaters/(?P<slug>\w+>$',
+    url(r'^local_theaters/(?P<slug>\w+)$',
         views.ProductionCompanyView.as_view(),
         name='production_company'),
 

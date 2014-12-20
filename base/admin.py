@@ -8,10 +8,10 @@ from base.models import *
 
 class ReviewAdmin(admin.ModelAdmin):
     readonly_fields = ('is_published', 'published_on')
-    prepopulated_fields = {'slug': ('title',)}
     actions_on_bottom = True
     save_on_top = True
 
+    exclude = ('slug',)
     list_display = ('get_title', 'is_published')
     list_filter = ('is_published',)
     ordering = ('published_on',)
@@ -39,10 +39,10 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 class AuditionAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
     actions_on_bottom = True
     save_on_top = True
 
+    exclude = ('slug',)
     list_display = ('title', 'start_date', 'end_date')
     ordering = ('start_date',)
 
@@ -149,3 +149,4 @@ admin.site.register(Play, PlayAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(ArtsNews, ArtsNewsAdmin)
 admin.site.register(Festival, FestivalAdmin)
+admin.site.register(Address)

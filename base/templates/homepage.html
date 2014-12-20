@@ -1,4 +1,4 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 {% block body_id %}homepage{% endblock %}
 {% block body_attributes %}data-spy="scroll" data-target=".navbar"{% endblock %}
 
@@ -41,6 +41,7 @@
 {% endblock %}
 
 {% block body_content %}
+    {% if reviews %}
     <!-- feature carousel -->
     <div id="reviews-container" class="container">
       <div class="row">
@@ -48,16 +49,15 @@
           <!-- Indicators -->
           <ol class="carousel-indicators">
             {% for review in reviews %}
-            <li data-target="#feature" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endfor %}></li>
+            <li data-target="#feature" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
             {% endfor %}
-            <li data-target="#feature" data-slide-to="1"></li>
           </ol>
 
           <!-- Wrapper for slides -->
           <div class="carousel-inner" role="listbox">
             {% for review in reviews %}
             <div class="item {% if forloop.first %}active{% endif %}">
-              <img src="{{ review.cover_image }}" alt="{{ review.get_title }}">
+              <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}">
               <div class="carousel-caption">
                 <h3>{{ review.get_title }}</h3>
                 <p>
@@ -84,6 +84,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
     <!-- Auditions -->
     <div id="auditions-container" class="container">
@@ -98,7 +99,7 @@
                 <div class="audition">
                     <a href="#" class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs">
                         {% if audition.poster %}
-                        <img src="{{ audition.poster }}" alt="{{ audition.get_title }}" />
+                        <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
                         {% else %}
                         <img src="{{ STATIC_URL }}/img/grey.png" alt="Missing Poster" />
                         {% endif %}
@@ -136,7 +137,7 @@
                     {% for news in news_group %}
                     <dt><a href="{% if news.external_url %}{{ news.external_url }}{% else %}#{% endif %}">{{ news.title }}</a></dt>
                     <dd class="small"><em>Created on {{ news.created_on|date:"M. j" }} at {{ news.created_on|time:"g:ia" }}</em></dd>
-                    <dd>{{ news.content|truncatewords_html:10|strip_tags }} <a href="{% if news.external_url %}{{ news.external_url }}{% else %}#{% endif %}">Read more &raquo;</a></dd>
+                    <dd>{{ news.content|truncatewords_html:10|striptags }} <a href="{% if news.external_url %}{{ news.external_url }}{% else %}#{% endif %}">Read more &raquo;</a></dd>
                     {% endfor %}
                 </dl>
             </div>
@@ -177,7 +178,7 @@
                 </div>
                 {% endif %}
             </div>
-            {% endif %}
+            {% endfor %}
 
         </div>
         <div class="row">

@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
@@ -9,7 +10,7 @@ __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
 class Review(models.Model):
     """A written review of a production"""
     title = models.CharField(max_length=150, null=True, blank=True,
-        help_text="If blank, defaults to 'Review: <production>'")
+        help_text="If blank, defaults to 'Review: *production*'")
 
     cover_image = models.ImageField(null=True, blank=True,
         upload_to='review_covers', help_text='Image to display at the top of '
@@ -37,7 +38,7 @@ class Review(models.Model):
         return title
 
     def get_slug(self):
-        return slugify(self.get_title())[:50]
+        return slugify(unicode(self.get_title()))[:50]
 
     def publish(self):
         self.is_published = True
@@ -57,7 +58,7 @@ class Review(models.Model):
         return reverse('review_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
-        return unicode(self.get_title)
+        return unicode(self.get_title())
 
 
 class AuditionManager(models.Manager):
@@ -74,7 +75,7 @@ class AuditionManager(models.Manager):
 class Audition(models.Model):
     """Represents a casting call"""
     title = models.CharField(max_length=150, null=True, blank=True,
-        help_text="If none, defaults to 'Audition for <play>, by <company>'")
+        help_text="If none, defaults to 'Audition for *play*, by *company*'")
 
     production_company = models.ForeignKey('ProductionCompany',
         null=True, blank=True, help_text='The production company conducting '
@@ -151,10 +152,10 @@ class Audition(models.Model):
     def save(self, *args, **kwargs):
         self.title = self.get_title()
         self.slug = self.get_slug()
-        return super(Review, self).save(**kwargs)
+        return super(Audition, self).save(**kwargs)
 
     def get_slug(self):
-        return slugify(self.get_title())[:50]
+        return slugify(unicode(self.get_title()))[:50]
 
     def get_absolute_url(self):
         return reverse('audition_detail', kwargs={'slug':self.slug})
@@ -234,7 +235,7 @@ class Production(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.get_slug()
-        return super(Review, self).save(**kwargs)
+        return super(Production, self).save(**kwargs)
 
     def duration(self, date_format='%b. %d'):
         """
@@ -243,12 +244,12 @@ class Production(models.Model):
         """
         duration = self.start_date.strftime(date_format)
         if self.end_date:
-            duration.append(' - %s' % self.end_date.strftime(date_format))
+            duration += ' - %s' % self.end_date.strftime(date_format)
         return duration
 
     def get_slug(self):
         """Return a unique slug for this Production"""
-        slug = slugify(self.title)
+        slug = slugify(unicode(self.title))
         previous_productions = Production.objects.filter(slug=slug).count()
         if previous_productions:
             slug += previous_production
@@ -268,7 +269,7 @@ class Play(models.Model):
     synopsis = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(title)
+        return unicode(self.title)
 
 
 class Venue(models.Model):
@@ -283,7 +284,7 @@ class Venue(models.Model):
         return reverse('venue_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
-        return unicode(name)
+        return unicode(self.name)
 
 
 class Address(models.Model):
@@ -294,8 +295,10 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=10)
 
     def __unicode__(self):
-        return u'%s, %s, %s TX, %s' % (
-            self.line_1, self.line2, self.city, self.zip_code)
+        address_str = '%s, ' % self.line_1
+        if self.line_2:
+            address_str += ' %s, ' % self.line_2
+        return u'%s %s TX, %s' % (address_str, self.city, self.zip_code)
 
 
 class ArtsNews(models.Model):
