@@ -332,7 +332,7 @@ class Address(models.Model):
 class ArtsNews(models.Model):
     """A news item of interest to the theatre world"""
     title = models.CharField(max_length=150)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
 
     external_url = models.URLField(null=True, blank=True,
         help_text='If this news item links to an external location, provide '
