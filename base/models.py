@@ -148,7 +148,7 @@ class Audition(models.Model):
         """
         duration = self.start_date.strftime(date_format)
         if self.end_date:
-            duration.append(' - %s' % self.end_date.strftime(date_format))
+            duration += ' - %s' % self.end_date.strftime(date_format)
         return duration
 
     def save(self, *args, **kwargs):
@@ -214,7 +214,10 @@ class ProductionManager(models.Manager):
 class Production(models.Model):
     """A company's interpretation & performance of a play"""
     play = models.ForeignKey('Play')
-    production_company = models.ForeignKey('ProductionCompany')
+    production_company = models.ForeignKey('ProductionCompany', null=True,
+        blank=True, help_text='Leave this field blank if the production '
+        'is a one-person show.')
+
     venue = models.ForeignKey('Venue')
     start_date = models.DateField(verbose_name='Date of first performance')
 
@@ -237,7 +240,10 @@ class Production(models.Model):
 
     @property
     def title(self):
-        return '%s by %s' % (self.play, self.production_company)
+        title = unicode(self.play)
+        if self.production_company:
+            title += ' by %s' % self.production_company
+        return title
 
     def save(self, *args, **kwargs):
         self.slug = self.get_slug()
