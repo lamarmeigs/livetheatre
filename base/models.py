@@ -35,6 +35,9 @@ class Review(models.Model):
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this review's page.")
 
+    class Meta:
+        ordering = ['published_on']
+
     def get_title(self):
         title = self.title if self.title else 'Review: %s' % self.production
         return title
@@ -188,6 +191,7 @@ class ProductionCompany(models.Model):
         "this company's detail page.")
 
     class Meta:
+        ordering = ['name']
         verbose_name_plural = 'production companies'
 
     def get_absolute_url(self):
@@ -282,6 +286,9 @@ class Play(models.Model):
     playwright = models.CharField(max_length=80, null=True, blank=True)
     synopsis = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['title']
+
     def __unicode__(self):
         return unicode(self.title)
 
@@ -293,6 +300,9 @@ class Venue(models.Model):
     map_url = models.URLField(null=True, blank=True)
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this venue's detail page.")
+
+    class Meta:
+        ordering = ['name']
 
     def get_absolute_url(self):
         return reverse('venue_detail', kwargs={'slug':self.slug})
@@ -309,6 +319,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=10)
 
     class Meta:
+        ordering = ['line_1']
         verbose_name_plural = 'addresses'
 
     def __unicode__(self):
@@ -333,6 +344,7 @@ class ArtsNews(models.Model):
         "this news item's detail page.")
 
     class Meta:
+        ordering = ['-created_on']
         verbose_name_plural = 'arts news items'
 
     def get_absolute_url(self):
