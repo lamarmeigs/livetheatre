@@ -184,6 +184,9 @@ class ProductionCompany(models.Model):
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this company's detail page.")
 
+    class Meta:
+        verbose_name_plural = 'production companies'
+
     def get_absolute_url(self):
         return reverse('production_company', kwargs={'slug':self.slug})
 
@@ -250,9 +253,10 @@ class Production(models.Model):
     def get_slug(self):
         """Return a unique slug for this Production"""
         slug = slugify(unicode(self.title))
-        previous_productions = Production.objects.filter(slug=slug).count()
+        previous_productions = Production.objects.filter(
+            slug=slug).exclude(pk=self.pk).count()
         if previous_productions:
-            slug += previous_production
+            slug += str(previous_productions)
         return slug
 
     def get_absolute_url(self):
@@ -294,6 +298,9 @@ class Address(models.Model):
     city = models.CharField(max_length=80)
     zip_code = models.CharField(max_length=10)
 
+    class Meta:
+        verbose_name_plural = 'addresses'
+
     def __unicode__(self):
         address_str = '%s, ' % self.line_1
         if self.line_2:
@@ -314,6 +321,9 @@ class ArtsNews(models.Model):
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this news item's detail page.")
+
+    class Meta:
+        verbose_name_plural = 'arts news items'
 
     def get_absolute_url(self):
         url = self.external_url \
