@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
-    'Venue', 'Address', 'ArtsNews', 'Festival']
+    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer']
 
 class Review(models.Model):
     """A written review of a production"""
@@ -18,6 +18,7 @@ class Review(models.Model):
         'at the top of the review and in the homepage feature area')
 
     production = models.ForeignKey('Production')
+    reviewer = models.ForeignKey('Reviewer')
     content = models.TextField()
 
     lede = models.CharField(max_length=300, null=True, blank=True,
@@ -377,3 +378,44 @@ class Festival(models.Model):
 
     def __unicode__(self):
         return unicode(self.title)
+
+
+class ReviewerManager(models.Manager):
+    def filter_active(self):
+        """Return Reviewers who have published reviews recently"""
+        # get reviews of the past 6 months, and extract their reviewers
+        six_months_ago = date.today() - timedelta(months=6)
+        recent_reviews = Review.objects.filter(published_on__gte=six_months_ago)
+        recent_reviewers = recent_reviews.values_list('reviewer').distinct()
+
+        # sort the reviews by the number of reviews they have published
+        return recent_reviewers.annotate(
+            reviews_count=Count('review_set')).order_by(reviews_count)
+
+    def filter_inactive(self):
+        """Return Reviewers who have not published reviews recently"""
+        recent_reviewer_ids = self.filter_active().values_list('id', flat=True)
+        return self.exclude(id__in=recent_reviewer_ids).order_by('last_name')
+
+
+class Reviewer(models.Model):
+    """Contains bio information for those who write reviews"""
+    user = models.OneToOneField('auth.User', null=True, blank=True)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
+    headshot = FileBrowseField(max_length=200, null=True, blank=True,
+        format='image', directory='headshots')
+    bio = models.TextField(null=True, blank=True)
+
+    objects = ReviewerManager()
+
+    @property
+    def full_name(self):
+        return '%s %s' % (self.first_name, self.last_name)
+
+    @property
+    def review_count(self):
+        return self.review_set.count()
+
+    def __unicode__(self):
+        return unicode(self.full_name)

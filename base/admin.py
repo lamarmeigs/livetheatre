@@ -141,6 +141,17 @@ class FestivalAdmin(admin.ModelAdmin):
     }
 
 
+class ReviewerAdmin(admin.ModelAdmin):
+    actions_on_bottom = True
+    save_on_top = True
+
+    list_display = ('full_name', 'review_count')
+
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+    }
+
+
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Audition, AuditionAdmin)
 admin.site.register(ProductionCompany, ProductionCompanyAdmin)
@@ -150,3 +161,4 @@ admin.site.register(Venue, VenueAdmin)
 admin.site.register(ArtsNews, ArtsNewsAdmin)
 admin.site.register(Festival, FestivalAdmin)
 admin.site.register(Address)
+admin.site.register(Reviewer, ReviewerAdmin)
