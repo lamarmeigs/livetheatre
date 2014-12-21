@@ -30,12 +30,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'grappelli',
+    'filebrowser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'tinymce',
     'base',
 )
@@ -81,9 +84,31 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = 'staticfiles'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media'
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+# TinyMCE configuration
+# https://django-tinymce.readthedocs.org/en/latest/installation.html#configuration
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'relative_urls': False,
+}
+
+# FileBrowser configuration
+# http://django-filebrowser.readthedocs.org/en/latest/settings.html
+VERSIONS_BASEDIR = '_versions'
+DIRECTORY = 'uploads'
+
+# Grappelli Configuration
+# http://django-grappelli.readthedocs.org/en/latest/customization.html
+GRAPPELLI_ADMIN_TITLE = 'CTX Live Theatre Admin'
 
 # Import local settings
 try:
