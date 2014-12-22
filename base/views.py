@@ -57,6 +57,26 @@ class ReviewDetailView(DetailView):
     queryset = Review.objects.filter(is_published=True)
     template_name = 'reviews/detail.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReviewDetailView, self).get_context_data(
+            *args, **kwargs)
+
+        recent_reviews = Review.objects.all()
+        recent_news = ArtsNews.objects.all()
+
+        review = self.get_object()
+        company = review.production.production_company
+        company_productions = \
+            company.production_set.exclude(pk=review.production.pk) \
+            if company else []
+
+        context.update({
+            'recent_reviews': recent_reviews[:5],
+            'company_productions': company_productions[:5],
+            'recent_news': recent_news[:5],
+        })
+        return context
+
 
 class ReviewListView(ListView):
     """Display all published Review objects, paginated"""
@@ -83,6 +103,25 @@ class AuditionDetailView(DetailView):
     model = Audition
     template_name = 'auditions/detail.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(AuditionDetailView, self).get_context_data(
+            *args, **kwargs)
+
+        upcoming_auditions = Audition.objects.filter_upcoming()
+        recent_news = ArtsNews.objects.all()
+
+        audition = self.get_object()
+        company = audition.production_company
+        company_productions = company.production_set.all() \
+            if company else []
+
+        context.update({
+            'upcoming_auditions': upcoming_auditions[:3],
+            'company_productions': company_productions[:3],
+            'recent_news': recent_news[:3],
+        })
+        return context
+
 
 class AuditionListView(ListView):
     """Display all Audition objects, paginated"""
@@ -95,6 +134,22 @@ class NewsDetailView(DetailView):
     model = ArtsNews
     template_name = 'news/detail.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(NewsDetailView, self).get_context_data(
+            *args, **kwargs)
+
+        recent_reviews = Review.objects.all()
+        recent_news = ArtsNews.objects.all()
+        current_productions = Production.objects.filter_current()
+
+        context.update({
+            'recent_reviews': recent_reviews[:3],
+            'recent_news': recent_news[:3],
+            'current_productions': current_productions[:3],
+        })
+
+        return context
+
 
 class NewsListView(ListView):
     """Display all ArtsNews objects, paginated"""
@@ -106,6 +161,28 @@ class ProductionDetailView(DetailView):
     """Display all details about a Production object"""
     model = Production
     template_name = 'productions/detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductionDetailView, self).get_context_data(
+            *args, **kwargs)
+
+        current_productions = Production.objects.filter_current()
+        recent_news = ArtsNews.objects.all()
+
+        production = self.get_object()
+        company = production.production_company
+        if company:
+            company_productions = company.production_set.exclude(
+                pk=production.pk)
+        else:
+            company_productions = []
+
+        context.update({
+            'current_productions': current_productions[:3],
+            'company_productions': company_productions[:3],
+            'recent_news': recent_news[:3],
+        })
+        return context
 
 
 class DateRangePerformanceView(TemplateView):
@@ -149,7 +226,7 @@ class DateRangePerformanceView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(DateRangePerformanceView, self).get_context_data(
             *args, **kwargs)
-        start_date, end_date = self.get_range()
+        start_date, end_date = self._get_range()
         context.update({
             'performances': self.get_performances(),
             'start_date': start_date,

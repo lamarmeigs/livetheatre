@@ -136,12 +136,17 @@ nav.navbar button.search {}
 
 
 /* Homepage */
-#feature {height:400px; overflow:hidden;}
+#feature {height:400px; overflow:hidden; background-color:#000;}
 #feature .item {max-height:400px; width:100%;}
+#feature .item img {margin:0 auto;}
+#feature .item .carousel-caption h3 {color:#e05500; text-shadow:0 0px 3px #602500, 0 0px 10px #602500;}
+#feature .item .carousel-caption {text-shadow:0 0px 3px #000, 0 0px 10px #000;}
+#feature .carousel-indicators li {border:1px solid #602500;}
+#feature .carousel-indicators .active {background-color:#e05500}
 
 #audition-container {padding-top:45px; margin-bottom: 40px;}
 .audition {clear:both; margin-bottom:20px;}
-.audition .thumbnail {margin-right:20px; margin-bottom:10px;}
+.audition .thumbnail {margin-right:20px; margin-bottom:10px; max-height:100px; overflow:hidden;}
 
 h2.text-center {margin-bottom:25px;}
 #news-container {margin-top:40px; padding:30px 0 30px;}
@@ -150,14 +155,14 @@ dl.news-list dt:not(:first-child) {padding-top:20px;}
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
 .production h5 {text-transform:uppercase; margin-bottom:5px;}
-.production .tile {position:relative; display:block; overflow:hidden;}
+.production .tile {position:relative; display:block; overflow:hidden; height:200px}
 .production .tile h4 {
     position:absolute;
     bottom:0px;
     color:#fff;
     padding:10px;
     margin:0;
-    background-color:rgba(0,0,0,0.3);
+    background-color:rgba(0,0,0,0.7);
 }
 h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 
@@ -165,7 +170,10 @@ h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 /* Internal pages */
 #main-content img {margin:5px 10px 20px;}
 #main-content img.wide {margin:0px 0px 20px;}
+#sidebar {padding-top:20px;}
 #sidebar .module {margin-top:20px;}
+#sidebar .module:first-child {margin-top:0;}
+#sidebar .module:first-child h4 {margin-top:0}
 
 
 /********************

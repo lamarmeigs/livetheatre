@@ -24,7 +24,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">About</a></li>
-            <li><a href="#">Local Theatres</a></li>
+            <li><a href="{% url 'local_theatres' %}">Local Theatres</a></li>
             <li class="hidden-xs"><a id="search-toggle" href="#"><span class="glyphicon glyphicon-search"></span></a></li>
           </ul>
           <form id="search-form" class="navbar-form navbar-right hidden-sm hidden-md hidden-lg">
@@ -57,17 +57,19 @@
           <div class="carousel-inner" role="listbox">
             {% for review in reviews %}
             <div class="item {% if forloop.first %}active{% endif %}">
-              <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}">
-              <div class="carousel-caption">
-                <h3>{{ review.get_title }}</h3>
-                <p>
-                {% if review.lede %}
-                {{ review.lede}}
-                {% else %}
-                {{ review.content|truncatewords_html:50|striptags }}
-                {% endif %}
-                </p>
-              </div>
+                <a href="{% url 'review_detail' slug=review.slug %}">
+                    <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}">
+                    <div class="carousel-caption">
+                        <h3>{{ review.get_title }}</h3>
+                        <p>
+                            {% if review.lede %}
+                            {{ review.lede}}
+                            {% else %}
+                            {{ review.content|truncatewords_html:50|striptags }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </a>
             </div>
             {% endfor %}
           </div>
@@ -97,21 +99,19 @@
             <div class="col-md-6 col-sm-6">
                 {% for audition in audition_group %}
                 <div class="audition">
-                    <a href="#" class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs">
-                        {% if audition.poster %}
+                    {% if audition.poster %}
+                    <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs">
                         <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
-                        {% else %}
-                        <img src="{{ STATIC_URL }}/img/grey.png" alt="Missing Poster" />
-                        {% endif %}
                     </a>
-                    <h4><a href="#">{{ audition.get_title }}</a></h3>
-                    <p><em>{{ audition.duration }}</em><br />
+                    {% endif %}
+                    <p><strong><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></strong><br />
+                    <em>{{ audition.duration }}</em></p>
                     {% if audition.content %}
                     {{ audition.content|truncatewords_html:15|striptags }}
                     {% else %}
                     {{ audition.get_alt_description }}
                     {% endif %}
-                    <a href="#">Read more &raquo;</a></p>
+                    <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
                 </div>
                 {% endfor %}
             </div>
@@ -119,7 +119,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
-                <h4 class="more"><a class="" href="#">See More Auditions &raquo;</a></h4>
+                <h4 class="more"><a class="" href="{% url 'auditions' %}">See More Auditions&nbsp;&raquo;</a></h4>
             </div>
         </div>
     </div>
@@ -135,9 +135,10 @@
             <div class="col-md-4 col-sm-4">
                 <dl class="news-list">
                     {% for news in news_group %}
-                    <dt><a href="{% if news.external_url %}{{ news.external_url }}{% else %}#{% endif %}">{{ news.title }}</a></dt>
+                    <dt><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></dt>
                     <dd class="small"><em>Created on {{ news.created_on|date:"M. j" }} at {{ news.created_on|time:"g:ia" }}</em></dd>
-                    <dd>{{ news.content|truncatewords_html:10|striptags }} <a href="{% if news.external_url %}{{ news.external_url }}{% else %}#{% endif %}">Read more &raquo;</a></dd>
+                    <dd>{{ news.content|truncatewords_html:10|striptags }} <a href="{{ news.get_absolute_url
+                    }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
                     {% endfor %}
                 </dl>
             </div>
@@ -145,7 +146,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
-                <h4 class="more"><a class="" href="#">See More News &raquo;</a></h4>
+                <h4 class="more"><a class="" href="{% url 'news_list' %}">See More News &raquo;</a></h4>
             </div>
         </div>
     </div>
@@ -160,7 +161,7 @@
             {% for production in productions %}
             <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
                 <h5>{{ production.duration }}</h5>
-                <a href="#" class="tile">
+                <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
                     {% if production.poster %}
                         <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
                     {% else %}
@@ -171,9 +172,9 @@
                 {% if production.description or production.play.synopsis %}
                 <div class="caption">
                     {% if production.description %}
-                    <p>{{ production.description|truncatewords_html:15|striptags }}</p>
+                    <p>{{ production.description|truncatewords_html:25|striptags }}</p>
                     {% elif production.play.synopsis %}
-                    <p>{{ production.play.synopsis|truncatewords_html:15|striptags }}</p>
+                    <p>{{ production.play.synopsis|truncatewords_html:25|striptags }}</p>
                     {% endif %}
                 </div>
                 {% endif %}
@@ -183,7 +184,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
-                <h4 class="more"><a class="" href="#">See More Performances &raquo;</a></h4>
+                <h4 class="more"><a class="" href="{% url 'productions_upcoming' %}">See More Performances &raquo;</a></h4>
             </div>
         </div>
     </div>

@@ -1,0 +1,86 @@
+{% extends 'base_internal.html' %}
+
+{% block main_title %}
+<h2>
+    {% if audition.play and audition.production_company %}
+        {{ audition.play.title }}<br />
+        <small>by {{ audition.production_company.name }}</small>
+    {% else %}
+        {{ audition.get_title }}
+    {% endif %}
+</h2>
+{% endblock %}
+
+{% block main_secondary_title %}
+by {{ production.production_company.name }}
+{% endblock %}
+
+{% block main_terciary_title %}
+<h3>{{ audition.duration }}</h3>
+{% endblock %}
+
+{% block article_content %}
+{% if audition.content %}
+{{ audition.content|safe }}
+{% else %}
+{{ audition.get_alt_description }}
+{% endif %}
+<hr />
+{{ audition.event_details|safe }}
+{% endblock %}
+
+{% block extra_content %}
+{% endblock %}
+
+
+{% block sidebar_content %}
+
+{% if audition.poster %}
+<a href="{{ audition.poster.url }}" class="thumbnail">
+    <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
+</a>
+{% endif %}
+
+{% if upcoming_auditions.exists %}
+<div class="module">
+    <h4>Upcoming Auditions</h4>
+    <ul>
+        {% for upcoming in upcoming_auditions %}
+        <li><a href="{% url 'audition_detail' upcoming.slug %}">{{ upcoming.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'auditions' %}">See more &raquo;</a>
+    </div>
+</div>
+{% endif %}
+
+{% if company_productions.exists %}
+<div class="module">
+    <h4>Productions by {{ audition.production_company }}</h4>
+    <ul>
+        {% for production in company_productions %}
+        <li><a href="{% url 'production_detail' production.slug %}">{{ production.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'company_productions' audition.production_company.slug %}">See more &raquo;</a>
+    </div>
+</div>
+{% endif %}
+
+{% if recent_news.exists %}
+<div class="module">
+    <h4>News</h4>
+    <ul>
+        {% for news_item in recent_news %}
+        <li><a href="{{ news_item.get_absolute_url }}">{{ news_item.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'news_list' %}">See more &raquo;</a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

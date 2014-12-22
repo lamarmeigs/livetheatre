@@ -1,4 +1,4 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 
 {% block body_content %}
     <div class="container">
@@ -10,15 +10,16 @@
                     {% block main_primary_title %}{% endblock %}<br />
                     <small>{% block main_secondary_title %}{% endblock %}</small>
                 </h2>
-                {% block main_terciary_title %}{% endblock %}
                 {% endblock %}
-                {% block main_image %}{% endblock %}
+                {% block main_terciary_title %}{% endblock %}
 
                 {% block article_content %}{% endblock %}
                 {% endblock %}
             </div>
             <div id="sidebar" class="col-md-3">
-                {% block sidebar_content %} {% endblock %}
+                {% block sidebar_content %}
+                {% block main_image %}{% endblock %}
+                {% endblock %}
             </div>
         </div>
     </div>
