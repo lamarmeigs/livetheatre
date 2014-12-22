@@ -36,7 +36,7 @@ class HomepageView(TemplateView):
         audition_groups = utils.chunks(auditions, auditions_col_len) \
             if auditions_col_len else list(auditions)
             
-        news = news.order_by('-id')[:21]
+        news = news.order_by('-created_on')[:21]
         news_col_len = len(news)/3
         news_groups = utils.chunks(news, news_col_len) \
             if news_col_len else [list(news)]
@@ -133,13 +133,15 @@ class NewsDetailView(DetailView):
     """Display all details about an ArtsNews object"""
     model = ArtsNews
     template_name = 'news/detail.html'
+    context_object_name = 'news'
 
     def get_context_data(self, *args, **kwargs):
         context = super(NewsDetailView, self).get_context_data(
             *args, **kwargs)
 
+        news = self.get_object()
         recent_reviews = Review.objects.all()
-        recent_news = ArtsNews.objects.all()
+        recent_news = ArtsNews.objects.exclude(pk=news.pk)
         current_productions = Production.objects.filter_current()
 
         context.update({
@@ -166,7 +168,9 @@ class ProductionDetailView(DetailView):
         context = super(ProductionDetailView, self).get_context_data(
             *args, **kwargs)
 
-        current_productions = Production.objects.filter_current()
+        production = self.get_object()
+        current_productions = Production.objects.filter_current().exclude(
+            pk=production.pk)
         recent_news = ArtsNews.objects.all()
 
         production = self.get_object()
