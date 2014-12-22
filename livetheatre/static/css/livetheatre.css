@@ -155,7 +155,13 @@ dl.news-list dt:not(:first-child) {padding-top:20px;}
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
 .production h5 {text-transform:uppercase; margin-bottom:5px;}
-.production .tile {position:relative; display:block; overflow:hidden; height:200px}
+.production .tile {
+    position:relative;
+    display:block;
+    overflow:hidden;
+    height:200px;
+    background-color:#000;
+}
 .production .tile h4 {
     position:absolute;
     bottom:0px;

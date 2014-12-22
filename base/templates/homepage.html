@@ -164,8 +164,6 @@
                 <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
                     {% if production.poster %}
                         <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
-                    {% else %}
-                        <img src="{{ STATIC_URL }}/img/grey.png" alt="Missing Poster" />
                     {% endif %}
                     <h4>{{ production.title }}</h4>
                 </a>
