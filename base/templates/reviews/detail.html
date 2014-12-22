@@ -30,7 +30,7 @@
 {% block sidebar_content %}
 
 {% if review.production.poster %}
-<a href="{{ review.production.poster.url }}" class="thumbnail">
+<a href="{% url 'production_detail' slug=review.production.slug %}" class="thumbnail">
     <img src="{{ review.production.poster.url }}" alt="{{ review.production.get_title }}" />
 </a>
 {% endif %}

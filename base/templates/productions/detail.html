@@ -11,6 +11,13 @@
 
 {% block main_terciary_title %}
 <h3>{{ production.duration }}</h3>
+{% if production.review_set.exists %}
+<div class="label-container">
+    {% for review in production.review_set.all %}
+    <a href="{% url 'review_detail' slug=review.slug %}" class="label label-review">Review</a>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block article_content %}

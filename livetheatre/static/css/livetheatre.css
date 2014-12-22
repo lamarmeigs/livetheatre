@@ -170,10 +170,14 @@ h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 /* Internal pages */
 #main-content img {margin:5px 10px 20px;}
 #main-content img.wide {margin:0px 0px 20px;}
+
 #sidebar {padding-top:20px;}
 #sidebar .module {margin-top:20px;}
 #sidebar .module:first-child {margin-top:0;}
 #sidebar .module:first-child h4 {margin-top:0}
+
+.label-container {margin-bottom:10px;}
+.label-review {background-color:#e05500; margin-right:5px;}
 
 
 /********************
