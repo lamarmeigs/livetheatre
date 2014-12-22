@@ -1,0 +1,43 @@
+{% extends 'base_internal.html' %}
+
+{% block body_id %}productions{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <div class="row">
+            <h2>{% block main_title %}{% endblock %}</h2>
+            <div class="pull-left">
+                <p><a href="{% url 'productions_upcoming' %}">Upcoming</a> | <a href="{% url 'productions_current_month' %}">Monthly</a> | <a href="{% url 'productions_current_week' %}">Weekly</a></p>
+            </div>
+            <div class="pull-right">{% block extra_details %}{% endblock %}</div>
+        </div>
+        <div class="row">
+            {% for production in productions %}
+            <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
+                <h5>{{ production.duration }}</h5>
+                <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
+                    {% if production.poster %}
+                        <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
+                    {% endif %}
+                    <h4>{{ production.title }}</h4>
+                </a>
+                {% if production.description or production.play.synopsis %}
+                <div class="caption">
+                    {% if production.description %}
+                    <p>{{ production.description|truncatewords_html:25|striptags }}</p>
+                    {% elif production.play.synopsis %}
+                    <p>{{ production.play.synopsis|truncatewords_html:25|striptags }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="pull-left">{% block previous_page %}{% endblock %}</div>
+            <div class="pull-right">{% block next_page %}{% endblock %}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_content %}{% endblock %}

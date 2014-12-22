@@ -232,7 +232,7 @@ class DateRangePerformanceView(TemplateView):
             *args, **kwargs)
         start_date, end_date = self._get_range()
         context.update({
-            'performances': self.get_performances(),
+            'productions': self.get_performances(),
             'start_date': start_date,
             'end_date': end_date,
         })
@@ -250,6 +250,27 @@ class WeekPerformanceView(DateRangePerformanceView):
     days_in_range = 7
     template_name = 'productions/weekly.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(WeekPerformanceView, self).get_context_data(
+            *args, **kwargs)
+
+        start_date, end_date = self._get_range()
+
+        next_start_date = end_date + timedelta(days=1)
+        next_end_date = end_date + timedelta(days=7)
+
+        previous_start_date = start_date - timedelta(days=7)
+        previous_end_date = start_date - timedelta(days=1)
+
+        context.update({
+            'current_start_date': start_date,
+            'next_start_date': next_start_date,
+            'next_end_date': next_end_date,
+            'previous_start_date': previous_start_date,
+            'previous_end_date': previous_end_date,
+        })
+        return context
+
 
 class MonthPerformanceView(DateRangePerformanceView):
     """Display performances in a given month"""
@@ -265,19 +286,34 @@ class MonthPerformanceView(DateRangePerformanceView):
 
         # get year
         year_str = self.kwargs.get('year')
-        month = int(year_str) if year_str else today.year
+        year = int(year_str) if year_str else today.year
 
         # return a date object for the first of the month
         return date(day=1, month=month, year=year)
 
     def _get_range(self):
         start_date = self._get_start_date()
-        last_day_of_month = monthrange(start_date.year, start_date.day)[1]
+        last_day_of_month = monthrange(start_date.year, start_date.month)[1]
         end_date = date(
             day=last_day_of_month,
             month=start_date.month,
             year=start_date.year)
         return start_date, end_date
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MonthPerformanceView, self).get_context_data(
+            *args, **kwargs)
+
+        start_date, end_date = self._get_range()
+        next_start_date = end_date + timedelta(days=1)
+        previous_start_date = start_date - timedelta(days=1)
+
+        context.update({
+            'current_start_date': start_date,
+            'next_start_date': next_start_date,
+            'previous_start_date': previous_start_date,
+        })
+        return context
 
 
 class CompanyObjectListView(ListView):

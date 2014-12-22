@@ -1,0 +1,32 @@
+{% extends 'productions/base_list.html' %}
+
+{% block body_id %}weekly-productions{% endblock %}
+
+{% block main_title %}Productions from {{ start_date|date:"n/d" }} to {{ end_date|date:"n/d" }}{% endblock %}
+
+{% block extra_details %}
+    <p>
+        <a href="{% url 'productions_weekly' previous_start_date|date:"Ymd" %}">
+            <span class="glyphicon glyphicon-backward small"></span> {{ previous_start_date|date:"n/d" }} - {{ previous_end_date|date:"n/d" }}
+        </a>
+        | {{ start_date|date:"n/d" }} - {{ end_date|date:"n/d" }} | 
+        <a href="{% url 'productions_weekly' next_start_date|date:"Ymd" %}">
+            {{ next_start_date|date:"n/d" }} - {{ next_end_date|date:"n/d" }} <span class="glyphicon glyphicon-forward small"></span>
+        </a>
+{% endblock %}
+
+{% block previous_page %}
+    <h4>
+        <a href="{% url 'productions_weekly' previous_start_date|date:"Ymd" %}">
+            <span class="glyphicon glyphicon-backward small"></span> {{ previous_start_date|date:"n/d" }} - {{ previous_end_date|date:"n/d" }}
+        </a>
+    </h4>
+{% endblock %}
+
+{% block next_page %}
+    <h4>
+        <a href="{% url 'productions_weekly' next_start_date|date:"Ymd" %}">
+            {{ next_start_date|date:"n/d" }} - {{ next_end_date|date:"n/d" }}<span class="glyphicon glyphicon-forward small"></span>
+        </a>
+    </h4>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'productions/base_list.html' %}
+
+{% block body_id %}monthly-productions{% endblock %}
+
+{% block main_title %}Productions in {{ start_date|date:"F Y" }}{% endblock %}
+
+{% block extra_details %}
+    <p>
+        <a href="{% url 'productions_monthly' previous_start_date|date:"Y" previous_start_date|date:"n" %}">
+            <span class="glyphicon glyphicon-backward small"></span> {{ previous_start_date|date:"F" }}
+        </a>
+        | {{ start_date|date:"F" }} | 
+        <a href="{% url 'productions_monthly' next_start_date|date:"Y" next_start_date|date:"n" %}">
+            {{ next_start_date|date:"F" }} <span class="glyphicon glyphicon-forward small"></span>
+        </a>
+{% endblock %}
+
+{% block previous_page %}
+    <h4>
+        <a href="{% url 'productions_monthly' previous_start_date|date:"Y" previous_start_date|date:"n" %}">
+            <span class="glyphicon glyphicon-backward small"></span> {{ previous_start_date|date:"F Y" }}
+        </a>
+    </h4>
+{% endblock %}
+
+{% block next_page %}
+    <h4>
+        <a href="{% url 'productions_monthly' next_start_date|date:"Y" next_start_date|date:"n" %}">
+            {{ next_start_date|date:"F Y" }} <span class="glyphicon glyphicon-forward small"></span>
+        </a>
+    </h4>
+{% endblock %}
