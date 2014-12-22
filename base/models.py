@@ -2,6 +2,7 @@ from datetime import date, datetime
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
@@ -69,7 +70,7 @@ class Review(models.Model):
 class AuditionManager(models.Manager):
     def filter_upcoming(self):
         """Return ongoing or upcoming auditions"""
-        today = timezone.today()
+        today = timezone.now()
         upcoming = self.filter(
             Q(end_date__isnull=False, end_date__gte=today) | 
             Q(end_date__isnull=True, start_date__gte=today)
@@ -254,15 +255,20 @@ class Production(models.Model):
         self.slug = self.get_slug()
         return super(Production, self).save(**kwargs)
 
-    def duration(self, date_format='%b. %d'):
+    def duration(self, date_format='%b. %d', conjuction='-'):
         """
         Return a string representing the date range during which the production
         occurs. The dates will be formatted with date_format.
         """
         duration = self.start_date.strftime(date_format)
         if self.end_date:
-            duration += ' - %s' % self.end_date.strftime(date_format)
+            duration += ' %s %s' % (
+                conjuction, self.end_date.strftime(date_format))
         return duration
+
+    def detailed_duration(self):
+        """Alias to duration with detailed date_format and conjuction args"""
+        return self.duration(date_format='%B %d, %Y', conjuction='through')
 
     def get_slug(self):
         """Return a unique slug for this Production"""
@@ -344,13 +350,13 @@ class ArtsNews(models.Model):
         "this news item's detail page.")
 
     class Meta:
-        ordering = ['-created_on']
+        ordering = ['created_on']
         verbose_name_plural = 'arts news items'
 
     def get_absolute_url(self):
         url = self.external_url \
             if self.external_url \
-            else reverse('news_item', kwargs={'slug':self.slug})
+            else reverse('news_detail', kwargs={'slug':self.slug})
         return url
 
     def __unicode__(self):
