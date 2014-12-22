@@ -350,7 +350,7 @@ class ArtsNews(models.Model):
         "this news item's detail page.")
 
     class Meta:
-        ordering = ['created_on']
+        ordering = ['-created_on']
         verbose_name_plural = 'arts news items'
 
     def get_absolute_url(self):
