@@ -6,15 +6,17 @@
     <div class="container">
         <div class="row">
             <h2>{% block main_title %}{% endblock %}</h2>
+            {% block search_options %}
             <div class="pull-left">
                 <p><a href="{% url 'productions_upcoming' %}">Upcoming</a> | <a href="{% url 'productions_current_month' %}">Monthly</a> | <a href="{% url 'productions_current_week' %}">Weekly</a></p>
             </div>
             <div class="pull-right">{% block extra_details %}{% endblock %}</div>
+            {% endblock %}
         </div>
         <div class="row">
             {% for production in productions %}
             <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
-                <h5>{{ production.duration }}</h5>
+                <h5>{% block production_duration %}{{ production.duration }}{% endblock %}</h5>
                 <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
                     {% if production.poster %}
                         <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
@@ -33,10 +35,12 @@
             </div>
             {% endfor %}
         </div>
+        {% block pagination %}
         <div class="row">
             <div class="pull-left">{% block previous_page %}{% endblock %}</div>
             <div class="pull-right">{% block next_page %}{% endblock %}</div>
         </div>
+        {% endblock %}
     </div>
 {% endblock %}
 

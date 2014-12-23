@@ -2,7 +2,7 @@ from calendar import monthrange
 from datetime import date, datetime, timedelta
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -89,7 +89,7 @@ class ReviewListView(ListView):
         context = super(ReviewListView, self).get_context_data(*args, **kwargs)
 
         # paginate reviews
-        all_reviews = context.get('reviews') or self.get_queryset()
+        all_reviews = self.get_queryset()
         paginator = Paginator(all_reviews, 6)
         page = self.request.GET.get('page')
         try:
@@ -150,15 +150,24 @@ class AuditionListView(ListView):
     model = Audition
     template_name = 'auditions/list.html'
 
+    def get_upcoming_auditions(self):
+        """Return upcoming auditions"""
+        return Audition.objects.filter_upcoming()
+
+    def get_previous_auditions(self):
+        """Return past auditions"""
+        upcoming = self.get_upcoming_auditions()
+        return Audition.objects.exclude(
+            id__in=[audition.id for audition in upcoming]
+            ).order_by('-start_date')
+
     def get_context_data(self, *args, **kwargs):
         context = super(AuditionListView, self).get_context_data(
             *args, **kwargs)
 
         # split upcoming and past auditions
-        upcoming = Audition.objects.filter_upcoming()
-        all_past = Audition.objects.exclude(
-            id__in=[audition.id for audition in upcoming]
-            ).order_by('-start_date')
+        upcoming = self.get_upcoming_auditions()
+        all_past = self.get_previous_auditions()
 
         # paginate past auditions
         paginator = Paginator(all_past, 30)
@@ -418,7 +427,7 @@ class CompanyObjectListView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.company = get_object_or_404(
-            ProductionCompany, slug=request.kwargs.get('slug'))
+            ProductionCompany, slug=kwargs.get('slug'))
         return super(CompanyObjectListView, self).dispatch(
             request, *args, **kwargs)
 
@@ -432,15 +441,22 @@ class CompanyObjectListView(ListView):
             queryset = queryset.order_by(self.order_by)
         return queryset
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(CompanyObjectListView, self).get_context_data(
+            *args, **kwargs)
+        context['company'] = self.company
+        return context
+
 
 class CompanyProductionListView(CompanyObjectListView):
     """Display all Productions by a Production Company"""
     model = Production
     order_by = '-start_date'
     template_name = 'productions/company.html'
+    context_object_name = 'productions'
 
 
-class CompanyReviewListView(CompanyObjectListView):
+class CompanyReviewListView(CompanyObjectListView, ReviewListView):
     """Display all published Review objects for a Production Company"""
     model = Review
     order_by = 'id'
@@ -453,11 +469,20 @@ class CompanyReviewListView(CompanyObjectListView):
         return self.order_queryset(queryset)
 
 
-class CompanyAuditionListView(CompanyObjectListView):
+class CompanyAuditionListView(CompanyObjectListView, AuditionListView):
     """Display all Auditions for a Production Company"""
     model = Audition
     order_by = 'start_date'
     template_name = 'auditions/company.html'
+
+    def get_upcoming_auditions(self):
+        return Audition.objects.filter_upcoming().filter(
+            production_company=self.company)
+
+    def get_previous_auditions(self):
+        all_previous = super(
+            CompanyAuditionListView, self).get_previous_auditions()
+        return all_previous.filter(production_company=self.company)
 
 
 class VenueListView(ListView):
