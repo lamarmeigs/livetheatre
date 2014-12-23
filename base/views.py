@@ -117,6 +117,7 @@ class LocalTheatresView(ListView):
     model = ProductionCompany
     queryset = ProductionCompany.objects.order_by('name')
     template_name = 'companies/list.html'
+    context_object_name = 'companies'
 
 
 class AuditionDetailView(DetailView):

@@ -1,0 +1,46 @@
+{% extends 'base_internal.html' %}
+
+{% block body_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% block main_title %}
+                <h2>Local Theatre Groups</h2>
+                {% endblock %}
+            </div>
+        </div>
+
+        {% for company in companies %}
+            {% block company_tile %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>{{ company.name }}</h3>
+                </div>
+                <div class="col-md-8">
+                    {% if company.description %}
+                        {{ company.description|truncatewords_html:200|safe }}
+                    {% elif company.contact_info %}
+                        {{ company.contact_info|safe }}
+                    {% elif company.home_venues.exists %}
+                        {% for venue in company.home_venues.all %}
+                            <address>
+                                <strong>{{ venue.name }}</strong><br />
+                                {{ venue.address.line_1 }}<br />
+                                {% if venue.address.line_2 %}{{ venue.address.line_2 }}<br />{% endif %}
+                                {{ venue.address.city }}, TX, {{ venue.address.zip_code }}
+                            </address>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <ul>
+                        <li><a href="{% url 'company_productions' slug=company.slug %}">See Productions</a></li>
+                        <li><a href="{% url 'company_auditions' slug=company.slug %}">See Auditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% endblock %}
+        {% endfor %}
+
+    </div>
+{% endblock %}
