@@ -515,11 +515,18 @@ class VenueProductionListView(ListView):
     """Diplay all Production occurring at a Venue"""
     model = Production
     template_name = 'productions/venue.html'
+    context_object_name = 'productions'
 
     def dispatch(self, request, *args, **kwargs):
-        self.venue = Venue.objects.get(name=reques.kwargs.get('slug'))
+        self.venue = get_object_or_404(Venue, slug=kwargs.get('slug'))
         return super(VenueProductionListView, self).dispatch(
             request, *args, **kwargs)
 
     def get_queryset(self):
         return Production.objects.filter(venue=self.venue)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(VenueProductionListView, self).get_context_data(
+            *args, **kwargs)
+        context['venue'] = self.venue
+        return context

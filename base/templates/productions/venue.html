@@ -1,0 +1,8 @@
+{% extends 'productions/base_list.html' %}
+
+{% block body_id %}venue-productions{% endblock %}
+
+{% block main_title %}Productions at {{ venue.name }}{% endblock %}
+{% block search_options %}{% endblock %}
+{% block production_duration %}{{ production.detailed_duration }}{% endblock %}
+{% block pagination %}{% endblock %}
