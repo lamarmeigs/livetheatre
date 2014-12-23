@@ -1,0 +1,68 @@
+{% extends 'base_internal.html' %}
+
+{% block body_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main_title %}
+            <h2>Reviews</h2>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% for review in reviews %}
+                {% block review_tile %}
+                <div class="review-long">
+                    <a href="{% url 'review_detail' slug=review.slug %}" class="thumbnail col-md-4 col-sm-5 col-xs-12">
+                        <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}" />
+                    </a>
+                    <h4><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></h4>
+                    <p>
+                        <em>Published on {{ review.published_on|date:"F d, Y" }}</em>
+                        {% if review.lede %}
+                        <strong>{{ review.lede }}</strong>
+                        {% endif %}
+                    </p>
+
+                    {{ review.content|truncatewords_html:75|safe }}
+                    <a href="{% url 'review_detail' slug=review.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
+                </div>
+                {% endblock %}
+
+            {% empty %}
+                {% block no_reviews_message %}
+                <p>No reviews!</p>
+                {% endblock %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+    {% if page.has_other_pages %}
+    <div class="row">
+        <div class="pagination col-md-12 text-center">
+            <div class="pull-left">
+                {% if page.has_previous %}
+                <a href="?page={{ page.previous_page_number }}">
+                    <span class="glyphicon glyphicon-backward small"></span> Newer Reviews
+                </a>
+                {% endif %}
+            </div>
+
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+
+            <div class="pull-right">
+                {% if page.has_next %}
+                <a href="?page={{ page.next_page_number }}">
+                    Older Reviews <span class="glyphicon glyphicon-forward small"></span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

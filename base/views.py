@@ -85,6 +85,26 @@ class ReviewListView(ListView):
     queryset = Review.objects.filter(is_published=True)
     template_name = 'reviews/list.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReviewListView, self).get_context_data(*args, **kwargs)
+
+        # paginate reviews
+        all_reviews = context.get('reviews') or self.get_queryset()
+        paginator = Paginator(all_reviews, 6)
+        page = self.request.GET.get('page')
+        try:
+            page = paginator.page(page)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+
+        context.update({
+            'reviews': page.object_list,
+            'page': page,
+        })
+        return context
+
 
 class ProductionCompanyView(DetailView):
     """Display the details of a ProductionCompany object"""
