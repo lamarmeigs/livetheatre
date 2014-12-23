@@ -12,7 +12,7 @@ class ReviewAdmin(admin.ModelAdmin):
     save_on_top = True
 
     exclude = ('slug',)
-    list_display = ('get_title', 'is_published')
+    list_display = ('get_title', 'is_published', 'published_on')
     list_filter = ('is_published',)
     ordering = ('published_on',)
 
