@@ -1,0 +1,54 @@
+{% extends 'base_internal.html' %}
+
+{% block body_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>CTX Arts News</h2>
+            </div>
+        </div>
+        {% for news_group in news_groups %}
+        <div class="row">
+            {% if not forloop.first %}
+                <hr class="hidden-xs" />
+            {% endif %}
+            {% for news_column in news_group %}
+            <div class="col-md-4 col-sm-4">
+                <dl class="news-list">
+                    {% for news in news_column %}
+                    <dt><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></dt>
+                    <dd class="small"><em>Created on {{ news.created_on|date:"M. j" }} at {{ news.created_on|time:"g:ia" }}</em></dd>
+                    <dd>{{ news.content|truncatewords_html:10|striptags }} <a href="{{ news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
+                    {% endfor %}
+                </dl>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        {% if page.has_other_pages %}
+        <div class="row">
+            <div class="pagination col-md-12 text-center">
+                <div class="pull-left">
+                    {% if page.has_previous %}
+                    <a href="?page={{ page.previous_page_number }}">
+                        <span class="glyphicon glyphicon-backward small"></span> Previous Page
+                    </a>
+                    {% endif %}
+                </div>
+
+                Page {{ page.number }} of {{ page.paginator.num_pages }}
+
+                <div class="pull-right">
+                    {% if page.has_next %}
+                    <a href="?page={{ page.next_page_number }}">
+                        Next Page <span class="glyphicon glyphicon-forward small"></span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+</div>
+{% endblock %}
