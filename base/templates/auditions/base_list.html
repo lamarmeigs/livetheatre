@@ -1,0 +1,127 @@
+{% extends 'base_internal.html' %}
+
+
+{% block body_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main_title %}
+            <h2>Auditions</h2>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% block upcoming_auditions_title %}
+            <h3>Upcoming Auditions</h3>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        {% block upcoming_auditions %}
+        <div class="col-md-12">
+            {% for audition in upcoming_auditions %}
+                {% block upcoming_audition_tile %}
+                <div class="audition-long">
+                    {% if audition.poster %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-2 col-sm-4 col-xs-6 hidden-xs">
+                            <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
+                        </a>
+                    {% endif %}
+                    <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
+                    <p><em>{{ audition.duration }}</em></p>
+                    {% if audition.content %}
+                        {{ audition.content|truncatewords_html:50|safe }}
+                    {% else %}
+                        {{ audition.get_alt_description }}
+                    {% endif %}
+                    <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
+                </div>
+                {% endblock %}
+
+            {% empty %}
+                {% block no_upcoming_auditions_message %}
+                <p>No upcoming auditions!</p>
+                {% endblock %}
+            {% endfor %}
+
+        </div>
+        {% endblock %}
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-12">
+            <a id="past-auditions" name="past-auditions"></a>
+            {% block past_auditions_title %}
+            <h3>Past Auditions</h3>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        {% block past_auditions %}
+        <div class="col-md-12">
+            {% if not past_audition_groups %}
+                {% block no_past_auditions_message %}
+                <p>No past auditions!</p>
+                {% endblock %}
+            {% else %}
+            
+                {% for audition_group in past_audition_groups %}
+                <div class="col-md-6 col-sm-6">
+
+                    {% for audition in audition_group %}
+                    {% block past_auditions_tile %}
+                    <div class="audition">
+                        {% if audition.poster %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs">
+                            <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
+                        </a>
+                        {% endif %}
+                        <p><strong><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></strong><br />
+                        <em>{{ audition.duration }}</em></p>
+                        {% if audition.content %}
+                        {{ audition.content|truncatewords_html:15|striptags }}
+                        {% else %}
+                        {{ audition.get_alt_description }}
+                        {% endif %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
+                    </div>
+                    {% endblock %}
+                    {% endfor %}
+
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endblock %}
+    </div>
+
+    {% if page.has_other_pages %}
+    <div class="row">
+        <div class="pagination col-md-12 text-center">
+            <div class="pull-left">
+                {% if page.has_previous %}
+                <a href="?page={{ page.previous_page_number }}#past-auditions">
+                    <span class="glyphicon glyphicon-backward small"></span> Previous Page
+                </a>
+                {% endif %}
+            </div>
+
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+
+            <div class="pull-right">
+                {% if page.has_next %}
+                <a href="?page={{ page.next_page_number }}#past-auditions">
+                    Next Page <span class="glyphicon glyphicon-forward small"></span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

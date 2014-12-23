@@ -1,5 +1,6 @@
 from calendar import monthrange
 from datetime import date, datetime, timedelta
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -34,7 +35,7 @@ class HomepageView(TemplateView):
         auditions = upcoming_auditions.order_by('-start_date')[:8]
         auditions_col_len = len(auditions)/2
         audition_groups = utils.chunks(auditions, auditions_col_len) \
-            if auditions_col_len else list(auditions)
+            if auditions_col_len else [list(auditions)]
             
         news = news.order_by('-created_on')[:21]
         news_col_len = len(news)/3
@@ -127,6 +128,39 @@ class AuditionListView(ListView):
     """Display all Audition objects, paginated"""
     model = Audition
     template_name = 'auditions/list.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AuditionListView, self).get_context_data(
+            *args, **kwargs)
+
+        # split upcoming and past auditions
+        upcoming = Audition.objects.filter_upcoming()
+        all_past = Audition.objects.exclude(
+            id__in=[audition.id for audition in upcoming]
+            ).order_by('-start_date')
+
+        # paginate past auditions
+        paginator = Paginator(all_past, 30)
+        page = self.request.GET.get('page')
+        try:
+            page = paginator.page(page)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+
+        # break past auditions into column groupings
+        past_auditions = page.object_list
+        column_length = len(past_auditions)/2
+        past_audition_groups = utils.chunks(past_auditions, column_length) \
+            if column_length else [list(past_auditions)]
+
+        context.update({
+            'upcoming_auditions': upcoming,
+            'past_audition_groups': past_audition_groups,
+            'page': page,
+        })
+        return context
 
 
 class NewsDetailView(DetailView):
@@ -329,7 +363,7 @@ class CompanyObjectListView(ListView):
     def dispatch(self, request, *args, **kwargs):
         self.company = get_object_or_404(
             ProductionCompany, slug=request.kwargs.get('slug'))
-        return super(CompanyAuditionListView, self).dispatch(
+        return super(CompanyObjectListView, self).dispatch(
             request, *args, **kwargs)
 
     def get_queryset(self):
