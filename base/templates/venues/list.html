@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block article_content %}
+<p>This is a listing of theatre venues located in Central Texas. You can also search through a listing of <a href="{% url 'local_theatres' %}">local theatre companies</a>.</p>
+
 {% for city, venues in city_venues %}
     <a id="{{ city|slugify }}" name="{{ city|slugify }}" class="anchor clearfix"></a>
     <h3>{{ city }}</h3>

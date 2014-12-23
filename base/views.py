@@ -33,14 +33,20 @@ class HomepageView(TemplateView):
 
         # format data for display in columns, etc.
         auditions = upcoming_auditions.order_by('-start_date')[:8]
-        auditions_col_len = len(auditions)/2
-        audition_groups = utils.chunks(auditions, auditions_col_len) \
-            if auditions_col_len else [list(auditions)]
+        if auditions:
+            auditions_col_len = len(auditions)/2
+            audition_groups = utils.chunks(auditions, auditions_col_len) \
+                if auditions_col_len else [list(auditions)]
+        else:
+            audition_groups = None
             
         news = news.order_by('-created_on')[:21]
-        news_col_len = len(news)/3
-        news_groups = utils.chunks(news, news_col_len) \
-            if news_col_len else [list(news)]
+        if news:
+            news_col_len = len(news)/3
+            news_groups = utils.chunks(news, news_col_len) \
+                if news_col_len else [list(news)]
+        else:
+            news_groups = None
 
         # order & limit number of items to display
         context.update({
@@ -182,9 +188,12 @@ class AuditionListView(ListView):
 
         # break past auditions into column groupings
         past_auditions = page.object_list
-        column_length = len(past_auditions)/2
-        past_audition_groups = utils.chunks(past_auditions, column_length) \
-            if column_length else [list(past_auditions)]
+        if past_auditions:
+            column_length = len(past_auditions)/2
+            past_audition_groups = utils.chunks(past_auditions, column_length) \
+                if column_length else [list(past_auditions)]
+        else:
+            past_audition_groups = None
 
         context.update({
             'upcoming_auditions': upcoming,

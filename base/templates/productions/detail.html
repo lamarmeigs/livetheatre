@@ -4,7 +4,7 @@
 <h2>
 {{ production.play.title }}
 {% if production.production_company %}
-<br /><small>by {{ production.production_company.name }}</small>
+<br /><small>by <a href="{% url 'production_company' slug=production.production_company.slug %}">{{ production.production_company.name }}</a></small>
 {% endif %}
 </h2>
 {% endblock %}
