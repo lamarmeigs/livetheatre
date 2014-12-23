@@ -1,0 +1,74 @@
+{% extends 'base_internal.html' %}
+
+{% block main_title %}
+<h2>Local Venues</h2>
+{% endblock %}
+
+{% block article_content %}
+{% for city, venues in city_venues %}
+    <a id="{{ city|slugify }}" name="{{ city|slugify }}" class="anchor clearfix"></a>
+    <h3>{{ city }}</h3>
+    {% for venue in venues %}
+        <div class="row">
+            <div class="clearfix col-md-4">
+                <address>
+                    <strong>{{ venue.name }}</strong><br />
+                    {{ venue.address.line_1 }}<br />
+                    {% if venue.address.line_2 %}{{ venue.address.line_2 }}<br />{% endif %}
+                    {{ venue.address.city }}, TX, {{ venue.address.zip_code }}
+                </address>
+            </div>
+            <div class="col-md-4">
+                {% if venue.map_url or venue.production_set.exists %}
+                <p>
+                    {% if venue.map_url %}
+                    <a href="{{ venue.map_url }}" target="_blank">Map it!</a><br />
+                    {% endif %}
+                    {% if venue.production_set.exists %}
+                    <a href="{% url 'venue_productions' slug=venue.slug %}">Performances at this venue</a><br />
+                    {% endif %}
+                </p>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {% if venue.productioncompany_set.exists %}
+                <p>Home to:</p>
+                <ul>
+                    {% for company in venue.productioncompany_set.all %}
+                    <li><a href="{% url 'production_company' slug=company.slug %}">{{ company.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
+{% endblock %}
+
+{% block sidebar_content %}
+<div class="module">
+    <h4>Jump to:</h4>
+    <ul class="anchors">
+        {% for city, venues in city_venues %}
+        <li><a href="#{{ city|slugify }}">{{ city }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_content %}{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function() {
+            // homepage: top nav scroll
+            $("#sidebar .anchors a").click(function(e) {
+                e.preventDefault();
+                target = $(this).attr('href')
+                //$('a.anchor + *').not($(target).next()).animate({marginTop: '0px'});
+                //$(target).next().animate({marginTop: '60px'});
+                $('html, body').animate({scrollTop: $(target).offset().top - 60});
+            });
+        });
+    </script>
+{% endblock %}

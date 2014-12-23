@@ -487,9 +487,22 @@ class CompanyAuditionListView(CompanyObjectListView, AuditionListView):
 
 
 class VenueListView(ListView):
-    """Display all Venue records"""
+    """Display all Venue records, by city"""
     model = Venue
     template_name = 'venues/list.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(VenueListView, self).get_context_data(*args, **kwargs)
+        cities = Venue.objects.order_by('address__city').values_list(
+            'address__city', flat=True).distinct()
+        cities = sorted(cities)
+
+        city_venues = []
+        for city in cities:
+            city_venues.append((city, Venue.objects.filter(address__city=city)))
+
+        context['city_venues'] = city_venues
+        return context
 
 
 class VenueDetailView(DetailView):
