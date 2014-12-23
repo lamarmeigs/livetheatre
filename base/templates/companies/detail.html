@@ -1,0 +1,72 @@
+{% extends 'base_internal.html' %}
+
+{% block main_title %}
+<h2>{{ company.name }}</h2>
+{% endblock %}
+
+{% block terciary_title %}
+{% if company.company_site %}
+<h3><a href="{{ company.company_site }}">{{ company.company_site }}</a></h3>
+{% endif %}
+{% endblock %}
+
+{% block article_content %}
+{{ company.description|safe }}
+
+{% if company.contact_info %}
+<hr />
+<h3>Contact Information</h3>
+{{ company.contact_info|safe }}
+{% endif %}
+
+{% if company.home_venues.exists %}
+    <hr />
+    {% for venue in company.home_venues.all %}
+        <address>
+            <strong>{{ venue.name }}</strong><br />
+            {{ venue.address.line_1 }}<br />
+            {% if venue.address.line_2 %}{{ venue.address.line_2 }}<br />{% endif %}
+            {{ venue.address.city }}, TX, {{ venue.address.zip_code }}
+        </address>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+{% if company.production_set.exists %}
+<div class="module">
+    <h4>Productions by {{ company.name }}</h4>
+    <ul>
+        {% for production in company.production_set.all|slice:":4" %}
+        <li><a href="{% url 'production_detail' slug=production.slug %}">{{ production.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if company.audition_set.exists %}
+<div class="module">
+    <h4>Auditions by {{ company.name }}</h4>
+    <ul>
+        {% for audition in company.audition_set.all|slice:":4" %}
+        <li><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if company.review_set.exists %}
+<div class="module">
+    <h4>Reviews for {{ company.name }}</h4>
+    <ul>
+        {% for review in company.review.all|slice:":4" %}
+        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_content %}
+{% endblock %}

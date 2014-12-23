@@ -110,6 +110,7 @@ class ProductionCompanyView(DetailView):
     """Display the details of a ProductionCompany object"""
     model = ProductionCompany
     template_name = 'companies/detail.html'
+    context_object_name = 'company'
 
 
 class LocalTheatresView(ListView):
