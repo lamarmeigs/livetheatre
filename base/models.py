@@ -37,7 +37,7 @@ class Review(models.Model):
         "this review's page.")
 
     class Meta:
-        ordering = ['published_on']
+        ordering = ['-published_on']
 
     def get_title(self):
         title = self.title if self.title else 'Review: %s' % self.production
@@ -167,7 +167,7 @@ class Audition(models.Model):
     def get_absolute_url(self):
         return reverse('audition_detail', kwargs={'slug':self.slug})
 
-    def __unicode(self):
+    def __unicode__(self):
         return unicode(self.get_title)
 
 
