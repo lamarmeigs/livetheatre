@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
@@ -401,14 +401,10 @@ class Festival(models.Model):
 class ReviewerManager(models.Manager):
     def filter_active(self):
         """Return Reviewers who have published reviews recently"""
-        # get reviews of the past 6 months, and extract their reviewers
-        six_months_ago = date.today() - timedelta(months=6)
-        recent_reviews = Review.objects.filter(published_on__gte=six_months_ago)
-        recent_reviewers = recent_reviews.values_list('reviewer').distinct()
-
-        # sort the reviews by the number of reviews they have published
-        return recent_reviewers.annotate(
-            reviews_count=Count('review_set')).order_by(reviews_count)
+        six_months_ago = timezone.now() - timedelta(days=6*365/12)
+        recent_reviewers = Reviewer.objects.filter(
+            review__published_on__gte=six_months_ago)
+        return recent_reviewers.distinct()
 
     def filter_inactive(self):
         """Return Reviewers who have not published reviews recently"""
