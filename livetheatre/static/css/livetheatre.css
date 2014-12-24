@@ -188,7 +188,9 @@ h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 #sidebar .module:first-child h4 {margin-top:0}
 
 .label-container {margin-bottom:10px;}
-.label-review {background-color:#e05500; margin-right:5px;}
+.label-container .label {margin-right:5px;}
+.label-review {background-color:#e05500;}
+.label-external-review {background-color:#602500;}
 
 .audition-long {clear:both; margin-bottom:20px; max-height:200px; overflow:hidden;}
 .audition-long .thumbnail {margin-right:20px; margin-bottom:10px; max-height:200px; overflow:hidden;}

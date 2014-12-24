@@ -152,6 +152,12 @@ class ReviewerAdmin(admin.ModelAdmin):
     }
 
 
+class ExternalReviewAdmin(admin.ModelAdmin):
+    actions_on_bottom = True
+    save_on_top = True
+    list_display = ('production', 'source_name', 'review_url')
+
+
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Audition, AuditionAdmin)
 admin.site.register(ProductionCompany, ProductionCompanyAdmin)
@@ -162,3 +168,4 @@ admin.site.register(ArtsNews, ArtsNewsAdmin)
 admin.site.register(Festival, FestivalAdmin)
 admin.site.register(Address)
 admin.site.register(Reviewer, ReviewerAdmin)
+admin.site.register(ExternalReview, ExternalReviewAdmin)

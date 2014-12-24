@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
-    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer']
+    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer', 'ExternalReview']
 
 class Review(models.Model):
     """A written review of a production"""
@@ -437,3 +437,14 @@ class Reviewer(models.Model):
 
     def __unicode__(self):
         return unicode(self.full_name)
+
+
+class ExternalReview(models.Model):
+    """Contains a link to a review provided by an external source"""
+    review_url = models.URLField()
+    source_name = models.CharField(max_length=100, help_text='Provide the name '
+        'of the reviewer or the group that published it.')
+    production = models.ForeignKey(Production)
+
+    def __unicode__(self):
+        return u"%s's review of %s" % (self.source_name, self.production)
