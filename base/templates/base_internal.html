@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block body_tag %}
+<body id="{% block body_id %}{% endblock %}" class="{% block body_classes %}{% endblock %}" {% block body_attributes %}{% endblock %}>
+{% endblock %}
+
 {% block body_content %}
     <div class="container">
         <div class="row">

@@ -1,5 +1,7 @@
 {% extends 'base_internal.html' %}
 
+{% block body_classes %}section-review{% endblock %}
+
 {% block main_title %}
 <h2>{{ review.get_title }}<br />
 <small>by {{ review.reviewer }}</small>

@@ -90,8 +90,13 @@ nav.navbar a:focus,
 .navbar-default .navbar-nav>.open>a,
 .navbar-default .navbar-nav>.active>a,
 .navbar-default .navbar-nav>.active>a:hover,
-.navbar-default .navbar-nav>.active>a:focus
-{
+.navbar-default .navbar-nav>.active>a:focus,
+body.section-review #nav-review,
+body.section-audition #nav-audition,
+body.section-news #nav-news,
+body.section-productions #nav-productions,
+body.section-about #nav-about,
+body.section-company #nav-company {
     color:#fff;
     text-transform:underline;
     text-decoration: none;
