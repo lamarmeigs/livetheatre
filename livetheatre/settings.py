@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'haystack',
     'tinymce',
     'base',
 )
@@ -109,6 +110,14 @@ DIRECTORY = 'uploads'
 # Grappelli Configuration
 # http://django-grappelli.readthedocs.org/en/latest/customization.html
 GRAPPELLI_ADMIN_TITLE = 'CTX Live Theatre Admin'
+
+# Search Configuration
+# http://django-haystack.readthedocs.org/en/latest/tutorial.html
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
 
 # Import local settings
 try:

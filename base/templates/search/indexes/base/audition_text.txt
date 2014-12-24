@@ -1,0 +1,4 @@
+{{ object.get_title }}
+{{ object.production_company.name }}
+{{ object.play.title }}
+{{ object.content }}

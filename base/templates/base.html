@@ -16,7 +16,7 @@
 
     {% block base_stylesheets %}
     <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap-theme.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}/css/livetheatre.css">
     {% endblock %}
 
@@ -62,12 +62,12 @@
             <li><a id="nav-company" href="{% url 'local_theatres' %}">Local Theatres</a></li>
             <li class="hidden-xs"><a id="search-toggle" href="#"><span class="glyphicon glyphicon-search"></span></a></li>
           </ul>
-          <form id="search-form" class="navbar-form navbar-right hidden-sm hidden-md hidden-lg">
+          <form id="search-form" class="navbar-form navbar-right hidden-sm hidden-md hidden-lg" method="GET" action="/search/">
               <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search...">
+                  <input type="search" class="form-control" placeholder="Search..." name="q" id="id_q">
               </div>
               <div class="form-group">
-                  <button class="btn btn-default search glyphicon glyphicon-search"></button>
+                  <button class="btn btn-search search glyphicon glyphicon-search"></button>
               </div>
           </form>
         </div>

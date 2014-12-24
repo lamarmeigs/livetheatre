@@ -1,0 +1,76 @@
+{% extends 'base_internal.html' %}
+
+{% block main_title %}
+<h2>Search</h2>
+{% endblock %}
+
+{% block article_content %}
+<h3>Results</h3>
+{% if query %}
+    {% for result in page.object_list %}
+        <div class="result">
+            <h4><a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a></h4>
+            <p>
+            {% if result.object.detailed_duration %}
+                <em>{{ result.object.detailed_duration }}</em> &mdash;
+            {% endif %}
+            {% if result.object.lede %}
+                {{ result.object.lede }}
+            {% elif result.object.content %}
+                {{ result.object.content|truncatewords_html:50|striptags }}
+            {% elif result.object.description %}
+                {{ result.object.description|truncatewords_html:50|striptags }}
+            {% endif %}
+            <a href="{{ result.object.get_absolute_url }}">Read more &raquo;</a>
+            </p>
+        </div>
+    {% empty %}
+        <p>No results found.</p>
+    {% endfor %}
+
+    {% if page.has_previous or page.has_next %}
+    <div class="row">
+        <div class="pagination col-md-12 text-center">
+            <div class="pull-left">
+                {% if page.has_previous %}
+                <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">
+                    <span class="glyphicon glyphicon-backward small"></span> Previous
+                </a>
+                {% endif %}
+            </div>
+
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+
+            <div class="pull-right">
+                {% if page.has_next %}
+                <a href="?q={{ query }}&amp;page={{ page.next_page_number }}">
+                    Next <span class="glyphicon glyphicon-forward small"></span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+    <p>None yet!</p>
+{% endif %}
+{% endblock %}
+
+
+{% block sidebar_content %}
+<div class="module search">
+    <h4>Search</h4>
+    <form class="search-full" method="get" action=".">
+        <p>{{ form.q }}</p>
+        <label for="">{{ form.models.label }}:</label>
+        <ul class="search-models">
+            {% for field in form.models %}
+                <li>{{ field }}</li>
+            {% endfor %}
+        </ul>
+        <button class="btn btn-search">Search</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_content %} {% endblock %}

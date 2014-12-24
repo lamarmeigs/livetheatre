@@ -156,7 +156,6 @@ nav.navbar button.search {}
 h2.text-center {margin-bottom:25px;}
 #news-container {margin-top:40px; padding:30px 0 30px;}
 dl.news-list dt:not(:first-child) {padding-top:20px;}
-/*dl.performance-list dt:not(:first-child) {padding-top:20px;}*/
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
 .production h5 {text-transform:uppercase; margin-bottom:5px;}
@@ -177,6 +176,28 @@ dl.news-list dt:not(:first-child) {padding-top:20px;}
 }
 h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 
+
+/* Search form */
+form.search-full {}
+form.search-full .search-models label {margin-right:10px;}
+.module.search ul.search-models {list-style:none; padding:5px 0 0 5px;}
+.result {margin-bottom:20px;}
+.btn-search {
+  background-image: -webkit-linear-gradient(top, #fa5f00 0%, #c24a00 100%);
+  background-image: -o-linear-gradient(top, #fa5f00 0%, #c24a00 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fa5f00), to(#c24a00));
+  background-image: linear-gradient(to bottom, #fa5f00 0%, #c24a00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffa5f00', endColorstr='#ffc24a00', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+  border-color: #aa4100;
+  color:#fff;
+}
+.btn-search:hover, .btn-search:focus {
+  background-color: #c24a00;
+  background-position: 0 -15px;
+  color:#fff;
+}
 
 /* Internal pages */
 #main-content img {margin:5px 10px 20px;}

@@ -1,0 +1,4 @@
+{{ object.get_title }}
+{{ object.lede }}
+{{ object.reviewer.full_name }}
+{{ object.content }}
