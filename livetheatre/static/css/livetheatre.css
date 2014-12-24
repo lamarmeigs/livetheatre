@@ -198,6 +198,9 @@ h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 .review-long {clear:both; margin-bottom:20px;}
 .review-long .thumbnail {margin-right:20px; margin-bottom:10px; max-height:250px; overflow:hidden;}
 
+.reviewer-long {}
+.reviewer-long .thumbnail {margin-left:20px;}
+.reviewer-long .thumbnail img {margin:0 auto !important;:}
 
 /********************
 *** Media Queries ***
@@ -225,12 +228,16 @@ h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 @media (min-width: 992px) {
     body {margin-bottom: 300px;}
     .footer {height: 270px;}
+    .reviewer-tile:nth-child(2n+1) {clear:left;}
 }
 
 /* lg */
 @media (min-width: 1200px) {
     .production:nth-child(3n+1) {clear:none;}
     .production:nth-child(4n+1) {clear:left;}
+
+    .reviewer-tile:nth-child(2n+1) {clear:none;}
+    .reviewer-tile:nth-child(3n+1) {clear:left;}
 
     body {margin-bottom: 300px;}
     .footer {height: 270px;}

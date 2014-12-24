@@ -1,0 +1,47 @@
+{% extends 'about/base.html' %}
+
+{% block body_classes %}section-about{% endblock %}
+
+{% block main_title %}
+<h2>Reviewers</h2>
+{% endblock %}
+
+{% block article_content %}
+<div class="row">
+    {% for reviewer in active_reviewers %}
+    <div class="reviewer-long col-md-12">
+        <h3>{{ reviewer.full_name }}</h3>
+
+        {% if reviewer.headshot %}
+        <div class="thumbnail col-md-4 col-sm-5 col-xs-12 pull-right">
+            <img src="{{ reviewer.headshot.url }}" alt="{{ reviewer.full_name }}" />
+        </div>
+        {% endif %}
+
+        {% if reviewer.bio %}
+        {{ reviewer.bio|safe }}
+        {% else %}
+        <p>{{ reviewer.full_name }} is a living mystery, for whom we do not have a biography.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<hr />
+
+{% if inactive_reviewers %}
+<h3>Other Reviewers</h3>
+<div class="row">
+    {% for reviewer in inactive_reviewers %}
+    <div class="col-lg-4 col-md-6 col-sm-12 reviewer-tile">
+        <h4>{{ reviewer.full_name }}</h4>
+        {% if reviewer.bio %}
+        {{ reviewer.bio|safe }}
+        {% else %}
+        <p>{{ reviewer.full_name }} is a living mystery, for whom we do not have a biography.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

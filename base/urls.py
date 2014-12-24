@@ -88,11 +88,19 @@ urlpatterns = patterns('',
         views.VenueListView.as_view(),
         name='venues'),
 
-    url(r'^venues/(?P<slug>[-\w]+)/$',
-        views.VenueDetailView.as_view(),
-        name='venue_detail'),
-
     url(r'^venues/(?P<slug>[-\w]+)/productions/$',
         views.VenueProductionListView.as_view(),
         name='venue_productions'),
+
+
+    # About pages
+    url(r'^about/$',
+        views.AboutView.as_view(),
+        name='about'),
+    url(r'^about/principles_services/$',
+        views.PrinciplesServicesView.as_view(),
+        name='principles_and_services'),
+    url(r'^about/reviewers/$',
+        views.ReviewerListView.as_view(),
+        name='reviewers'),
 )

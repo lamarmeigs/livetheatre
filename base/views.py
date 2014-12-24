@@ -514,14 +514,8 @@ class VenueListView(ListView):
         return context
 
 
-class VenueDetailView(DetailView):
-    """Display all details about a venue"""
-    model = Venue
-    template_name = 'venues/detail.html'
-
-
 class VenueProductionListView(ListView):
-    """Diplay all Production occurring at a Venue"""
+    """Display all Production occurring at a Venue"""
     model = Production
     template_name = 'productions/venue.html'
     context_object_name = 'productions'
@@ -539,3 +533,36 @@ class VenueProductionListView(ListView):
             *args, **kwargs)
         context['venue'] = self.venue
         return context
+
+
+class ReviewerListView(ListView):
+    """Display all Reviewers, ordered by activity"""
+    model = Reviewer
+    template_name = 'about/reviewers.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReviewerListView, self).get_context_data(
+            *args, **kwargs)
+
+        # ensure reviewers are sorted by activity
+        active_reviewers = Reviewer.objects.filter_active()
+        active_reviewers = sorted(
+            list(active_reviewers),
+            key=lambda r: r.review_set.count(),
+            reverse=True)
+
+        context.update({
+            'active_reviewers': active_reviewers,
+            'inactive_reviewers': Reviewer.objects.filter_inactive(),
+        })
+        return context
+
+
+class AboutView(TemplateView):
+    """Render static About page"""
+    template_name = 'about/base.html'
+
+
+class PrinciplesServicesView(TemplateView):
+    """Render static Principles & Services page"""
+    template_name = 'about/principles_and_services.html'

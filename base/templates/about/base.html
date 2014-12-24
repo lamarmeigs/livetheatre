@@ -1,0 +1,56 @@
+{% extends 'base_internal.html' %}
+
+{% block body_classes %}section-about{% endblock %}
+
+{% block main_title %}
+<h2>About CTX Live Theatre</h2>
+{% endblock %}
+
+{% block article_content %}
+<p>Established in mid-2008, this website is now in its sixth year.  It's a gift to the artists of live narrative theatre in the greater Austin-San Antonio area.</p>
+
+<p>Soon after retiring to Austin from a career in Washington DC and abroad I discovered the diversity and high quality of stage productions produced here.</p>
+
+<p>In 2008 Austin's press was devoting relatively little attention to the art.  I set up the blog <strong>Austin Live Theatre</strong> with the idea of reviewing productions to make them more visible and help increase audiences.</p>
+
+<p>Arts journalism in the commercial media has continued to wither.  Very few people in Central Texas write about theatre, and fewer still have a background in the art or an informed understanding of it.</p>
+
+<p>Experiments with focus, audience and software have shaped CTXLT as it stands today.</p>
+
+
+<h3>The Ephemeral Art</h3>
+
+<p>Theatre art is immediate and unique to the moment of performance, unlike television or cinema.  No theatre performance is exactly like another; each brings to life subtle variations of the meanings and possibilities of the underlying text.  Each person attending the performance has a different view, perspective and experience.</p>
+
+<p>At best, a theatre review or a publicity announcement can suggest the content, form, meaning and artistic achievement of the production.  That’s what CTXLT has been doing as a way of supporting the theatre artists of Cental Texas.</p>
+
+<p>The six years of content available here resemble somewhat the repository imagined by contemporary Spanish author Carlos Ruiz Zafón in his neo-Gothic novels: the Cemetery of Forgotten Books.  Ruiz Zafón suggests that each book contains something of the soul of the author and something of the souls of all those who read it.</p>
+
+<p>So it is with theatre.  Although a performance ends and disappears, it lingers with those who participated in it and with those who witnessed it.  Thus in theatre; thus in life.</p>
+
+<p>CTXLT.com may well be equally ephemeral.  The site has gathered information from all those theatre communities across Central Texas, aiming to serve as a record, a bulletin board and an invitation to the art.  One discovery has been that only a very few people out there follow more than one theatre group.  Another is that the art remains fragmented, not only between the two major cities but also within them.  The intensely personal nature of the experience reinforces local loyalties. Few resources are available to support the notion of a wider community of artists.</p>
+
+<p>The day may come when the game no longer is worth the candle.  For now, however, CTXLT is watching, appreciating and applauding the diversity and artistry of live narrative theatre all across Central Texas.</p>
+
+
+<div class="pull-right"><p>&mdash; Michael Meigs</p></div>
+{% endblock %}
+
+{% block sidebar_content %}
+<div class="module">
+    <h4>In this Section:</h4>
+    <ul>
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'principles_and_services' %}">Principles &amp; Services</a></li>
+        <li><a href="{% url 'reviewers' %}">Reviewers</a></li>
+    </ul>
+</div>
+
+<div class="module">
+    <h4>Contact</h4>
+    <p class="small">CTXLT receives e-mails at austinlivetheatre [AT] gmail.com.  I'm happy to be invited to attend or review performances of live narrative theatre in Central Texas, but there's so much going on that getting to a given production may be impossible.  If I accept a ticket, I will review the performance.</p>
+
+</div>
+{% endblock %}
+
+{% block extra_content %}{% endblock %}

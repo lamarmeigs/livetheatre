@@ -1,0 +1,46 @@
+{% extends 'about/base.html' %}
+
+{% block main_title %}
+<h2>Principles &amp; Services</h2>
+{% endblock %}
+
+{% block article_content %}
+<h3>Principles</h3>
+
+<h5><strong>CTXLT is a proprietary, non-commercial and non-profit service.</strong></h5>
+<p>It's an avocation — or maybe no more than a hobby, bordering on a quiet obsession.  Like philately.  Many people collect, classify and scrupulously preserve postage stamps; I collect and document theatre performances.  I've written more than 500 reviews and I've documented thousands of stagings of live theatre.  CTXLT does this at no charge to local artists and non-commercial productions.</p>
+
+<h5><strong>CTXLT follows live narrative theatre produced in Central Texas.</strong></h5>
+<p>'Narrative' means the presentation of a story via the interpretation of a set text.  So, no improv, even though that art form can be thrilling, comic and suspenseful.  Very little dance. Almost no stand-up solo gigs.  And only very rarely any coverage of those touring productions that stop through the Bass Concert Hall and Long Center in Austin or, eventually, at the new new Tobin Center in San
+Antonio.</p>
+
+<h5><strong>CTXLT aims to cover all sorts of live narrative theatre all over Central Texas.</strong></h5>
+<p>Theatrical art is community engaged in shared imagination, factors present in virtually any gathering where the audience has agreed to watch the performance of a work. Performances at <strong>commercial venues</strong> such as the Zach Theatre are almost always worthy of critical consideration and applause -- as, equally, are those of <strong>'community' theatres</strong> such as the HCCT in Cottonwood Shores, the Sam Bass Theatre in Round Rock, Playhouse Smithville, and VLA Theatre in Killeen.  Theatre departments at <strong>universities, colleges and schools</strong> inspire young persons and those who watch them.  Even more exciting are those very many <strong>groups of friends and acquaintances</strong> who come together to engage us with the art. Some are well-established and autonomous such as the Rude Mechs and the Hyde Park Theatre in Austin or the Attic Rep and the Classic Theatre in San Antonio; others are sporadic, tentative or devoted to a particular genre, artistic credo or set of beliefs.</p>
+
+<h3>Services</h3>
+
+<h5><strong>Publicity for performances.</strong></h5>
+<p>I collect information and images, and I create an article on the CTXLT.com front page for each production that comes to my attention.</p>
+
+<h5><strong><a href="{% url 'productions_upcoming' %}">A 60-day theatre calendar.</a></strong></h5>
+<p>CTXLT gives a full listing of live narrative theatre announced for the upcoming two months. Listings provide titles, authors, producing organizations, venues and times.</p>
+
+<h5><strong><a href="{% url 'productions_current_month' %}">A long-range season listing.</a></strong></h5>
+<p>This includes all productions announced for the current season and the upcoming season.</p>
+
+<h5><strong><a href="{% url 'reviews' %}">Reviews</a></strong></h5>
+<ol>
+    <li>Our own: We review productions and advise followers via Twitter (<a href="https://twitter.com/ALTcom">@ALTcom</a>). CTXLT welcomes submissions from anyone who'd like to participate in reviewing Central Texas live theatre.</li>
+    <li>Reviews from elsewhere:  I post on the CTXLT front page links to all reviews of Central Texas live theatre that come to my attention.</li>
+</ol>
+
+<h5><strong><a href="{% url 'auditions' %}">Audition postings</a>.</strong></h5>
+<p>CTXLT carries a front-page posting of every theatre-related audition notice that comes to my attention.  Also posted are job openings and various other arts-related opportunities.  CTXLT announces these via Twitter (<a href="https://twitter.com/CTXLT_auditions">@CTXLT_auditions</a>) and on the <a href="https://www.facebook.com/AustinLiveTheatre">CTXLT Facebook page</a>.  They're serially numbered and as of this writing stand at #803.</p>
+
+<h5><strong>Registration and direct submissions.</strong></h5>
+<p>The CTXLT website software offers users the possibility to register with us.  When a user signs in, the website presents a standard interface allowing the user to draft and save an article.  The website then notifies me so that I can review it, edit if necessary, and authorize the posting.  Some users have had difficulties with this functionality; one indicated that the web registration worked with Mozilla Firefox but not with Internet Explorer.  Individuals and organizations can always contact CTXLT directly by e-mail via austinlivetheatre [AT] gmail.com.</p>
+
+<h5><strong><a href="{% url 'local_theatres' %}">Theatre links</a>.</strong></h5>
+<p>I've collected well over 100 theatre logos and links over the years; they're <a href="{% url 'local_theatres' %}">displayed in alphabetical order at a tabbed article</a>.  From time to time I 'weed' these links to remove those that appear to be inactive.</p>
+
+{% endblock %}
