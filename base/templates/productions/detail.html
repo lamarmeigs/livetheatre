@@ -39,7 +39,13 @@
 
 {% with address=production.venue.address %}
 <address>
-    <strong>{{ address.venue }}</strong><br />
+    <strong>
+    {% if address.venue.map_url %}
+        <a href="{{ address.venue.map_url }}" target="_blank">{{ address.venue }}</a>
+    {% else %}
+        {{ address.venue }}
+    {% endif %}
+    </strong><br />
     {{ address.line_1 }}<br />
     {% if address.line_2 %}{{ address.line_2 }}<br />{% endif %}
     {{ address.city }}, TX, {{ address.zip_code }}
