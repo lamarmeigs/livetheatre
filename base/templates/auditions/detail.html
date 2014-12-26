@@ -6,7 +6,7 @@
 <h2>
     {% if audition.play and audition.production_company %}
         {{ audition.play.title }}<br />
-        <small>by {{ audition.production_company.name }}</small>
+        <small>by <a href="{% url 'production_company' slug=audition.production_company.slug %}">{{ audition.production_company.name }}</a></small>
     {% else %}
         {{ audition.get_title }}
     {% endif %}
