@@ -28,7 +28,7 @@ class HomepageView(TemplateView):
         news = ArtsNews.objects.all()
 
         # limit records displayed on page
-        reviews = published_reviews.order_by('-id')[:4]
+        reviews = published_reviews[:4]
         productions = current_productions.order_by('-start_date')[:24]
 
         # format data for display in columns, etc.
@@ -334,7 +334,8 @@ class DateRangePerformanceView(TemplateView):
     def get_performances(self):
         """Return all Production objects in the specified date range"""
         start_date, end_date = self._get_range()
-        return Production.objects.filter_in_range(start_date, end_date)
+        productions = Production.objects.filter_in_range(start_date, end_date)
+        return productions.order_by('start_date')
 
     def get_context_data(self, *args, **kwargs):
         context = super(DateRangePerformanceView, self).get_context_data(

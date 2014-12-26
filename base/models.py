@@ -168,7 +168,7 @@ class Audition(models.Model):
         return reverse('audition_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
-        return unicode(self.get_title)
+        return unicode(self.get_title())
 
 
 class ProductionCompany(models.Model):
@@ -212,9 +212,11 @@ class ProductionManager(models.Manager):
 
     def filter_current(self):
         """Return Productions that are occuring today """
-        today = date.today()
-        return self.filter(Q(start_date__lte=today),
-            Q(end_date__gte=today) | Q(end_date__isnull=True))
+        today = timezone.now()
+        return self.filter(
+            Q(Q(start_date__lte=today), Q(end_date__gte=today)) |
+            Q(Q(start_date=today), Q(end_date__isnull=True))
+        )
 
 
 class Production(models.Model):
