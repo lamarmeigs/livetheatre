@@ -100,6 +100,7 @@ STATICFILES_DIRS = (
 TINYMCE_DEFAULT_CONFIG = {
     'theme': 'advanced',
     'relative_urls': False,
+    'height': 600,
 }
 
 # FileBrowser configuration
