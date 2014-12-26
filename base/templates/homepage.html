@@ -160,7 +160,12 @@
         <div class="row">
             {% for production in productions %}
             <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
-                <h5>{{ production.duration }}</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="pull-left">{{ production.duration }}</h5>
+                        <span class="pull-right label label-city">{{ production.venue.address.city }}</span>
+                    </div>
+                </div>
                 <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
                     {% if production.poster %}
                         <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
