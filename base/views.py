@@ -446,10 +446,23 @@ class CityPerformanceView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(CityPerformanceView, self).get_context_data(
             *args, **kwargs)
+
+        # add list of cities, sorted by number of venues
         city_venues = Venue.objects.filter_cities()
+        sorted_city_venues = sorted(
+            city_venues.items(),
+            key=lambda c: len(c[1]),
+            reverse=True)
+        cities = [cv[0] for cv in sorted_city_venues]
+
+        # remove any cities that do not have upcoming productions
+        upcoming_cities = Production.objects.filter_current().values_list(
+            'venue__address__city', flat=True).distinct()
+        cities = [city for city in cities if city in upcoming_cities]
+
         context.update({
             'city': self.city,
-            'cities': sorted(city_venues.keys()),
+            'cities': cities,
         })
         return context
 
