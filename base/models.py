@@ -301,6 +301,17 @@ class Play(models.Model):
         return unicode(self.title)
 
 
+class VenueManager(models.Manager):
+    def filter_cities(self):
+        """Return a dictionary that categorizes venues by city"""
+        cities = self.order_by('address__city').values_list(
+            'address__city', flat=True).distinct()
+
+        city_venues = {}
+        for city in cities:
+            city_venues[city] = self.filter(address__city=city)
+        return city_venues
+
 class Venue(models.Model):
     """A location in which a production can be performed"""
     name = models.CharField(max_length=80)
@@ -308,6 +319,8 @@ class Venue(models.Model):
     map_url = models.URLField(null=True, blank=True)
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this venue's detail page.")
+
+    objects = VenueManager()
 
     class Meta:
         ordering = ['name']
