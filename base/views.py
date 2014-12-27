@@ -426,6 +426,34 @@ class MonthPerformanceView(DateRangePerformanceView):
         return context
 
 
+class CityPerformanceView(ListView):
+    """List all Production in a specified city"""
+    model = Production
+    template_name = 'productions/city.html'
+    context_object_name = 'productions'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.city = kwargs.get('city')
+        return super(CityPerformanceView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Production.objects.filter_current().filter(
+            venue__address__city=self.city).order_by('start_date') \
+            if self.city else []
+        return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CityPerformanceView, self).get_context_data(
+            *args, **kwargs)
+        city_venues = Venue.objects.filter_cities()
+        context.update({
+            'city': self.city,
+            'cities': sorted(city_venues.keys()),
+        })
+        return context
+
+
 class CompanyObjectListView(ListView):
     """
     Base view to retrieve objects connected to a Production Company
@@ -503,15 +531,8 @@ class VenueListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(VenueListView, self).get_context_data(*args, **kwargs)
-        cities = Venue.objects.order_by('address__city').values_list(
-            'address__city', flat=True).distinct()
-        cities = sorted(cities)
-
-        city_venues = []
-        for city in cities:
-            city_venues.append((city, Venue.objects.filter(address__city=city)))
-
-        context['city_venues'] = city_venues
+        city_venues = Venue.objects.filter_cities()
+        context['city_venues'] = sorted(city_venues.items())
         return context
 
 

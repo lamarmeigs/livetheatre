@@ -1,0 +1,25 @@
+{% extends 'productions/base_list.html' %}
+
+{% block body_classes %}section-productions{% endblock %}
+{% block main_title %}
+{% if city %}
+Performances in {{ city }}
+{% else %}
+Performances by City
+{% endif %}
+{% endblock %}
+
+{% block search_options %}
+    {{ block.super }}
+    <div class="clearfix">
+        <p><strong>Select a city:</strong><br />
+        {% for city_option in cities %}
+            {% if city == city_option %}
+                {{ city_option }}
+            {% else %}
+                <a href="{% url 'productions_city' city=city_option %}">{{ city_option }}</a>
+            {% endif %}
+            {% if not forloop.last %} | {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
