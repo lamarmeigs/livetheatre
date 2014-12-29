@@ -109,6 +109,10 @@ class VenueAdmin(admin.ModelAdmin):
     }
 
 
+class SlideshowImageInline(admin.TabularInline):
+    model = SlideshowImage
+    extra = 3
+
 class ArtsNewsAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     actions_on_bottom = True
@@ -122,6 +126,7 @@ class ArtsNewsAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
     }
+    inlines = [SlideshowImageInline]
 
 
 class FestivalAdmin(admin.ModelAdmin):

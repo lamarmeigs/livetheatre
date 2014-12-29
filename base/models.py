@@ -7,7 +7,8 @@ from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
-    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer', 'ExternalReview']
+    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer', 'ExternalReview',
+    'SlideshowImage']
 
 class Review(models.Model):
     """A written review of a production"""
@@ -350,6 +351,21 @@ class Address(models.Model):
         return u'%s %s TX, %s' % (address_str, self.city, self.zip_code)
 
 
+class ArtsNewsManager(models.Manager):
+    def filter_media(self):
+        """Return a list of all news items with feature media"""
+        video_news = self.filter(video_embed__isnull=False).exclude(
+            video_embed='')
+        slideshow_news = self.filter(slideshowimage__isnull=False)
+
+        # merge querysets into a list, ordered by created_on field
+        media_news = sorted(
+            list(video_news) + list(slideshow_news),
+            key=lambda news: news.created_on,
+            reverse=True)
+        return media_news
+
+
 class ArtsNews(models.Model):
     """A news item of interest to the theatre world"""
     title = models.CharField(max_length=150)
@@ -359,14 +375,25 @@ class ArtsNews(models.Model):
         help_text='If this news item links to an external location, provide '
         'the full URL.')
 
+    video_embed = models.CharField(max_length=500, null=True, blank=True,
+        help_text='If this story includes a video, enter the embed code here '
+        'to feature it on the homepage. Be sure to remove any width and height '
+        'attributes.')
+
     created_on = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this news item's detail page.")
 
+    objects = ArtsNewsManager()
+
     class Meta:
         ordering = ['-created_on']
         verbose_name_plural = 'arts news items'
+
+    def has_media(self):
+        """Check if this news item has a video or images to be featured"""
+        return self.video_embed or self.slideshowimage_set.exists()
 
     def get_absolute_url(self):
         url = self.external_url \
@@ -459,3 +486,18 @@ class ExternalReview(models.Model):
 
     def __unicode__(self):
         return u"%s's review of %s" % (self.source_name, self.production)
+
+
+class SlideshowImage(models.Model):
+    """Contains a single image; representing a portion of a slideshow"""
+    image = FileBrowseField(max_length=200, format='image',
+        directory='slideshows')
+    order = models.IntegerField(default=0, help_text='Optional: set the order '
+        'in which this image should be displayed.')
+    news = models.ForeignKey(ArtsNews)
+
+    class Meta:
+        ordering = ['news', 'order']
+
+    def __unicode__(self):
+        return unicode(self.image)
