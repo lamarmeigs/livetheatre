@@ -369,7 +369,8 @@ class ArtsNewsManager(models.Manager):
 class ArtsNews(models.Model):
     """A news item of interest to the theatre world"""
     title = models.CharField(max_length=150)
-    content = models.TextField(null=True, blank=True)
+    content = models.TextField(null=True, blank=True, help_text='Do not '
+        'include the video embed or any images from the slideshow here.')
 
     external_url = models.URLField(null=True, blank=True,
         help_text='If this news item links to an external location, provide '
