@@ -25,7 +25,8 @@ class HomepageView(TemplateView):
             poster__isnull=True)
         upcoming_auditions = Audition.objects.filter(
             start_date__gte=date.today())
-        news = ArtsNews.objects.all()
+        media_news = ArtsNews.objects.filter_media()
+        news = ArtsNews.objects.order_by('-created_on')
 
         # limit records displayed on page
         reviews = published_reviews[:4]
@@ -40,11 +41,19 @@ class HomepageView(TemplateView):
         else:
             audition_groups = None
             
-        news = news.order_by('-created_on')[:21]
+        # extract the latest news item with feature media
+        media_news = media_news[0] if media_news else None
+
+        # get the proper number of non-media news items
+        max_news_per_column = 7
+        news_columns = 2 if media_news else 3
+        news = news.exclude(pk=media_news.pk) if media_news else news
         if news:
-            news_col_len = len(news)/3
-            news_groups = utils.chunks(news, news_col_len) \
-                if news_col_len else [list(news)]
+            news = news[:news_columns * max_news_per_column]
+            news_column_length = len(news)/news_columns
+            news_groups = utils.chunks(news, news_column_length) \
+                if news_column_length else [list(news)]
+            news_groups = list(news_groups)[:news_columns]
         else:
             news_groups = None
 
@@ -53,6 +62,7 @@ class HomepageView(TemplateView):
             'reviews': reviews,
             'productions': productions,
             'audition_groups': audition_groups,
+            'media_news': media_news,
             'news_groups': news_groups,
         })
         return context

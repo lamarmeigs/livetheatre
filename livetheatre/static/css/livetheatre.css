@@ -156,6 +156,10 @@ nav.navbar button.search {}
 h2.text-center {margin-bottom:25px;}
 #news-container {margin-top:40px; padding:30px 0 30px;}
 dl.news-list dt:not(:first-child) {padding-top:20px;}
+.media_news {overflow:hidden;}
+.media_news img {max-width:100%;}
+
+
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
 .production h5 {text-transform:uppercase; margin-bottom:5px;}
