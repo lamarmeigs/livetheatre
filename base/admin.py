@@ -7,7 +7,6 @@ from base.models import *
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    readonly_fields = ('is_published', 'published_on')
     actions_on_bottom = True
     save_on_top = True
 

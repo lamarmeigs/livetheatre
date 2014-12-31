@@ -382,6 +382,7 @@ class ArtsNews(models.Model):
         'attributes.')
 
     created_on = models.DateTimeField(auto_now_add=True)
+    created_on.editable = True # force editable while migrating old data
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this news item's detail page.")
