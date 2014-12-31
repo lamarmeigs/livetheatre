@@ -2,6 +2,8 @@
 
 {% block body_classes %}section-news{% endblock %}
 
+{% block admin_edit_link %}{% url 'admin:base_artsnews_change' news.id %}{% endblock %}
+
 {% block main_title %}
 <h2>{{ news.title }}</h2>
 {% endblock %}

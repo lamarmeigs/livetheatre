@@ -2,6 +2,8 @@
 
 {% block body_classes %}section-review{% endblock %}
 
+{% block admin_edit_link %}{% url 'admin:base_review_change' review.id %}{% endblock %}
+
 {% block main_title %}
 <h2>{{ review.get_title }}<br />
 <small>by {{ review.reviewer }}</small>

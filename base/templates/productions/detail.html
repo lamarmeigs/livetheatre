@@ -2,6 +2,8 @@
 
 {% block body_classes %}section-productions{% endblock %}
 
+{% block admin_edit_link %}{% url 'admin:base_production_change' production.id %}{% endblock %}
+
 {% block main_title %}
 <h2>
 {{ production.play.title }}

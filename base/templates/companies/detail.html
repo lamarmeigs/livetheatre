@@ -2,6 +2,8 @@
 
 {% block body_classes %}section-company{% endblock %}
 
+{% block admin_edit_link %}{% url 'admin:base_productioncompany_change' company.id %}{% endblock %}
+
 {% block main_title %}
 <h2>{{ company.name }}</h2>
 {% endblock %}
