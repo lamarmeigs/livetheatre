@@ -280,7 +280,7 @@ class Production(models.Model):
             slug=slug).exclude(pk=self.pk).count()
         if previous_productions:
             slug += str(previous_productions)
-        return slug
+        return slug[:50]
 
     def get_absolute_url(self):
         return reverse('production_detail', kwargs={'slug':self.slug})
