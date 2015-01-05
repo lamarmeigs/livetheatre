@@ -204,7 +204,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h5 class="pull-left">{{ production.duration }}</h5>
-                        <span class="pull-right label label-city">{{ production.venue.address.city }}</span>
+                        <a href="{% url 'productions_city' production.venue.address.city %}">
+                            <span class="pull-right label label-city">{{ production.venue.address.city }}</span>
+                        </a>
                     </div>
                 </div>
                 <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
