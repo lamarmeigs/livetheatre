@@ -361,7 +361,7 @@ class DateRangePerformanceView(TemplateView):
 
 class UpcomingPerformanceView(DateRangePerformanceView):
     """Dislay performances for the next 60 days"""
-    date_in_range = 60
+    days_in_range = 60
     template_name = 'productions/upcoming.html'
 
 
