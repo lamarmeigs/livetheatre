@@ -62,7 +62,7 @@
         {% endfor %}
     </ul>
     <div class="text-right">
-        <a href="{% url 'company_productions' review.production.production_company %}">See more &raquo;</a>
+        <a href="{% url 'company_productions' review.production.production_company.slug %}">See more &raquo;</a>
     </div>
 </div>
 {% endif %}
