@@ -8,7 +8,7 @@ from filebrowser.fields import FileBrowseField
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
     'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer', 'ExternalReview',
-    'SlideshowImage']
+    'NewsSlideshowImage', 'ProductionPoster']
 
 class Review(models.Model):
     """A written review of a production"""
@@ -239,8 +239,10 @@ class Production(models.Model):
         'schedule, ticket prices, or venue details.')
 
     description = models.TextField(null=True, blank=True)
-    poster = FileBrowseField(max_length=200, null=True, blank=True, 
-        format='image', directory='posters')
+    poster = FileBrowseField(max_length=200, null=True, blank=True,
+        format='image', directory='posters', help_text='If this production '
+        'has multiple posters, place the most relevant here. Add the others '
+        'to the secondary posters formset.')
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this production's detail page.")
@@ -356,7 +358,7 @@ class ArtsNewsManager(models.Manager):
         """Return a list of all news items with feature media"""
         video_news = self.filter(video_embed__isnull=False).exclude(
             video_embed='')
-        slideshow_news = self.filter(slideshowimage__isnull=False)
+        slideshow_news = self.filter(newsslideshowimage__isnull=False)
 
         # merge querysets into a list, ordered by created_on field
         media_news = sorted(
@@ -395,7 +397,7 @@ class ArtsNews(models.Model):
 
     def has_media(self):
         """Check if this news item has a video or images to be featured"""
-        return self.video_embed or self.slideshowimage_set.exists()
+        return self.video_embed or self.newsslideshowimage_set.exists()
 
     def get_absolute_url(self):
         url = self.external_url \
@@ -496,10 +498,25 @@ class SlideshowImage(models.Model):
         directory='slideshows')
     order = models.IntegerField(default=0, help_text='Optional: set the order '
         'in which this image should be displayed.')
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return unicode(self.image)
+
+
+class NewsSlideshowImage(SlideshowImage):
+    """Represents a slideshow image tied a news story"""
     news = models.ForeignKey(ArtsNews)
 
     class Meta:
         ordering = ['news', 'order']
 
-    def __unicode__(self):
-        return unicode(self.image)
+
+class ProductionPoster(SlideshowImage):
+    """Represents a secondary poster for a production"""
+    production = models.ForeignKey(Production)
+
+    class Meta:
+        ordering = ['production', 'order']

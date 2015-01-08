@@ -143,14 +143,14 @@
                     <div id="news-slideshow" class="carousel slide" data-ride="carousel">
                       <!-- Indicators -->
                       <ol class="carousel-indicators">
-                        {% for image in media_news.slideshowimage_set.all %}
+                        {% for image in media_news.newsslideshowimage_set.all %}
                         <li data-target="#news-slideshow" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
                         {% endfor %}
                       </ol>
 
                       <!-- Wrapper for slides -->
                       <div class="carousel-inner" role="listbox">
-                        {% for image in media_news.slideshowimage_set.all %}
+                        {% for image in media_news.newsslideshowimage_set.all %}
                         <div class="item {% if forloop.first %}active{% endif %}">
                             <a href="{% url 'news_detail' slug=media_news.slug %}">
                                 <img src="{{ image.image.url }}" alt="{{ image.image.name }}" />

@@ -14,19 +14,19 @@
 <div class="video-embed">
     {{ news.video_embed|safe }}
 </div>
-{% elif news.slideshowimage_set.exists %}
+{% elif news.newsslideshowimage_set.exists %}
 
 <div id="news_slideshow" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
   <ol class="carousel-indicators">
-    {% for image in news.slideshowimage_set.all %}
+    {% for image in news.newsslideshowimage_set.all %}
     <li data-target="#news_slideshow" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
     {% endfor %}
   </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
-    {% for image in news.slideshowimage_set.all %}
+    {% for image in news.newsslideshowimage_set.all %}
     <div class="item {% if forloop.first %}active{% endif %}">
         <a class="colorbox" href="{{ image.image.url }}">
             <img src="{{ image.image.url }}" alt="{{ image.image.name }}" />

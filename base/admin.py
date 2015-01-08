@@ -65,6 +65,12 @@ class ProductionCompanyAdmin(admin.ModelAdmin):
     }
 
 
+class ProductionPosterInline(admin.TabularInline):
+    model = ProductionPoster
+    extra = 3
+    verbose_name = 'Secondary Poster'
+    verbose_name_plural = 'Secondary Posters'
+
 class ProductionAdmin(admin.ModelAdmin):
     exclude = ('slug',)
     actions_on_bottom = True
@@ -79,6 +85,7 @@ class ProductionAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
     }
+    inlines = [ProductionPosterInline]
 
 
 class PlayAdmin(admin.ModelAdmin):
@@ -108,8 +115,8 @@ class VenueAdmin(admin.ModelAdmin):
     }
 
 
-class SlideshowImageInline(admin.TabularInline):
-    model = SlideshowImage
+class NewsSlideshowImageInline(admin.TabularInline):
+    model = NewsSlideshowImage
     extra = 3
 
 class ArtsNewsAdmin(admin.ModelAdmin):
@@ -125,7 +132,7 @@ class ArtsNewsAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
     }
-    inlines = [SlideshowImageInline]
+    inlines = [NewsSlideshowImageInline]
 
 
 class FestivalAdmin(admin.ModelAdmin):
