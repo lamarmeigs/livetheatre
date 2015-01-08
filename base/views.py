@@ -45,7 +45,7 @@ class HomepageView(TemplateView):
         media_news = media_news[0] if media_news else None
 
         # get the proper number of non-media news items
-        max_news_per_column = 7
+        max_news_per_column = 4
         news_columns = 3
         news = news.exclude(pk=media_news.pk) if media_news else news
         if news:
