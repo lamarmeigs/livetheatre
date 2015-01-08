@@ -25,12 +25,12 @@
             {% for audition in upcoming_auditions %}
                 {% block upcoming_audition_tile %}
                 <div class="audition-long">
+                    <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
                     {% if audition.poster %}
                         <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-2 col-sm-4 col-xs-6 hidden-xs">
                             <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
                         </a>
                     {% endif %}
-                    <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
                     <p><em>{{ audition.duration }}</em></p>
                     {% if audition.content %}
                         {{ audition.content|truncatewords_html:50|safe }}
@@ -76,12 +76,12 @@
                     {% for audition in audition_group %}
                     {% block past_auditions_tile %}
                     <div class="audition">
+                        <p><strong><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></strong><br />
                         {% if audition.poster %}
                         <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs">
                             <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
                         </a>
                         {% endif %}
-                        <p><strong><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></strong><br />
                         <em>{{ audition.duration }}</em></p>
                         {% if audition.content %}
                         {{ audition.content|truncatewords_html:15|striptags }}
