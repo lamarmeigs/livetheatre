@@ -176,7 +176,8 @@ dl.news-list dt:not(:first-child) {padding-top:20px;}
     color:#fff;
     padding:10px;
     margin:0;
-    background-color:rgba(0,0,0,0.7);
+    background-color:rgba(0,0,0,0.85);
+    width:100%;
 }
 h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 
