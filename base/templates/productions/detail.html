@@ -65,7 +65,7 @@
 
 {% block main_image %}
 {% if production.poster %}
-<a href="{{ production.poster.url }}" class="thumbnail">
+<a href="{{ production.poster.url }}" class="thumbnail colorbox">
     <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
 </a>
 {% endif %}

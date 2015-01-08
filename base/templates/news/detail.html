@@ -28,7 +28,7 @@
   <div class="carousel-inner" role="listbox">
     {% for image in news.slideshowimage_set.all %}
     <div class="item {% if forloop.first %}active{% endif %}">
-        <a href="{{ image.image.url }}">
+        <a class="colorbox" href="{{ image.image.url }}">
             <img src="{{ image.image.url }}" alt="{{ image.image.name }}" />
         </a>
     </div>
