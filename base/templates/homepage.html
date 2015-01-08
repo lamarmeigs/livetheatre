@@ -134,17 +134,17 @@
         <div class="row">
             <h2 class="text-center">News</h2>
         </div>
+        {% if media_news %}
         <div class="row">
-            {% if media_news %}
-            <div class="col-md-4 col-sm-4 media_news">
+            <div class="col-md-8 col-md-offset-2 col-sm-12 media_news">
                 {% if media_news.video_embed %}
                     {{ media_news.video_embed|safe }}
                 {% else %}
-                    <div class="carousel slide" data-ride="carousel">
+                    <div id="news-slideshow" class="carousel slide" data-ride="carousel">
                       <!-- Indicators -->
                       <ol class="carousel-indicators">
                         {% for image in media_news.slideshowimage_set.all %}
-                        <li data-target="#news_slideshow" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+                        <li data-target="#news-slideshow" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
                         {% endfor %}
                       </ol>
 
@@ -160,11 +160,11 @@
                       </div>
 
                       <!-- Controls -->
-                      <a class="left carousel-control" href="#feature" role="button" data-slide="prev">
+                      <a class="left carousel-control" href="#news-slideshow" role="button" data-slide="prev">
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                         <span class="sr-only">Previous</span>
                       </a>
-                      <a class="right carousel-control" href="#feature" role="button" data-slide="next">
+                      <a class="right carousel-control" href="#news-slideshow" role="button" data-slide="next">
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                       </a>
@@ -175,7 +175,9 @@
                     <dd class="small"><em>Created on {{ media_news.created_on|date:"M. j" }} at {{ media_news.created_on|time:"g:ia" }}</em></dd>
                     <dd>{{ media_news.content|truncatewords_html:10|striptags }} <a href="{{ media_news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
             </div>
-            {% endif %}
+        </div>
+        {% endif %}
+        <div class="row">
             {% for news_group in news_groups %}
             <div class="col-md-4 col-sm-4">
                 <dl class="news-list">

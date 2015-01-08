@@ -46,7 +46,7 @@ class HomepageView(TemplateView):
 
         # get the proper number of non-media news items
         max_news_per_column = 7
-        news_columns = 2 if media_news else 3
+        news_columns = 3
         news = news.exclude(pk=media_news.pk) if media_news else news
         if news:
             news = news[:news_columns * max_news_per_column]
