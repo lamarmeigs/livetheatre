@@ -494,8 +494,7 @@ class ExternalReview(models.Model):
 
 class SlideshowImage(models.Model):
     """Contains a single image; representing a portion of a slideshow"""
-    image = FileBrowseField(max_length=200, format='image',
-        directory='slideshows')
+    image = FileBrowseField(max_length=200, format='image')
     order = models.IntegerField(default=0, help_text='Optional: set the order '
         'in which this image should be displayed.')
 
