@@ -45,7 +45,13 @@ class Review(models.Model):
         return title
 
     def get_slug(self):
-        return slugify(unicode(self.get_title()))[:50]
+        slug = slugify(unicode(self.get_title()))[:50]
+        previous_reviews = Review.objects.filter(
+            slug=slug).exclude(pk=self.pk).count()
+        if previous_reviews:
+            count_str = str(previous_reviews)
+            slug = slug[:-len(count_str)] + count_str
+        return slug
 
     def publish(self):
         self.is_published = True
@@ -281,8 +287,9 @@ class Production(models.Model):
         previous_productions = Production.objects.filter(
             slug=slug).exclude(pk=self.pk).count()
         if previous_productions:
-            slug += str(previous_productions)
-        return slug[:50]
+            count_str = str(previous_productions)
+            slug = slug[:-len(count_str)] + count_str
+        return slug
 
     def get_absolute_url(self):
         return reverse('production_detail', kwargs={'slug':self.slug})
