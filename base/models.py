@@ -283,7 +283,7 @@ class Production(models.Model):
 
     def get_slug(self):
         """Return a unique slug for this Production"""
-        slug = slugify(unicode(self.title))
+        slug = slugify(unicode(self.title))[:50]
         previous_productions = Production.objects.filter(
             slug=slug).exclude(pk=self.pk).count()
         if previous_productions:
