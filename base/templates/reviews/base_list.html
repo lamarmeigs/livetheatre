@@ -28,7 +28,7 @@
                         {% endif %}
                     </p>
 
-                    {{ review.content|truncatewords_html:75|safe }}
+                    {{ review.content|removetags:"img iframe br"|truncatewords_html:75|safe }}
                     <a href="{% url 'review_detail' slug=review.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
                 </div>
                 {% endblock %}

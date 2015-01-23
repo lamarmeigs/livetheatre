@@ -17,9 +17,9 @@
             {% if result.object.lede %}
                 {{ result.object.lede }}
             {% elif result.object.content %}
-                {{ result.object.content|truncatewords_html:50|striptags }}
+                {{ result.object.content|removetags:"img iframe br"|truncatewords_html:50|safe }}
             {% elif result.object.description %}
-                {{ result.object.description|truncatewords_html:50|striptags }}
+                {{ result.object.description|removetags:"img iframe br"|truncatewords_html:50|safe }}
             {% endif %}
             <a href="{{ result.object.get_absolute_url }}">Read more &raquo;</a>
             </p>
