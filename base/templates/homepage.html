@@ -91,7 +91,7 @@
     <!-- Auditions -->
     <div id="auditions-container" class="container">
         <div class="row">
-            <h2 class="text-center">Auditions</h2>
+            <h2 class="text-center"><a href="{% url 'auditions' %}">Auditions</a></h2>
         </div>
 
         <div class="row">
@@ -132,7 +132,7 @@
     <div id="news-container" class="extra-content">
     <div class="container">
         <div class="row">
-            <h2 class="text-center">News</h2>
+            <h2 class="text-center"><a href="{% url 'news_list' %}">News</a></h2>
         </div>
         {% if media_news %}
         <div class="row">
@@ -202,7 +202,7 @@
     <!-- Current Performances -->
     <div id="performances-container" class="container">
         <div class="row">
-            <h2 class="text-center">Currently Playing</h2>
+            <h2 class="text-center"><a href="{% url 'productions_upcoming' %}">Currently Playing</a></h2>
         </div>
         <div class="row">
             {% for production in productions %}

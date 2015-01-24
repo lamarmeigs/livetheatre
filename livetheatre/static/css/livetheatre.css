@@ -147,6 +147,7 @@ nav.navbar button.search {}
 
 
 /* Homepage */
+body#homepage h2 a {color:#602500;}
 #feature {height:400px; overflow:hidden; background-color:#000;}
 #feature .item .carousel-caption h3 {color:#e05500; text-shadow:0 0px 3px #602500, 0 0px 10px #602500;}
 #feature .item .carousel-caption {text-shadow:0 0px 3px #000, 0 0px 10px #000;}
