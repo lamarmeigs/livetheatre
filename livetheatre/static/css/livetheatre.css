@@ -232,6 +232,10 @@ form.search-full .search-models label {margin-right:10px;}
 #sidebar .module {margin-top:20px;}
 #sidebar .module:first-child {margin-top:0;}
 #sidebar .module:first-child h4 {margin-top:0}
+#sidebar .module h1, #sidebar .module h2, #sidebar .module h3, #sidebar .module h4, #sidebar .module h5, #sidebar .module h6 {font-family:inherit;}
+#sidebar .module small h3 {font-size:15px;}
+#sidebar .module small h4 {font-size:14px;}
+
 
 .label-container {margin-bottom:10px;}
 .label-container .label {margin-right:5px;}

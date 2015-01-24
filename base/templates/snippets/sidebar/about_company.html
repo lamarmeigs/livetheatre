@@ -1,0 +1,20 @@
+<div class="module">
+    <h4>{{ company.name }}</h4>
+    <small>{{ company.description|removetags:"img iframe br"|truncatewords_html:30|safe }}</small>
+
+    <p class="small">This company has:</p>
+    <ul>
+        {% if company.production_set.exists %}
+        <li><a href="{% url 'company_productions' company.slug%}">{{ company.production_set.count }} production{{ company.production_set.count|pluralize }}</a></li>
+        {% endif %}
+        {% if company.review_count %}
+        <li><a href="{% url 'company_reviews' company.slug %}">{{ company.review_count }} review{{ company.review_count|pluralize }}</a></li>
+        {% endif %}
+        {% if company.audition_set.exists %}
+        <li><a href="{% url 'company_auditions' company.slug %}">{{ company.audition_set.count }} casting call{{ company.audition_set.count|pluralize }}</a></li>
+        {% endif %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'production_company' company.slug %}">Read more &raquo;</a>
+    </div>
+</div>
