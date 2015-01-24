@@ -6,7 +6,7 @@
 
 {% block main_title %}
 <h2>{{ review.get_title }}<br />
-<small>by {{ review.reviewer }}</small>
+<small>by <a href="{% url 'reviewers' %}#{{ review.reviewer.full_name|slugify }}">{{ review.reviewer }}</a></small>
 </h2>
 {% endblock %}
 

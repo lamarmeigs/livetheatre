@@ -9,6 +9,7 @@
 {% block article_content %}
 <div class="row">
     {% for reviewer in active_reviewers %}
+    <a id="{{ reviewer.full_name|slugify }}" name="{{ reviewer.full_name|slugify }}"></a>
     <div class="reviewer-long col-md-12">
         <h3>{{ reviewer.full_name }}</h3>
 
@@ -33,6 +34,7 @@
 <h3>Other Reviewers</h3>
 <div class="row">
     {% for reviewer in inactive_reviewers %}
+    <a id="{{ reviewer.full_name|slugify }}" name="{{ reviewer.full_name|slugify }}"></a>
     <div class="col-lg-4 col-md-6 col-sm-12 reviewer-tile">
         <h4>{{ reviewer.full_name }}</h4>
         {% if reviewer.bio %}

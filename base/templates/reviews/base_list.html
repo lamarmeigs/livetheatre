@@ -22,7 +22,7 @@
                     </a>
                     <h4><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></h4>
                     <p>
-                        <strong>by {{ review.reviewer.full_name }}</strong><br />
+                        <strong>by <a href="{% url 'reviewers' %}#{{ review.reviewer.full_name|slugify }}">{{ review.reviewer.full_name }}</a></strong><br />
                         <small>Published on {{ review.published_on|date:"F d, Y" }}</small>
                     </p>
                     {% if review.lede %}
