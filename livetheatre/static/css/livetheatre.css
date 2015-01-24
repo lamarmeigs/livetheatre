@@ -222,6 +222,12 @@ form.search-full .search-models label {margin-right:10px;}
 #main-content img[style*="float: left;"] {margin-left:0;}
 #main-content img[style*="float: right;"] {margin-right:0;}
 
+#main-content .captioned {text-align:center; margin-bottom:20px;}
+#main-content .captioned.left {float:left;}
+#main-content .captioned.right {float:right;}
+#main-content .caption {font-size:0.8em; font-style:italic;}
+#main-content .captioned img {padding-bottom:5px; margin-bottom:0px;}
+
 #sidebar {padding-top:20px;}
 #sidebar .module {margin-top:20px;}
 #sidebar .module:first-child {margin-top:0;}
