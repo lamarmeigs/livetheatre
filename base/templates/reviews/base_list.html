@@ -22,11 +22,12 @@
                     </a>
                     <h4><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></h4>
                     <p>
-                        <em>Published on {{ review.published_on|date:"F d, Y" }}</em>
-                        {% if review.lede %}
-                        <strong>{{ review.lede }}</strong>
-                        {% endif %}
+                        <strong>by {{ review.reviewer.full_name }}</strong><br />
+                        <small>Published on {{ review.published_on|date:"F d, Y" }}</small>
                     </p>
+                    {% if review.lede %}
+                    <p><em>{{ review.lede }}</em></p>
+                    {% endif %}
 
                     {{ review.content|removetags:"img iframe br"|truncatewords_html:75|safe }}
                     <a href="{% url 'review_detail' slug=review.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
