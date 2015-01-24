@@ -45,6 +45,12 @@ by {{ production.production_company.name }}
 </a>
 {% endif %}
 
+{% if audition.production_company %}
+    {% with company=audition.production_company %}
+        {% include 'snippets/sidebar/about_company.html' %}
+    {% endwith %}
+{% endif %}
+
 {% if upcoming_auditions.exists %}
 <div class="module">
     <h4>Upcoming Auditions</h4>

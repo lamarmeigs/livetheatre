@@ -105,6 +105,12 @@
 
 {% endblock %}
 
+{% if production.production_company %}
+    {% with company=production.production_company %}
+        {% include 'snippets/sidebar/about_company.html' %}
+    {% endwith %}
+{% endif %}
+
 {% if current_productions.exists %}
 <div class="module">
     <h4>Current Productions</h4>
