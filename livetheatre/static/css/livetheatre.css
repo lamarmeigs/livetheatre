@@ -216,13 +216,13 @@ form.search-full .search-models label {margin-right:10px;}
 
 /* Internal pages */
 #main-content .admin-edit {margin-top:20px;}
-#main-content img {margin:5px 10px 20px; max-width:100%; display:block;}
+#main-content img {margin:5px 10px 20px; max-width:100%; display:block; height:auto;}
 #main-content img.wide {margin:0px 0px 20px;}
 #main-content img[style*="vertical-align: middle;"] {margin:20px auto;}
 #main-content img[style*="float: left;"] {margin-left:0;}
 #main-content img[style*="float: right;"] {margin-right:0;}
 
-#main-content .captioned {text-align:center; margin-bottom:20px; margin:0 auto;}
+#main-content .captioned {text-align:center; margin-bottom:20px; margin:0 auto; max-width:100%; height:auto;}
 #main-content .captioned.left {float:left; margin:5px 10px 20px 0;}
 #main-content .captioned.right {float:right; margin:5px 0 20px 10px;}
 #main-content .captioned img {padding-bottom:5px; margin:0px;}
