@@ -18,7 +18,7 @@ $(document).ready(function() {
 
     /* Add captions to in-body images */
     $("#main-content img[title]").each(function() {
-        caption_text = $(this).attr('title');
+        caption_text = $(this).attr('alt');
         float_str = this.style.float;
         $(this)
             .wrap('<div class="captioned ' + float_str + '"></div>')
