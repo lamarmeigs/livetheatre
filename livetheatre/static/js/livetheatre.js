@@ -20,8 +20,9 @@ $(document).ready(function() {
     $("#main-content img[alt]").each(function() {
         caption_text = $(this).attr('alt');
         float_str = this.style.float;
+        width = $(this).attr('width');
         $(this)
-            .wrap('<div class="captioned ' + float_str + '"></div>')
+            .wrap('<div class="captioned ' + float_str + '" style="width:' + width + 'px"></div>')
             .after('<div class="caption">' + caption_text + '</div>');
     });
 });
