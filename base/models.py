@@ -195,6 +195,9 @@ class ProductionCompany(models.Model):
         verbose_name='Company Website', help_text="Enter the full URL to the "
         "company's website.")
 
+    logo = FileBrowseField(max_length=200, null=True, blank=True,
+        format='image', directory='logos')
+
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this company's detail page.")
 
