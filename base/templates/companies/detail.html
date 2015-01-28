@@ -38,6 +38,16 @@
 {% endblock %}
 
 {% block sidebar_content %}
+
+{% block main_image %}
+{% if company.logo %}
+    <a href="{{ company.logo.url }}" class="thumbnail colorbox">
+        <img src="{{ company.logo.url }}" alt="{{ company.name }}" />
+    </a>
+{% endif %}
+{% endblock %}
+
+
 {% if company.production_set.exists %}
 <div class="module">
     <h4>Productions by {{ company.name }}</h4>

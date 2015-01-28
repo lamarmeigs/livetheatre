@@ -10,6 +10,8 @@
     <a href="{% url 'production_detail' slug=production.slug %}" class="tile">
         {% if production.poster %}
             <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
+        {% elif production.production_company.logo %}
+            <img src="{{ production.production_company.logo.url }}" alt="{{ production.production_company.name }}" />
         {% endif %}
         <h4>
             {{ production.play.title }}

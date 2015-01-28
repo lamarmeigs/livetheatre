@@ -43,6 +43,10 @@ by {{ production.production_company.name }}
 <a href="{{ audition.poster.url }}" class="thumbnail colorbox">
     <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
 </a>
+{% elif audition.production_company.logo %}
+<a href="{{ audition.production_company.logo.url }}" class="thumbnail colorbox">
+    <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
+</a>
 {% endif %}
 
 {% if audition.production_company %}

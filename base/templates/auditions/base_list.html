@@ -30,6 +30,10 @@
                         <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-2 col-sm-4 col-xs-6 hidden-xs">
                             <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
                         </a>
+                    {% elif audition.production_company.logo %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-2 col-sm-4 col-xs-6 hidden-xs">
+                            <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
+                        </a>
                     {% endif %}
                     <p><em>{{ audition.duration }}</em></p>
                     {% if audition.content %}

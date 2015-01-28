@@ -101,11 +101,17 @@
                 <dl class="audition">
                     <dt><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></dt>
                     {% if audition.poster %}
-                    <dd class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs pull-left">
-                        <a href="{% url 'audition_detail' slug=audition.slug %}">
-                            <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
-                        </a>
-                    </dd>
+                        <dd class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs pull-left">
+                            <a href="{% url 'audition_detail' slug=audition.slug %}">
+                                <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
+                            </a>
+                        </dd>
+                    {% elif audition.production_company.logo %}
+                        <dd class="thumbnail col-md-4 col-sm-6 col-xs-6 hidden-xs pull-left">
+                            <a href="{% url 'audition_detail' slug=audition.slug %}">
+                                <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
+                            </a>
+                        </dd>
                     {% endif %}
                     <dd class="small"><em>{{ audition.duration }}</em></p>
                     <dd>

@@ -35,14 +35,19 @@
                             </address>
                         {% endfor %}
                     {% endif %}
-                    <p><a href="{% url 'production_company' slug=company.slug %}">Read more &raquo;</a></p>
-                </div>
-                <div class="col-md-4">
                     <ul>
                         <li><a href="{% url 'company_productions' slug=company.slug %}">See Productions</a></li>
                         <li><a href="{% url 'company_auditions' slug=company.slug %}">See Auditions</a></li>
                         <li><a href="{% url 'company_reviews' slug=company.slug %}">See Reviews</a></li>
                     </ul>
+                    <p><a href="{% url 'production_company' slug=company.slug %}">Read more &raquo;</a></p>
+                </div>
+                <div class="col-md-4">
+                    {% if company.logo %}
+                        <a href="{% url 'production_company' slug=company.slug %}" class="thumbnail col-md-12 hidden-xs">
+                            <img src="{{ company.logo.url }}" alt="{{ company.name }}" />
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             {% endblock %}
