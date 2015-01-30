@@ -229,7 +229,7 @@ form.search-full .search-models label {margin-right:10px;}
 #main-content .caption {font-size:0.8em; font-style:italic; clear:both; margin:0 auto;}
 
 #sidebar {padding-top:20px;}
-#sidebar .module {margin-top:20px;}
+#sidebar .module {margin-top:50px;}
 #sidebar .module:first-child {margin-top:0;}
 #sidebar .module:first-child h4 {margin-top:0}
 #sidebar .module h1, #sidebar .module h2, #sidebar .module h3, #sidebar .module h4, #sidebar .module h5, #sidebar .module h6 {font-family:inherit;}
