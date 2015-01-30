@@ -45,6 +45,12 @@
     {% endwith %}
 {% endif %}
 
+{% if review.reviewer.bio %}
+    {% with reviewer=review.reviewer %}
+        {% include 'snippets/sidebar/about_reviewer.html' %}
+    {% endwith %}
+{% endif %}
+
 {% if recent_reviews.exists %}
     {% include 'snippets/sidebar/active/recent_reviews.html' %}
 {% endif %}
