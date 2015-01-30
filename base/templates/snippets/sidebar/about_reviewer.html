@@ -1,0 +1,16 @@
+<div class="module">
+    <h4>About the Reviewer</h4>
+    {% if reviewer.headshot %}
+        <a href="{% url 'reviewers' %}#{{ reviewer.full_name|slugify }}">
+            <img src="{{ reviewer.headshot.url }}" alt="{{ reviewer.full_name }}" class="thumbnail" />
+        </a>
+    {% endif %}
+    {% if reviewer.bio %}
+        <small>{{ reviewer.bio|removetags:"img iframe br"|truncatewords_html:30|safe }}</small>
+    {% else %}
+        <small>No biographical is available on {{ reviewer.full_name }}.</small>
+    {% endif %}
+    <div class="text-right">
+        <a href="{% url 'reviewers' %}#{{ reviewer.full_name|slugify }}">Read more &raquo;</a>
+    </div>
+</div>

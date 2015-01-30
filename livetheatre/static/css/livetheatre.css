@@ -235,6 +235,7 @@ form.search-full .search-models label {margin-right:10px;}
 #sidebar .module h1, #sidebar .module h2, #sidebar .module h3, #sidebar .module h4, #sidebar .module h5, #sidebar .module h6 {font-family:inherit;}
 #sidebar .module small h3 {font-size:15px;}
 #sidebar .module small h4 {font-size:14px;}
+#sidebar .module img {max-width:100%; margin:0 auto;}
 
 
 .label-container {margin-bottom:10px;}
