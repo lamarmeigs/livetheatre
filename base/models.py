@@ -206,9 +206,9 @@ class ProductionCompany(models.Model):
         verbose_name_plural = 'production companies'
 
     @property
-    def review_count(self):
-        """Return the number of reviews for this company's productions"""
-        return Review.objects.filter(production__production_company=self).count()
+    def review_set(self):
+        """Return the reviews related to this company's productions"""
+        return Review.objects.filter(production__production_company=self)
 
     def get_absolute_url(self):
         return reverse('production_company', kwargs={'slug':self.slug})
