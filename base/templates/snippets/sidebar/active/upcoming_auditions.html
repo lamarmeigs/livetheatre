@@ -1,0 +1,11 @@
+<div class="module">
+    <h4>Upcoming Auditions</h4>
+    <ul>
+        {% for upcoming in upcoming_auditions %}
+        <li><a href="{% url 'audition_detail' upcoming.slug %}">{{ upcoming.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'auditions' %}">See more &raquo;</a>
+    </div>
+</div>

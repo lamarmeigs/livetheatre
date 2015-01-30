@@ -1,0 +1,11 @@
+<div class="module">
+    <h4>News</h4>
+    <ul>
+        {% for news_item in recent_news %}
+        <li><a href="{{ news_item.get_absolute_url }}">{{ news_item.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'news_list' %}">See more &raquo;</a>
+    </div>
+</div>

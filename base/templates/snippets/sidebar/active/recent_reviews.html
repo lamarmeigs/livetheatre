@@ -1,0 +1,11 @@
+<div class="module">
+    <h4>Recent Reviews</h4>
+    <ul>
+        {% for review in recent_reviews %}
+        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'reviews' %}">See More &raquo;</a>
+    </div>
+</div>

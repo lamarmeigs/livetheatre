@@ -1,0 +1,13 @@
+<div class="module">
+    <h4>Productions by {{ company }}</h4>
+    <ul>
+        {% for production in company_productions %}
+            {% if production != exclude_production %}
+            <li><a href="{% url 'production_detail' production.slug %}">{{ production.title }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'company_productions' company.slug %}">See more &raquo;</a>
+    </div>
+</div>

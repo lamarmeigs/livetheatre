@@ -1,0 +1,11 @@
+<div class="module">
+    <h4>Current Productions</h4>
+    <ul>
+        {% for upcoming in current_productions %}
+        <li><a href="{% url 'production_detail' upcoming.slug %}">{{ upcoming.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{% url 'productions_upcoming' %}">See more &raquo;</a>
+    </div>
+</div>

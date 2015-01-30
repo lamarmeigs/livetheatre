@@ -1,0 +1,10 @@
+<div class="module">
+    <h4>Auditions by {{ company.name }}</h4>
+    <ul>
+        {% for audition in company_auditions %}
+            {% if audition != exclude_audition %}
+            <li><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
