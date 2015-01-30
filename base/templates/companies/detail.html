@@ -49,36 +49,21 @@
 
 
 {% if company.production_set.exists %}
-<div class="module">
-    <h4>Productions by {{ company.name }}</h4>
-    <ul>
-        {% for production in company.production_set.all|slice:":4" %}
-        <li><a href="{% url 'production_detail' slug=production.slug %}">{{ production.title }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+    {% with company_productions=company.production_set.all|slice:":4" %}
+        {% include 'snippets/sidebar/company_related/company_productions.html' %}
+    {% endwith %}
 {% endif %}
 
 {% if company.audition_set.exists %}
-<div class="module">
-    <h4>Auditions by {{ company.name }}</h4>
-    <ul>
-        {% for audition in company.audition_set.all|slice:":4" %}
-        <li><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+    {% with company_auditions=company.audition_set.all|slice:":4" %}
+        {% include 'snippets/sidebar/company_related/company_auditions.html' %}
+    {% endwith %}
 {% endif %}
 
 {% if company.review_set.exists %}
-<div class="module">
-    <h4>Reviews for {{ company.name }}</h4>
-    <ul>
-        {% for review in company.review.all|slice:":4" %}
-        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+    {% with company_reviews=company.review_set.all|slice:":4" %}
+        {% include 'snippets/sidebar/company_related/company_reviews.html' %}
+    {% endwith %}
 {% endif %}
 {% endblock %}
 

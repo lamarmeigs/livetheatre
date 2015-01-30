@@ -57,45 +57,15 @@
 {% block sidebar_content %}
 
 {% if recent_reviews.exists %}
-<div class="module">
-    <h4>Recent Reviews</h4>
-    <ul>
-        {% for review in recent_reviews %}
-        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'reviews' %}">See More &raquo;</a>
-    </div>
-</div>
+    {% include 'snippets/sidebar/active/recent_reviews.html' %}
 {% endif %}
 
 {% if recent_news.exists %}
-<div class="module">
-    <h4>Recent News</h4>
-    <ul>
-        {% for news_item in recent_news %}
-        <li><a href="{{ news_item.get_absolute_url }}">{{ news_item.title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'news_list' %}">See More &raquo;</a>
-    </div>
-</div>
+    {% include 'snippets/sidebar/active/recent_news.html' %}
 {% endif %}
 
 {% if current_productions.exists %}
-<div class="module">
-    <h4>Current Productions</h4>
-    <ul>
-        {% for upcoming in current_productions %}
-        <li><a href="{% url 'production_detail' upcoming.slug %}">{{ upcoming.title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'productions_upcoming' %}">See more &raquo;</a>
-    </div>
-</div>
+    {% include 'snippets/sidebar/active/current_productions.html' %}
 {% endif %}
 
 {% endblock %}

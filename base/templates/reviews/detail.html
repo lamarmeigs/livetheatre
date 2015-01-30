@@ -46,45 +46,17 @@
 {% endif %}
 
 {% if recent_reviews.exists %}
-<div class="module">
-    <h4>Recent Reviews</h4>
-    <ul>
-        {% for recent_review in recent_reviews %}
-        <li><a href="{% url 'review_detail' recent_review.slug %}">{{ recent_review.get_title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'reviews' %}">See more &raquo;</a>
-    </div>
-</div>
+    {% include 'snippets/sidebar/active/recent_reviews.html' %}
 {% endif %}
 
 {% if company_productions %}
-<div class="module">
-    <h4>Other Productions by {{ review.production.production_company }}</h4>
-    <ul>
-        {% for production in company_productions %}
-        <li><a href="{% url 'production_detail' production.slug %}">{{ production.title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'company_productions' review.production.production_company.slug %}">See more &raquo;</a>
-    </div>
-</div>
+    {% with company=review.production.production_company exclude_production=review.production %}
+        {% include 'snippets/sidebar/company_related/company_productions.html' %}
+    {% endwith %}
 {% endif %}
 
 {% if recent_news %}
-<div class="module">
-    <h4>News</h4>
-    <ul>
-        {% for news_item in recent_news %}
-        <li><a href="{{ news_item.get_absolute_url }}">{{ news_item.title }}</a></li>
-        {% endfor %}
-    </ul>
-    <div class="text-right">
-        <a href="{% url 'news_list' %}">See more &raquo;</a>
-    </div>
-</div>
+    {% include 'snippets/sidebar/active/recent_news.html' %}
 {% endif %}
 
 {% endblock %}
