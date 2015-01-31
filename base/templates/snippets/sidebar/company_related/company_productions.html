@@ -3,7 +3,7 @@
     <ul>
         {% for production in company_productions %}
             {% if production != exclude_production %}
-            <li><a href="{% url 'production_detail' production.slug %}">{{ production.title }}</a></li>
+            <li><a href="{% url 'production_detail' production.slug %}">{{ production.play.title }}</a></li>
             {% endif %}
         {% endfor %}
     </ul>

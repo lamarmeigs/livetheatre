@@ -3,7 +3,14 @@
     <ul>
         {% for audition in company_auditions %}
             {% if audition != exclude_audition %}
-            <li><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></li>
+            <li><a href="{% url 'audition_detail' slug=audition.slug %}">
+                {{ audition.duration }}: 
+                {% if audition.title == audition.get_title and audition.play %}
+                    {{ audition.play.title }}
+                {% else %}
+                    {{ audition.title }}
+                {% endif %}
+            </a></li>
             {% endif %}
         {% endfor %}
     </ul>
