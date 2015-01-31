@@ -39,20 +39,16 @@
 </a>
 {% endif %}
 
-{% if review.production.production_company %}
-    {% with company=review.production.production_company %}
-        {% include 'snippets/sidebar/about_company.html' %}
-    {% endwith %}
-{% endif %}
-
 {% if review.reviewer.bio %}
     {% with reviewer=review.reviewer %}
         {% include 'snippets/sidebar/about_reviewer.html' %}
     {% endwith %}
 {% endif %}
 
-{% if recent_reviews.exists %}
-    {% include 'snippets/sidebar/active/recent_reviews.html' %}
+{% if review.production.production_company %}
+    {% with company=review.production.production_company %}
+        {% include 'snippets/sidebar/about_company.html' %}
+    {% endwith %}
 {% endif %}
 
 {% if company_productions %}
@@ -61,8 +57,10 @@
     {% endwith %}
 {% endif %}
 
-{% if recent_news %}
-    {% include 'snippets/sidebar/active/recent_news.html' %}
+{% if recent_reviews.exists %}
+    {% include 'snippets/sidebar/active/recent_reviews.html' %}
 {% endif %}
+
+{% include 'snippets/sidebar/contact.html' %}
 
 {% endblock %}

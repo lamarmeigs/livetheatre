@@ -59,14 +59,4 @@ by {{ production.production_company.name }}
     {% include 'snippets/sidebar/active/upcoming_auditions.html' %}
 {% endif %}
 
-{% if company_productions.exists %}
-    {% with company=audition.production_company %}
-        {% include 'snippets/sidebar/company_related/company_productions.html' %}
-    {% endwith %}
-{% endif %}
-
-{% if recent_news.exists %}
-    {% include 'snippets/sidebar/active/recent_news.html' %}
-{% endif %}
-
 {% endblock %}

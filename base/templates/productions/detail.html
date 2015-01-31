@@ -117,18 +117,14 @@
     {% endwith %}
 {% endif %}
 
-{% if current_productions.exists %}
-    {% include 'snippets/sidebar/active/current_productions.html' %}
-{% endif %}
-
 {% if company_productions.exists %}
     {% with company=production.production_company exclude_production=production %}
         {% include 'snippets/sidebar/company_related/company_productions.html' %}
     {% endwith %}
 {% endif %}
 
-{% if recent_news.exists %}
-    {% include 'snippets/sidebar/active/recent_news.html' %}
+{% if current_productions.exists %}
+    {% include 'snippets/sidebar/active/current_productions.html' %}
 {% endif %}
 
 {% endblock %}
