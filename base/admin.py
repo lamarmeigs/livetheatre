@@ -1,12 +1,13 @@
 from datetime import datetime
 from django.contrib import admin
 from django.db import models
+from django_extensions.admin import ForeignKeyAutocompleteAdmin
 from tinymce.widgets import TinyMCE
 
 from base.models import *
 
 
-class ReviewAdmin(admin.ModelAdmin):
+class ReviewAdmin(ForeignKeyAutocompleteAdmin):
     actions_on_bottom = True
     save_on_top = True
 
@@ -17,6 +18,8 @@ class ReviewAdmin(admin.ModelAdmin):
 
     search_fields = ['title', 'production__play__title',
         'production__production_company__name']
+    related_search_fields = {
+        'production': ('play__title', 'production_company__name'),}
     actions = ['publish_reviews', 'unpublish_reviews']
 
     formfield_overrides = {
@@ -37,7 +40,7 @@ class ReviewAdmin(admin.ModelAdmin):
         self.message_user(request, message)
 
 
-class AuditionAdmin(admin.ModelAdmin):
+class AuditionAdmin(ForeignKeyAutocompleteAdmin):
     actions_on_bottom = True
     save_on_top = True
 
@@ -46,6 +49,7 @@ class AuditionAdmin(admin.ModelAdmin):
     ordering = ('start_date',)
 
     search_fields = ['title', 'production_company__name', 'play__title']
+    related_search_fields = {'production_company': ('name',)}
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
@@ -71,7 +75,7 @@ class ProductionPosterInline(admin.TabularInline):
     verbose_name = 'Secondary Poster'
     verbose_name_plural = 'Secondary Posters'
 
-class ProductionAdmin(admin.ModelAdmin):
+class ProductionAdmin(ForeignKeyAutocompleteAdmin):
     exclude = ('slug',)
     actions_on_bottom = True
     save_on_top = True
@@ -81,6 +85,10 @@ class ProductionAdmin(admin.ModelAdmin):
     ordering = ('start_date',)
 
     search_fields = ['play__title', 'production_company__name', 'venue__name']
+    related_search_fields = {
+        'production_company': ('name',),
+        'venue': ('name', 'address__line_1'),
+    }
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
@@ -100,7 +108,7 @@ class PlayAdmin(admin.ModelAdmin):
     }
 
 
-class VenueAdmin(admin.ModelAdmin):
+class VenueAdmin(ForeignKeyAutocompleteAdmin):
     prepopulated_fields = {'slug': ('name',)}
     actions_on_bottom = True
     save_on_top = True
@@ -109,6 +117,8 @@ class VenueAdmin(admin.ModelAdmin):
     list_filter = ('address__city',)
 
     search_fields = ['name', 'address__line_1', 'address__city']
+    related_search_fields = {
+        'address': ('line_1', 'line_2', 'city', 'zip_code')}
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
@@ -163,10 +173,13 @@ class ReviewerAdmin(admin.ModelAdmin):
     }
 
 
-class ExternalReviewAdmin(admin.ModelAdmin):
+class ExternalReviewAdmin(ForeignKeyAutocompleteAdmin):
     actions_on_bottom = True
     save_on_top = True
+
     list_display = ('production', 'source_name', 'review_url')
+    related_search_fields = {
+        'production': ('play__title', 'production_company__name')}
 
 
 admin.site.register(Review, ReviewAdmin)
