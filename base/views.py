@@ -196,18 +196,9 @@ class AuditionListView(ListView):
         except EmptyPage:
             page = paginator.page(paginator.num_pages)
 
-        # break past auditions into column groupings
-        past_auditions = page.object_list
-        if past_auditions:
-            column_length = len(past_auditions)/2
-            past_audition_groups = utils.chunks(past_auditions, column_length) \
-                if column_length else [list(past_auditions)]
-        else:
-            past_audition_groups = None
-
         context.update({
             'upcoming_auditions': upcoming,
-            'past_audition_groups': past_audition_groups,
+            'past_auditions': page.object_list,
             'page': page,
         })
         return context
