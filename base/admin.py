@@ -145,23 +145,6 @@ class ArtsNewsAdmin(admin.ModelAdmin):
     inlines = [NewsSlideshowImageInline]
 
 
-class FestivalAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
-    actions_on_bottom = True
-    save_on_top = True
-
-    list_display = ('title', 'start_date', 'end_date')
-    ordering = ('start_date',)
-
-    search_fields = ['title', 'productions__play__title',
-        'productions__production_company__name', 'plays__title',
-        'production_companies__title', 'venues__name']
-
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
-    }
-
-
 class ReviewerAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     save_on_top = True
@@ -189,7 +172,6 @@ admin.site.register(Production, ProductionAdmin)
 admin.site.register(Play, PlayAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(ArtsNews, ArtsNewsAdmin)
-admin.site.register(Festival, FestivalAdmin)
 admin.site.register(Address)
 admin.site.register(Reviewer, ReviewerAdmin)
 admin.site.register(ExternalReview, ExternalReviewAdmin)

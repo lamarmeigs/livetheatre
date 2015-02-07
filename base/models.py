@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
 __all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
-    'Venue', 'Address', 'ArtsNews', 'Festival', 'Reviewer', 'ExternalReview',
+    'Venue', 'Address', 'ArtsNews', 'Reviewer', 'ExternalReview',
     'NewsSlideshowImage', 'ProductionPoster']
 
 class Review(models.Model):
@@ -425,38 +425,6 @@ class ArtsNews(models.Model):
             if len(self.title) < 20 
             else '%s...' % self.title[:20])
         return u'%s: %s' % (self.created_on.strftime('%m/%d/%y'), title)
-
-
-class Festival(models.Model):
-    """A collection of productions, plays, or companies grouped chronologically"""
-    title = models.CharField(max_length=80, verbose_name='Festival Name',
-        help_text='Yearly festivals should be distinguished by number or year')
-
-    description = models.TextField(null=True, blank=True)
-    productions = models.ManyToManyField('Production', null=True, blank=True,
-        help_text='For any productions listed here, do not include the '
-        'corresponding companies, plays, or venues in subsequent fields.')
-
-    plays = models.ManyToManyField('Play', null=True, blank=True,
-        help_text='List plays for which no addition production information '
-        'is available.')
-
-    production_companies = models.ManyToManyField('ProductionCompany',
-        null=True, blank=True, help_text='List involved companies whose '
-        'productions are unknown.')
-
-    venues = models.ManyToManyField('Venue', null=True, blank=True,
-        help_text='List any involved venues whose performances are unknown.')
-
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True,
-        help_text='Leave blank for one-day festivals.')
-
-    slug = models.SlugField(help_text='This field will be used in the URL for '
-        "this review's page.")
-
-    def __unicode__(self):
-        return unicode(self.title)
 
 
 class ReviewerManager(models.Manager):
