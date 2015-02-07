@@ -138,6 +138,11 @@ nav.navbar button.search {}
 .footer a {color:#fff; text-transform:underline;}
 .footer .text-muted {color:#ddd;}
 
+.footer ul.social-media {margin:0; padding:0;}
+.footer ul.social-media li {display:inline; margin-left:20px;}
+.footer ul.social-media li:first-child {margin-left:0px;}
+.footer ul.social-media li a:hover, .footer ul.social-media li a:focus {color:#ccc;}
+
 
 /* Carousels */
 .item {max-height:400px; width:100%;}
