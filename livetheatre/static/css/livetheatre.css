@@ -270,7 +270,7 @@ body.section-news #main-content .carousel .item img {margin:0 auto;}
 /* smallest */
 @media (max-width: 480px) {
     body {margin-bottom: 410px;}
-    .footer {height: 380px;}
+    .footer {height: auto;}
     body.section-news #main-content .video-embed iframe {height:200px;}
     .media_news iframe {min-height:200px;}
 }
