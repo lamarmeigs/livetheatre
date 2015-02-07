@@ -35,18 +35,20 @@
                             </address>
                         {% endfor %}
                     {% endif %}
-                    <p>This company has:</p>
-                    <ul>
-                        {% if company.production_set.exists %}
-                        <li><a href="{% url 'company_productions' company.slug%}">{{ company.production_set.count }} production{{ company.production_set.count|pluralize }}</a></li>
-                        {% endif %}
-                        {% if company.review_set.exists %}
-                        <li><a href="{% url 'company_reviews' company.slug %}">{{ company.review_set.count }} review{{ company.review_set.count|pluralize }}</a></li>
-                        {% endif %}
-                        {% if company.audition_set.exists %}
-                        <li><a href="{% url 'company_auditions' company.slug %}">{{ company.audition_set.count }} casting call{{ company.audition_set.count|pluralize }}</a></li>
-                        {% endif %}
-                    </ul>
+                    {% if company.production_set.exists or company.review_set.exists or company.audition_set.exists %}
+                        <p>This company has:</p>
+                        <ul>
+                            {% if company.production_set.exists %}
+                            <li><a href="{% url 'company_productions' company.slug%}">{{ company.production_set.count }} production{{ company.production_set.count|pluralize }}</a></li>
+                            {% endif %}
+                            {% if company.review_set.exists %}
+                            <li><a href="{% url 'company_reviews' company.slug %}">{{ company.review_set.count }} review{{ company.review_set.count|pluralize }}</a></li>
+                            {% endif %}
+                            {% if company.audition_set.exists %}
+                            <li><a href="{% url 'company_auditions' company.slug %}">{{ company.audition_set.count }} casting call{{ company.audition_set.count|pluralize }}</a></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
                     <p><a href="{% url 'production_company' slug=company.slug %}">Read more &raquo;</a></p>
                 </div>
                 <div class="col-md-4">
