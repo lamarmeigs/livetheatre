@@ -37,7 +37,7 @@
                     {% endif %}
                     <p><em>{{ audition.duration }}</em></p>
                     {% if audition.content %}
-                        {{ audition.content|truncatewords_html:50|safe }}
+                        {{ audition.content|removetags:"img iframe br div"|truncatewords_html:50|safe }}
                     {% else %}
                         {{ audition.get_alt_description }}
                     {% endif %}
