@@ -23,27 +23,25 @@
         {% block upcoming_auditions %}
         <div class="col-md-12">
             {% for audition in upcoming_auditions %}
-                <div class="col-md-6">
+                <div class="col-md-6 audition-long">
                     {% block upcoming_audition_tile %}
-                    <div class="audition-long">
-                        <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
-                        {% if audition.poster %}
-                            <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
-                                <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
-                            </a>
-                        {% elif audition.production_company.logo %}
-                            <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
-                                <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
-                            </a>
-                        {% endif %}
-                        <p><em>{{ audition.duration }}</em></p>
-                        {% if audition.content %}
-                            {{ audition.content|truncatewords_html:50|safe }}
-                        {% else %}
-                            {{ audition.get_alt_description }}
-                        {% endif %}
-                        <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
-                    </div>
+                    <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
+                    {% if audition.poster %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
+                            <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
+                        </a>
+                    {% elif audition.production_company.logo %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
+                            <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
+                        </a>
+                    {% endif %}
+                    <p><em>{{ audition.duration }}</em></p>
+                    {% if audition.content %}
+                        {{ audition.content|truncatewords_html:50|safe }}
+                    {% else %}
+                        {{ audition.get_alt_description }}
+                    {% endif %}
+                    <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
                 </div>
                 {% endblock %}
 
