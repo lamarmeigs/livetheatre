@@ -289,6 +289,7 @@ body.section-news #main-content .carousel .item img {margin:0 auto;}
     body {margin-bottom: 410px;}
     .footer {height: 380px;}
     body.section-news #main-content .video-embed iframe {height:325px;}
+    .audition-long {clear:both;}
     #past-auditions .audition:nth-child(2n+1) {clear:left;}
     .media_news iframe {min-height:350px;}
     .nav>li>a {padding-left:10px; padding-right:10px;}
@@ -299,6 +300,7 @@ body.section-news #main-content .carousel .item img {margin:0 auto;}
     body {margin-bottom: 300px;}
     .footer {height: 270px;}
     .reviewer-tile:nth-child(2n+1) {clear:left;}
+    .audition-long {clear:none;}
     #past-auditions .audition:nth-child(2n+1) {clear:none;}
     #past-auditions .audition:nth-child(3n+1) {clear:left;}
     body.section-news #main-content .video-embed iframe {height:325px;}
