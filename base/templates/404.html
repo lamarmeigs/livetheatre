@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body_content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main_title %}
+            <h2>Page not found!</h2>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% block article_content %}
+            <p>We're sorry. We couldn't find the page you were looking for. If you're lucky, you might be able to find it using the
+            search bar at the top of the page. Otherwise, please let us know if something seems to be missing! You can reach us at
+            <a href="mailto:ctxlivetheatre@gmail.com">ctxlivetheatre@gmail.com</a>.</p>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

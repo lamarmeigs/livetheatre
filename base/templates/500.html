@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body_content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main_title %}
+            <h2>An Error Occurred!</h2>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% block article_content %}
+                <p>We're sorry. Something terrible happened, and we cannot complete your request. We informed our programmers, and
+                they'll be here shortly to clean up this mess for you. If you run into any more trouble, please don't hesitate to let
+                us know at <a href="mailto:ctxlivetheatre@gmail.com">ctxlivetheatre@gmail.com</a>.</p>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
