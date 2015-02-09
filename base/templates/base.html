@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,12 +16,12 @@
     <title>{% block page_title %}{% endblock %}{% block site_title %}CTX Live Theatre{% endblock %}</title>
 
     {% block base_stylesheets %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/css/colorbox.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/css/livetheatre.css">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap-theme.css" %}">
+    <link rel="stylesheet" href="{% static "css/colorbox.css" %}">
+    <link rel="stylesheet" href="{% static "css/livetheatre.css" %}">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="icon" href="{{ STATIC_URL }}/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{% static "img/favicon.ico" %}" type="image/x-icon">
     {% endblock %}
 
     {% block extra_stylesheets %}{% endblock %}
@@ -115,10 +116,10 @@
 
     {% block base_scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}/js/jquery.min.js"><\/script>')</script>
-    <script src="{{ STATIC_URL }}/js/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}/js/livetheatre.js"></script>
-    <script src="{{ STATIC_URL }}/js/jquery.colorbox-min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static "js/jquery.min.js" %}"><\/script>')</script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/livetheatre.js" %}"></script>
+    <script src="{% static "js/jquery.colorbox-min.js" %}"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
