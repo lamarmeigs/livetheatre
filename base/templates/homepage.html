@@ -188,10 +188,7 @@
             <div class="col-md-4 col-sm-4">
                 <dl class="news-list">
                     {% for news in news_group %}
-                    <dt><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></dt>
-                    <dd class="small"><em>Created on {{ news.created_on|date:"M. j" }} at {{ news.created_on|time:"g:ia" }}</em></dd>
-                    <dd>{{ news.content|removetags:"img iframe br"|truncatewords_html:10|safe }} <a href="{{ news.get_absolute_url
-                    }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
+                        {% include "snippets/news_dl_item.html" %}
                     {% endfor %}
                 </dl>
             </div>
