@@ -49,7 +49,9 @@ class AuditionAdmin(ForeignKeyAutocompleteAdmin):
     ordering = ('start_date',)
 
     search_fields = ['title', 'production_company__name', 'play__title']
-    related_search_fields = {'production_company': ('name',)}
+    related_search_fields = {
+        'play': ('title',),
+        'production_company': ('name',)}
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
@@ -86,6 +88,7 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
 
     search_fields = ['play__title', 'production_company__name', 'venue__name']
     related_search_fields = {
+        'play': ('title',),
         'production_company': ('name',),
         'venue': ('name', 'address__line_1'),
     }
