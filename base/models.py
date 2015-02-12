@@ -161,6 +161,10 @@ class Audition(models.Model):
         duration = self.start_date.strftime(date_format)
         if self.end_date:
             duration += ' - %s' % self.end_date.strftime(date_format)
+
+        # add the year if it is not included by date_format
+        if self.start_date.year != datetime.now().year and 'y' not in date_format.lower():
+            duration += ' (%s)' % (self.start_date.year)
         return duration
 
     def save(self, *args, **kwargs):
@@ -283,6 +287,9 @@ class Production(models.Model):
         if self.end_date:
             duration += ' %s %s' % (
                 conjuction, self.end_date.strftime(date_format))
+        # add the year if it is not included by date_format
+        if self.start_date.year != datetime.now().year and 'y' not in date_format.lower():
+            duration += ' (%s)' % (self.start_date.year)
         return duration
 
     def detailed_duration(self):
