@@ -2,7 +2,7 @@
     <h4>Reviews for {{ company.name }} Productions</h4>
     <ul>
         {% for review in company_reviews %}
-        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></li>
+        <li><a href="{% url 'review_detail' slug=review.slug %}">{{ review.play.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
