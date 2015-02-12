@@ -414,6 +414,19 @@ class ArtsNews(models.Model):
         """Check if this news item has a video or images to be featured"""
         return self.video_embed or self.newsslideshowimage_set.exists()
 
+    def save(self, *args, **kwargs):
+        self.slug = self.get_slug()
+        return super(ArtsNews, self).save(**kwargs)
+
+    def get_slug(self):
+        slug = slugify(unicode(self.title))[:50]
+        previous_news = ArtsNews.objects.filter(
+            slug=slug).exclude(pk=self.pk).count()
+        if previous_news:
+            count_str = str(previous_news)
+            slug = slug[:-len(count_str)] + count_str
+        return slug
+
     def get_absolute_url(self):
         url = self.external_url \
             if self.external_url \
