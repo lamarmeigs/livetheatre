@@ -1,11 +1,11 @@
 <dt>
     <a href="{{ news.get_absolute_url }}">
-        {% if news.video_embed %}
+        {% if news.external_url %}
+            <i class="fa fa-external-link"></i>
+        {% elif news.video_embed %}
             <i class="fa fa-video-camera"></i>
         {% elif news.newsslideshowimage_set.exists %}
             <i class="fa fa-image"></i>
-        {% elif news.external_url %}
-            <i class="fa fa-external-link"></i>
         {% endif %}
         {{ news.title }}
     </a>
