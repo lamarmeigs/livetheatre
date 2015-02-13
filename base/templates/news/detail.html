@@ -19,11 +19,13 @@
 
 <div id="news_slideshow" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
+  {% if news.newsslideshowimage_set.count > 1 %}
   <ol class="carousel-indicators">
     {% for image in news.newsslideshowimage_set.all %}
     <li data-target="#news_slideshow" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
     {% endfor %}
   </ol>
+  {% endif %}
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
@@ -37,6 +39,7 @@
   </div>
 
   <!-- Controls -->
+  {% if news.newsslideshowimage_set.count > 1 %}
   <a class="left carousel-control" href="#news_slideshow" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
@@ -45,6 +48,7 @@
     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+  {% endif %}
 </div>
     
 {% endif %}
