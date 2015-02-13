@@ -1,5 +1,6 @@
 {% extends 'productions/base_list.html' %}
 
+{% block page_title %}Productions from {{ start_date|date:"n/d" }} to {{ end_date|date:"n/d" }} | {% endblock %}
 {% block body_id %}weekly-productions{% endblock %}
 
 {% block main_title %}Productions from {{ start_date|date:"n/d" }} to {{ end_date|date:"n/d" }}{% endblock %}

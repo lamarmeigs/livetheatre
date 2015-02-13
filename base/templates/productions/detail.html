@@ -1,5 +1,6 @@
 {% extends 'base_internal.html' %}
 
+{% block page_title %}{{ production.play.title }} | {% endblock %}
 {% block body_classes %}section-productions{% endblock %}
 
 {% block admin_edit_link %}{% url 'admin:base_production_change' production.id %}{% endblock %}

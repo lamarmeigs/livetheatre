@@ -4,6 +4,14 @@
 
 {% block admin_edit_link %}{% url 'admin:base_audition_change' audition.id %}{% endblock %}
 
+{% block page_title %}
+    {% if audition.play and audition.production_company %}
+        {{ audition.play.title }} by {{ audition.production_company.name }}
+    {% else %}
+        {{ audition.get_title }}
+    {% endif %}
+    | 
+{% endblock %}
 {% block main_title %}
 <h2>
     {% if audition.play and audition.production_company %}

@@ -1,5 +1,6 @@
 {% extends 'base_internal.html' %}
 
+{% block page_title %}{{ news.title }} | {% endblock %}
 {% block body_classes %}section-news{% endblock %}
 
 {% block admin_edit_link %}{% url 'admin:base_artsnews_change' news.id %}{% endblock %}

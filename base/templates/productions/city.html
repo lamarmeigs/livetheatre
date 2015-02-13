@@ -1,5 +1,9 @@
 {% extends 'productions/base_list.html' %}
 
+{% block page_title %}
+    {% if city %}Upcoming Performances in {{ city }}{% else %}Upcoming Performances by Cit {% endif %} | 
+{% endblock %}
+
 {% block body_classes %}section-productions{% endblock %}
 {% block main_title %}
 {% if city %}

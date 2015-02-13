@@ -1,5 +1,6 @@
 {% extends 'productions/base_list.html' %}
 
+{% block page_title %}Productions in {{ start_date|date:"F Y" }} | {% endblock %}
 {% block body_id %}monthly-productions{% endblock %}
 
 {% block main_title %}Productions in {{ start_date|date:"F Y" }}{% endblock %}
