@@ -55,7 +55,7 @@ class Review(models.Model):
 
     def publish(self):
         self.is_published = True
-        self.published_on = datetime.now()
+        self.published_on = timezone.now()
         self.save()
 
     def unpublish(self):
@@ -163,7 +163,7 @@ class Audition(models.Model):
             duration += ' - %s' % self.end_date.strftime(date_format)
 
         # add the year if it is not included by date_format
-        if self.start_date.year != datetime.now().year and 'y' not in date_format.lower():
+        if self.start_date.year != timezone.now().year and 'y' not in date_format.lower():
             duration += ' (%s)' % (self.start_date.year)
         return duration
 
@@ -173,7 +173,13 @@ class Audition(models.Model):
         return super(Audition, self).save(**kwargs)
 
     def get_slug(self):
-        return slugify(unicode(self.get_title()))[:50]
+        slug = slugify(unicode(self.get_title()))[:50]
+        previous_auditions = Audition.objects.filter(
+            slug=slug).exclude(pk=self.pk).count()
+        if previous_auditions:
+            count_str = str(previous_auditions)
+            slug = slug[:-len(count_str)] + count_str
+        return slug
 
     def get_absolute_url(self):
         return reverse('audition_detail', kwargs={'slug':self.slug})
@@ -288,7 +294,7 @@ class Production(models.Model):
             duration += ' %s %s' % (
                 conjuction, self.end_date.strftime(date_format))
         # add the year if it is not included by date_format
-        if self.start_date.year != datetime.now().year and 'y' not in date_format.lower():
+        if self.start_date.year != timezone.now().year and 'y' not in date_format.lower():
             duration += ' (%s)' % (self.start_date.year)
         return duration
 
@@ -349,9 +355,6 @@ class Venue(models.Model):
 
     class Meta:
         ordering = ['name']
-
-    def get_absolute_url(self):
-        return reverse('venue_detail', kwargs={'slug':self.slug})
 
     def __unicode__(self):
         return unicode(self.name)
