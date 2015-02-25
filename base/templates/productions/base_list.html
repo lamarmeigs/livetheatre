@@ -8,22 +8,20 @@
 {% block body_content %}
     <div class="container">
         <div class="row">
-            <h2>{% block main_title %}{% endblock %}</h2>
-            {% block search_options %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="pull-left">
-                        <p>
-                            <a href="{% url 'productions_upcoming' %}">Upcoming</a> |
-                            <a href="{% url 'productions_current_month' %}">Monthly</a> |
-                            <a href="{% url 'productions_current_week' %}">Weekly</a> |
-                            <a href="{% url 'productions_city' %}">By City</a>
-                        </p>
-                    </div>
-                    <div class="pull-right">{% block extra_details %}{% endblock %}</div>
+            <div class="col-sm-12">
+                <h2>{% block main_title %}{% endblock %}</h2>
+                {% block search_options %}
+                <div class="pull-left">
+                    <p>
+                        <a href="{% url 'productions_upcoming' %}">Upcoming</a> |
+                        <a href="{% url 'productions_current_month' %}">Monthly</a> |
+                        <a href="{% url 'productions_current_week' %}">Weekly</a> |
+                        <a href="{% url 'productions_city' %}">By City</a>
+                    </p>
                 </div>
+                <div class="pull-right">{% block extra_details %}{% endblock %}</div>
+                {% endblock %}
             </div>
-            {% endblock %}
         </div>
         <div class="row">
             {% for production in productions %}
