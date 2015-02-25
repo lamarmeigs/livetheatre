@@ -45,7 +45,7 @@
     <!-- Reviews slideshow -->
     <div id="reviews-container" class="container">
         <div class="row">
-            <div id="features" class="bxslider">
+            <div id="features" class="bxslider col-sm-12">
                 {% for review in reviews %}
                     <div class="feature">
                         <a href="{% url 'review_detail' slug=review.slug %}">
@@ -67,6 +67,11 @@
                         </a>
                     </div>
                 {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <h4 class="more"><a class="" href="{% url 'reviews' %}">See More Reviews&nbsp;&raquo;</a></h4>
             </div>
         </div>
     </div>
