@@ -1,4 +1,5 @@
 {% extends 'base_internal.html' %}
+{% load tz %}
 
 {% block page_title %}Reviews | {% endblock %}
 {% block body_classes %}section-review{% endblock %}
@@ -24,7 +25,7 @@
                     <h4><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></h4>
                     <p>
                         <strong>by <a href="{% url 'reviewers' %}#{{ review.reviewer.full_name|slugify }}">{{ review.reviewer.full_name }}</a></strong><br />
-                        <small>Published on {{ review.published_on|date:"F d, Y" }}</small>
+                        <small>Published on {{ review.published_on|localtime|date:"F d, Y" }}</small>
                     </p>
                     {% if review.lede %}
                     <p><em>{{ review.lede }}</em></p>
