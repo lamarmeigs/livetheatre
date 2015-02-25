@@ -30,10 +30,10 @@ class HomepageView(TemplateView):
 
         # limit records displayed on page
         reviews = published_reviews[:4]
-        productions = current_productions.order_by('-start_date')[:24]
+        productions = current_productions.order_by('start_date')[:24]
 
         # format data for display in columns, etc.
-        auditions = upcoming_auditions.order_by('-start_date')[:8]
+        auditions = upcoming_auditions.order_by('start_date')[:8]
         if auditions:
             auditions_col_len = len(auditions)/2
             audition_groups = utils.chunks(auditions, auditions_col_len) \
