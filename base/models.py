@@ -45,12 +45,11 @@ class Review(models.Model):
         return title
 
     def get_slug(self):
-        slug = slugify(unicode(self.get_title()))[:50]
+        slug = slugify(unicode(self.get_title()))[:47]
         previous_reviews = Review.objects.filter(
-            slug=slug).exclude(pk=self.pk).count()
+            slug__startswith=slug).exclude(pk=self.pk).count()
         if previous_reviews:
-            count_str = str(previous_reviews)
-            slug = slug[:-len(count_str)] + count_str
+            slug += str(previous_reviews)
         return slug
 
     def publish(self):
@@ -63,8 +62,9 @@ class Review(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        self.title = self.get_title()
-        self.slug = self.get_slug()
+        if not self.pk:
+            self.title = self.get_title()
+            self.slug = self.get_slug()
         return super(Review, self).save(**kwargs)
 
     def get_absolute_url(self):
@@ -168,17 +168,17 @@ class Audition(models.Model):
         return duration
 
     def save(self, *args, **kwargs):
-        self.title = self.get_title()
-        self.slug = self.get_slug()
+        if not self.pk:
+            self.title = self.get_title()
+            self.slug = self.get_slug()
         return super(Audition, self).save(**kwargs)
 
     def get_slug(self):
-        slug = slugify(unicode(self.get_title()))[:50]
+        slug = slugify(unicode(self.get_title()))[:47]
         previous_auditions = Audition.objects.filter(
-            slug=slug).exclude(pk=self.pk).count()
+            slug__startswith=slug).exclude(pk=self.pk).count()
         if previous_auditions:
-            count_str = str(previous_auditions)
-            slug = slug[:-len(count_str)] + count_str
+            slug += str(previous_auditions)
         return slug
 
     def get_absolute_url(self):
@@ -281,7 +281,8 @@ class Production(models.Model):
         return title
 
     def save(self, *args, **kwargs):
-        self.slug = self.get_slug()
+        if not self.pk:
+            self.slug = self.get_slug()
         return super(Production, self).save(**kwargs)
 
     def duration(self, date_format='%b. %d', conjuction='-'):
@@ -304,12 +305,11 @@ class Production(models.Model):
 
     def get_slug(self):
         """Return a unique slug for this Production"""
-        slug = slugify(unicode(self.title))[:50]
+        slug = slugify(unicode(self.title))[:47]
         previous_productions = Production.objects.filter(
-            slug=slug).exclude(pk=self.pk).count()
+            slug__startswith=slug).exclude(pk=self.pk).count()
         if previous_productions:
-            count_str = str(previous_productions)
-            slug = slug[:-len(count_str)] + count_str
+            slug += str(previous_productions)
         return slug
 
     def get_absolute_url(self):
@@ -425,16 +425,16 @@ class ArtsNews(models.Model):
         return self.video_embed or self.newsslideshowimage_set.exists()
 
     def save(self, *args, **kwargs):
-        self.slug = self.get_slug()
+        if not self.pk:
+            self.slug = self.get_slug()
         return super(ArtsNews, self).save(**kwargs)
 
     def get_slug(self):
-        slug = slugify(unicode(self.title))[:50]
+        slug = slugify(unicode(self.title))[:47]
         previous_news = ArtsNews.objects.filter(
-            slug=slug).exclude(pk=self.pk).count()
+            slug__startswith=slug).exclude(pk=self.pk).count()
         if previous_news:
-            count_str = str(previous_news)
-            slug = slug[:-len(count_str)] + count_str
+            slug += str(previous_news)
         return slug
 
     def get_absolute_url(self):

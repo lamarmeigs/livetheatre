@@ -22,11 +22,13 @@ class ReviewTests(TestCase):
 
     def test_get_slug(self):
         """Test crafting slugs from titles"""
-        review1 = make_review(title='Indexed Review')
-        review2 = make_review(title='Indexed Review')
-        review1.save(); review2.save()
-        self.assertEqual(review1.slug, review1.get_slug())
+        review1 = make_review(title='Indexed Review'); review1.save()
+        review2 = make_review(title='Indexed Review'); review2.save()
+        review3 = make_review(title='Indexed Review'); review3.save()
+        self.assertNotEqual(review1.slug, review2.slug)
+        self.assertNotEqual(review2.slug, review3.slug)
         self.assertTrue(review2.slug.endswith('1'))
+        self.assertTrue(review3.slug.endswith('2'))
 
     def test_publishing(self):
         """Test publish and unpublish methods"""
@@ -130,11 +132,13 @@ class AuditionTests(TestCase):
 
     def test_get_slug(self):
         """Test building an Audition object's slug"""
-        audition1 = make_audition(title='Indexed Audition')
-        audition2 = make_audition(title='Indexed Audition')
-        audition1.save(); audition2.save()
-        self.assertEqual(audition1.slug, audition1.get_slug())
+        audition1 = make_audition(title='Indexed Audition'); audition1.save()
+        audition2 = make_audition(title='Indexed Audition'); audition2.save()
+        audition3 = make_audition(title='Indexed Audition'); audition3.save()
+        self.assertNotEqual(audition1.slug, audition2.slug)
+        self.assertNotEqual(audition2.slug, audition3.slug)
         self.assertTrue(audition2.slug.endswith('1'))
+        self.assertTrue(audition3.slug.endswith('2'))
 
     def test_get_absolute_url(self):
         """Test returning an Audition object's url"""
@@ -268,11 +272,13 @@ class ProductionTests(TestCase):
     def test_get_slug(self):
         """Test creating unique slugs for Production objects"""
         play = make_play()
-        production1 = make_production(play=play)
-        production2 = make_production(play=play)
-        production1.save(); production2.save()
-        self.assertEqual(production1.slug, production1.get_slug())
+        production1 = make_production(play=play); production1.save()
+        production2 = make_production(play=play); production2.save()
+        production3 = make_production(play=play); production3.save()
+        self.assertNotEqual(production1.slug, production2.slug)
+        self.assertNotEqual(production2.slug, production3.slug)
         self.assertTrue(production2.slug.endswith('1'))
+        self.assertTrue(production3.slug.endswith('2'))
 
     def test_get_absolute_url(self):
         """Test return a Production object's url"""
@@ -335,11 +341,13 @@ class ArtsNewsTests(TestCase):
 
     def test_get_slug(self):
         """Test creating unique slugs"""
-        news1 = make_news(title='Indexed News')
-        news2 = make_news(title='Indexed News')
-        news1.save(); news2.save()
-        self.assertEqual(news1.slug, news1.get_slug())
+        news1 = make_news(title='Indexed News'); news1.save()
+        news2 = make_news(title='Indexed News'); news2.save()
+        news3 = make_news(title='Indexed News'); news3.save()
+        self.assertNotEqual(news1.slug, news2.slug)
+        self.assertNotEqual(news2.slug, news3.slug)
         self.assertTrue(news2.slug.endswith('1'))
+        self.assertTrue(news3.slug.endswith('2'))
 
     def test_get_absolute_url(self):
         """Test returning the url for an ArtsNews object"""
