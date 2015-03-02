@@ -76,13 +76,20 @@ class Review(models.Model):
 
 class DaysBase(models.Model):
     """Abstract base class to handle event object that occurs on certain days"""
-    on_monday = models.BooleanField(verbose_name='Occurs on Monday')
-    on_tuesday = models.BooleanField(verbose_name='Occurs on Tuesday')
-    on_wednesday = models.BooleanField(verbose_name='Occurs on Wednesday')
-    on_thursday = models.BooleanField(verbose_name='Occurs on Thursday')
-    on_friday = models.BooleanField(verbose_name='Occurs on Friday')
-    on_saturday = models.BooleanField(verbose_name='Occurs on Saturday')
-    on_sunday = models.BooleanField(verbose_name='Occurs on Sunday')
+    on_monday = models.BooleanField(
+        default=False, verbose_name='Occurs on Monday')
+    on_tuesday = models.BooleanField(
+        default=False, verbose_name='Occurs on Tuesday')
+    on_wednesday = models.BooleanField(
+        default=False, verbose_name='Occurs on Wednesday')
+    on_thursday = models.BooleanField(
+        default=False, verbose_name='Occurs on Thursday')
+    on_friday = models.BooleanField(
+        default=False, verbose_name='Occurs on Friday')
+    on_saturday = models.BooleanField(
+        default=False, verbose_name='Occurs on Saturday')
+    on_sunday = models.BooleanField(
+        default=False, verbose_name='Occurs on Sunday')
 
     days = (
         {'abbrev':'M', 'name':'Monday', 'boolean_field':'on_monday'},
@@ -116,10 +123,10 @@ class DaysBase(models.Model):
 
         # if wrapping, find the final day of a sequence that starts on monday,
         # and ends on start_on (at the latest)
-        if wrap and start_on > 0 and end_on == len(self.days):
+        if wrap and start_on > 0 and end_on == len(self.days)-1:
             end_on_next_week = self.get_last_sequential_day_index(
                 wrap=False, stop_before=start_on)
-            end_on = end_on_next_week if end_on_next_week else end_on
+            end_on = end_on_next_week if end_on_next_week != None else end_on
 
         return end_on
 
@@ -128,8 +135,9 @@ class DaysBase(models.Model):
         week = []
         for day in self.days:
             week.append(getattr(self, day['boolean_field'], False))
+        return week
 
-    def get_description(self, verbose=False):
+    def get_week_description(self, verbose=False):
         """Return a string describing when the event occurs"""
         description_key = 'name' if verbose else 'abbrev'
         week = self._week_booleans()
@@ -137,8 +145,8 @@ class DaysBase(models.Model):
             return u'All week'
 
         # get all days & sequences when event occurs. Start from first day when
-        # the even doesn't occur -- allowing for week-wrapping sequences
-        start_on = week.index(False)
+        # the even doesn't occur when week-wrapping sequences are needed
+        start_on = week.index(False) if self.on_sunday else 0
         description = ''
         described = []
         for day_idx in range(start_on, len(self.days)):
@@ -157,11 +165,15 @@ class DaysBase(models.Model):
                 description += '%s, ' % self.days[day_idx][description_key]
                 described.append(day_idx)
             else:
-                sequence_description = '%s - %s, ' % (
+                sequence_description = '%s-%s, ' % (
                     self.days[day_idx][description_key],
                     self.days[sequence_end][description_key])
                 description += sequence_description
-                described += range(day_idx, sequence_end+1)
+                if day_idx < sequence_end:
+                    described += range(day_idx, sequence_end+1)
+                else:
+                    described += range(day_idx, len(self.days))
+                    described += range(0, sequence_end) if sequence_end > 0 else [0]
 
         return description.rstrip(', ')
 
@@ -336,7 +348,7 @@ class ProductionManager(models.Manager):
         )
 
 
-class Production(models.Model):
+class Production(DaysBase):
     """A company's interpretation & performance of a play"""
     play = models.ForeignKey('Play')
     production_company = models.ForeignKey('ProductionCompany', null=True,
