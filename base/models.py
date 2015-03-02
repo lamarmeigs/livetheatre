@@ -74,6 +74,84 @@ class Review(models.Model):
         return unicode(self.get_title())
 
 
+class DaysBase(models.Models):
+    """Abstract base class to handle event object that occurs on certain days"""
+    on_monday = model.BooleanField(label='Occurs on Monday')
+    on_tuesday = model.BooleanField(label='Occurs on Tuesday')
+    on_wednesday = model.BooleanField(label='Occurs on Wednesday')
+    on_thursday = model.BooleanField(label='Occurs on Thursday')
+    on_friday = model.BooleanField(label='Occurs on Friday')
+    on_saturday = model.BooleanField(label='Occurs on Saturday')
+    on_sunday = model.BooleanField(label='Occurs on Sunday')
+
+    days = (
+        {'abbrev':'M', 'name':'Monday', 'boolean_field':'on_monday'),
+        {'abbrev':'T', 'name':'Tuesday', 'boolean_field':'on_tuesday'),
+        {'abbrev':'W', 'name':'Wednesday', 'boolean_field':'on_wednesday'),
+        {'abbrev':'Th', 'name':'Thursday', 'boolean_field':'on_thursday'),
+        {'abbrev':'F', 'name':'Friday', 'boolean_field':'on_friday'),
+        {'abbrev':'Sat', 'name':'Saturday', 'boolean_field':'on_saturday'),
+        {'abbrev':'Sun', 'name':'Sunday', 'boolean_field':'on_sunday'),
+    )
+
+    class Meta:
+        abstract = True
+
+    def get_last_sequential_day_index(self, start_on=0, wrap=True,
+            stop_before=len(self.days)):
+        """
+        Returns index of the final day in a sequence when the event occurs
+
+        start_on:   index of the day of the week to start the sequence
+        wrap:       boolean indicating if earlier days can be considered
+        stop_before:index of the day that must end the sequence
+        """
+        # check days following start_on until we find one during which the event
+        # doesn't occur, or we reach the end of the allowable sequence
+        end_on = None
+        for offset, day_tuple in enumerate(self.days[start_on:stop_before]):
+            if not getattr(self, day_tuple['boolean_field'], False):
+                break
+            end_on = start_on + offset
+
+        # if wrapping, find the final day of a sequence that starts on monday,
+        # and ends on start_on (at the latest)
+        if wrap and start_on > 0 and end_on == len(self.days):
+            end_on_next_week = self.get_last_sequential_day_index(
+                wrap=False, stop_before=start_on)
+            end_on = end_on_next_week if end_on_next_week else end_on
+
+        return end_on
+
+    def days_occurs_on(self, verbose=False):
+        """Return a string describing when the even occurs"""
+        description_key = 'name' if verbose else 'abbrev'
+        
+        description = ''
+        described = []
+        for day_idx in range(len(self.days)):
+            # check if day has already been described as part of a sequence
+            if day_idx in described:
+                continue
+
+            # ignore day if event doesn't occur
+            day_tuple = self.days[day_idx]
+            if not getattr(self, day_tuple['boolean_field'], False):
+                continue
+
+            # try to retrieve end of sequence, create appropriate description
+            sequence_end = self.get_last_sequential_day_index(start_on=day_idx)
+            if sequence_end == day_idx:
+                description += '%s, ' % self.days[day_idx][description_key]
+                described.append(day_idx)
+            else:
+                sequence_description = '%s - %s, ' % (
+                    self.days[day_idx][description_key],
+                    self.days[sequence_end][description_key])
+                description += sequence_description
+                described += range(day_idx, sequence_end+1)
+
+
 class AuditionManager(models.Manager):
     def filter_upcoming(self):
         """Return ongoing or upcoming auditions"""
