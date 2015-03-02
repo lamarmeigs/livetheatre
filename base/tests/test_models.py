@@ -285,6 +285,49 @@ class ProductionTests(TestCase):
         production = make_production()
         self.assertIn(production.slug, production.get_absolute_url())
 
+    def test_week_booleans(self):
+        """Test creating a list of booleans of the days when production runs"""
+        production = make_production(on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True)
+        self.assertEqual(
+            production._week_booleans(),
+            [True, False, True, False, False, True, True])
+
+    def test_get_last_sequential_day_index(self):
+        """Test returning an index of the last day in a sequence"""
+        production = make_production(on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True)
+        self.assertEqual(production.get_last_sequential_day_index(), 0)
+        self.assertIsNone(production.get_last_sequential_day_index(start_on=1))
+        self.assertEqual(
+            production.get_last_sequential_day_index(start_on=5, wrap=False), 6)
+        self.assertEqual(
+            production.get_last_sequential_day_index(start_on=5), 0)
+
+    def test_get_week_description(self):
+        """Test returning a string describing the days of the week"""
+        no_wrap_production = make_production(on_monday=True, on_wednesday=True,
+            on_thursday=True, on_friday=True)
+        self.assertEqual(no_wrap_production.get_week_description(), 'M, W-F')
+        self.assertEqual(
+            no_wrap_production.get_week_description(verbose=True),
+            'Monday, Wednesday-Friday')
+
+        wrap_production = make_production(on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True)
+        self.assertEqual(wrap_production.get_week_description(), 'W, Sat-M')
+        self.assertEqual(
+            wrap_production.get_week_description(verbose=True),
+            'Wednesday, Saturday-Monday')
+
+        all_week_production = make_production(on_monday=True,
+            on_tuesday=True, on_wednesday=True, on_thursday=True,
+            on_friday=True, on_saturday=True, on_sunday=True)
+        self.assertEqual(all_week_production.get_week_description(), 'All week')
+
+        no_day_production = make_production()
+        self.assertEqual(no_day_production.get_week_description(), '')
+
 
 class VenueManagerTests(TestCase):
     """Test filter methods on VenueManager class"""

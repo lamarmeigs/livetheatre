@@ -173,7 +173,8 @@ class DaysBase(models.Model):
                     described += range(day_idx, sequence_end+1)
                 else:
                     described += range(day_idx, len(self.days))
-                    described += range(0, sequence_end) if sequence_end > 0 else [0]
+                    described += (range(0, sequence_end) 
+                        if sequence_end > 0 else [0])
 
         return description.rstrip(', ')
 
