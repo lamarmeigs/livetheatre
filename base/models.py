@@ -74,31 +74,31 @@ class Review(models.Model):
         return unicode(self.get_title())
 
 
-class DaysBase(models.Models):
+class DaysBase(models.Model):
     """Abstract base class to handle event object that occurs on certain days"""
-    on_monday = model.BooleanField(label='Occurs on Monday')
-    on_tuesday = model.BooleanField(label='Occurs on Tuesday')
-    on_wednesday = model.BooleanField(label='Occurs on Wednesday')
-    on_thursday = model.BooleanField(label='Occurs on Thursday')
-    on_friday = model.BooleanField(label='Occurs on Friday')
-    on_saturday = model.BooleanField(label='Occurs on Saturday')
-    on_sunday = model.BooleanField(label='Occurs on Sunday')
+    on_monday = models.BooleanField(verbose_name='Occurs on Monday')
+    on_tuesday = models.BooleanField(verbose_name='Occurs on Tuesday')
+    on_wednesday = models.BooleanField(verbose_name='Occurs on Wednesday')
+    on_thursday = models.BooleanField(verbose_name='Occurs on Thursday')
+    on_friday = models.BooleanField(verbose_name='Occurs on Friday')
+    on_saturday = models.BooleanField(verbose_name='Occurs on Saturday')
+    on_sunday = models.BooleanField(verbose_name='Occurs on Sunday')
 
     days = (
-        {'abbrev':'M', 'name':'Monday', 'boolean_field':'on_monday'),
-        {'abbrev':'T', 'name':'Tuesday', 'boolean_field':'on_tuesday'),
-        {'abbrev':'W', 'name':'Wednesday', 'boolean_field':'on_wednesday'),
-        {'abbrev':'Th', 'name':'Thursday', 'boolean_field':'on_thursday'),
-        {'abbrev':'F', 'name':'Friday', 'boolean_field':'on_friday'),
-        {'abbrev':'Sat', 'name':'Saturday', 'boolean_field':'on_saturday'),
-        {'abbrev':'Sun', 'name':'Sunday', 'boolean_field':'on_sunday'),
+        {'abbrev':'M', 'name':'Monday', 'boolean_field':'on_monday'},
+        {'abbrev':'T', 'name':'Tuesday', 'boolean_field':'on_tuesday'},
+        {'abbrev':'W', 'name':'Wednesday', 'boolean_field':'on_wednesday'},
+        {'abbrev':'Th', 'name':'Thursday', 'boolean_field':'on_thursday'},
+        {'abbrev':'F', 'name':'Friday', 'boolean_field':'on_friday'},
+        {'abbrev':'Sat', 'name':'Saturday', 'boolean_field':'on_saturday'},
+        {'abbrev':'Sun', 'name':'Sunday', 'boolean_field':'on_sunday'},
     )
 
     class Meta:
         abstract = True
 
     def get_last_sequential_day_index(self, start_on=0, wrap=True,
-            stop_before=len(self.days)):
+            stop_before=len(days)):
         """
         Returns index of the final day in a sequence when the event occurs
 
@@ -123,13 +123,25 @@ class DaysBase(models.Models):
 
         return end_on
 
-    def days_occurs_on(self, verbose=False):
-        """Return a string describing when the even occurs"""
+    def _week_booleans(self):
+        """Return a list of booleans, indicating which days the event occurs"""
+        week = []
+        for day in self.days:
+            week.append(getattr(self, day['boolean_field'], False))
+
+    def get_description(self, verbose=False):
+        """Return a string describing when the event occurs"""
         description_key = 'name' if verbose else 'abbrev'
-        
+        week = self._week_booleans()
+        if all(week):
+            return u'All week'
+
+        # get all days & sequences when event occurs. Start from first day when
+        # the even doesn't occur -- allowing for week-wrapping sequences
+        start_on = week.index(False)
         description = ''
         described = []
-        for day_idx in range(len(self.days)):
+        for day_idx in range(start_on, len(self.days)):
             # check if day has already been described as part of a sequence
             if day_idx in described:
                 continue
@@ -150,6 +162,8 @@ class DaysBase(models.Models):
                     self.days[sequence_end][description_key])
                 description += sequence_description
                 described += range(day_idx, sequence_end+1)
+
+        return description.rstrip(', ')
 
 
 class AuditionManager(models.Manager):
