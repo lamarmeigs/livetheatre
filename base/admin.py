@@ -96,6 +96,17 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
     }
+    fieldsets = (
+        (None, {
+            'fields': ('play', 'production_company', 'venue')
+        }),
+        ('Schedule Information', {
+            'fields': ('start_date', 'end_date', 'on_monday', 'on_tuesday',
+            'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
+            'on_sunday')
+        }),
+        ('Description & Poster', {'fields': ('description', 'poster')})
+    )
     inlines = [ProductionPosterInline]
 
 
