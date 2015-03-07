@@ -377,8 +377,9 @@ class Production(DaysBase):
     venue = models.ForeignKey('Venue')
 
     event_details = models.TextField(null=True, blank=True,
-        help_text='Provide additional event information, such as a weekly '
-        'schedule, ticket prices, or venue details.')
+        help_text='Provide additional event information, such as ticket prices '
+        'or daily schedules. Do not include the venue, opening/closing dates, '
+        'or company information.')
 
     description = models.TextField(null=True, blank=True)
     poster = FileBrowseField(max_length=200, null=True, blank=True,

@@ -106,7 +106,7 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
                 'explicitly stated and consistent.'),
             'fields': ('start_date', 'end_date', 'on_monday', 'on_tuesday',
                 'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
-                'on_sunday'),
+                'on_sunday', 'event_details'),
         }),
         ('Description & Poster', {'fields': ('description', 'poster')})
     )
