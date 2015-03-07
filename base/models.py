@@ -403,7 +403,7 @@ class Production(DaysBase):
             self.slug = self.get_slug()
         return super(Production, self).save(**kwargs)
 
-    def duration(self, date_format='%b. %d', conjuction='-'):
+    def duration(self, date_format='%b. %d', conjuction='-', append_year=False):
         """
         Return a string representing the date range during which the production
         occurs. The dates will be formatted with date_format.
@@ -412,10 +412,18 @@ class Production(DaysBase):
         if self.end_date:
             duration += ' %s %s' % (
                 conjuction, self.end_date.strftime(date_format))
-        # add the year if it is not included by date_format
-        if self.start_date.year != timezone.now().year and 'y' not in date_format.lower():
-            duration += ' (%s)' % (self.start_date.year)
+        
+        # force inclusion of the year if production is old
+        if not append_year:
+            append_year = (self.start_date.year != timezone.now().year and
+                'y' not in date_format.lower())
+        if append_year:
+            duration += ', %s' % (self.start_date.year)
         return duration
+
+    def semi_detailed_duration(self):
+        """Alias to duration with full-name months and an appended year"""
+        return self.duration(date_format='%B %d', append_year=True)
 
     def detailed_duration(self):
         """Alias to duration with detailed date_format and conjuction args"""

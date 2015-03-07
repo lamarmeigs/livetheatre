@@ -1,7 +1,12 @@
 <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
     <div class="row">
         <div class="col-md-12">
-            <h5 class="pull-left">{{ production.duration }}</h5>
+            <h5 class="pull-left">
+                {{ production.duration }}<br />
+                <small>
+                    {% if production.has_weekly_schedule %}{{ production.get_week_description }}{% else %}&nbsp;{% endif %}
+                </small>
+            </h5>
             <a href="{% url 'productions_city' production.venue.address.city %}">
                 <span class="pull-right label label-city">{{ production.venue.address.city }}</span>
             </a>

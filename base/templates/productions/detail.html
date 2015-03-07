@@ -15,7 +15,10 @@
 {% endblock %}
 
 {% block main_terciary_title %}
-<h3>{{ production.duration }}</h3>
+<h3>
+    {{ production.duration }}<br />
+    <small>{% if production.has_weekly_schedule %}{{ production.get_verbose_week_description }}{% endif %}</small>
+</h3>
 
 {% if production.review_set.exists %}
 <div class="label-container">
@@ -40,20 +43,30 @@
 
 <hr />
 
-{% with address=production.venue.address %}
-<address>
-    <strong>
-    {% if address.venue.map_url %}
-        <a href="{{ address.venue.map_url }}" target="_blank">{{ address.venue }}</a>
-    {% else %}
-        {{ address.venue }}
-    {% endif %}
-    </strong><br />
-    {{ address.line_1 }}<br />
-    {% if address.line_2 %}{{ address.line_2 }}<br />{% endif %}
-    {{ address.city }}, TX, {{ address.zip_code }}
-</address>
-{% endwith %}
+<div class="row">
+    <div class="col-sm-6">
+        {% if production.has_weekly_schedule %}
+            <strong>{{ production.get_verbose_week_description }},</strong><br />
+        {% endif %}
+        {{ production.semi_detailed_duration }}
+    </div>
+    <div class="col-sm-6">
+    {% with address=production.venue.address %}
+        <address>
+            <strong>
+            {% if address.venue.map_url %}
+                <a href="{{ address.venue.map_url }}" target="_blank">{{ address.venue }}</a>
+            {% else %}
+                {{ address.venue }}
+            {% endif %}
+            </strong><br />
+            {{ address.line_1 }}<br />
+            {% if address.line_2 %}{{ address.line_2 }}<br />{% endif %}
+            {{ address.city }}, TX, {{ address.zip_code }}
+        </address>
+    {% endwith %}
+    </div>
+</div>
 
 {{ production.event_details|safe }}
 

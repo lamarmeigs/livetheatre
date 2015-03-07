@@ -258,6 +258,18 @@ class ProductionTests(TestCase):
         self.assertIn(str(start_date.year), duration)
 
     def test_detailed_duration(self):
+        """Test return a semi-detailed duration display"""
+        start_date = timezone.now()
+        end_date = start_date + timedelta(days=1)
+        production = make_production(start_date=start_date, end_date=end_date)
+
+        date_fmt = '%b %d'
+        duration = production.duration(date_format=date_fmt)
+        self.assertIn(start_date.strftime(date_fmt), duration)
+        self.assertIn(end_date.strftime(date_fmt), duration)
+        self.assertIn(str(start_date.year), duration)
+
+    def test_detailed_duration(self):
         """Test returned a detailed duration display"""
         start_date = timezone.now() - timedelta(days=365)
         end_date = start_date + timedelta(days=1)
@@ -267,7 +279,6 @@ class ProductionTests(TestCase):
         duration = production.detailed_duration()
         self.assertIn(start_date.strftime(date_fmt), duration)
         self.assertIn(end_date.strftime(date_fmt), duration)
-        self.assertIn('through', duration)
 
     def test_get_slug(self):
         """Test creating unique slugs for Production objects"""
