@@ -101,9 +101,12 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
             'fields': ('play', 'production_company', 'venue')
         }),
         ('Schedule Information', {
+            'description': ('Please provide the schedule for this production. '
+                'Provide specific days only if the weekly schedule is '
+                'explicitly stated and consistent.'),
             'fields': ('start_date', 'end_date', 'on_monday', 'on_tuesday',
-            'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
-            'on_sunday')
+                'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
+                'on_sunday'),
         }),
         ('Description & Poster', {'fields': ('description', 'poster')})
     )

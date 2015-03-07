@@ -76,6 +76,10 @@ class Review(models.Model):
 
 class DaysBase(models.Model):
     """Abstract base class to handle event object that occurs on certain days"""
+    start_date = models.DateField(verbose_name='Date of first event.')
+    end_date = models.DateField(null=True, blank=True, 
+        verbose_name='Date of last event.', help_text='Leave blank for events '
+        'that last only a single day.')
     on_monday = models.BooleanField(
         default=False, verbose_name='Occurs on Monday')
     on_tuesday = models.BooleanField(
@@ -137,9 +141,20 @@ class DaysBase(models.Model):
             week.append(getattr(self, day['boolean_field'], False))
         return week
 
+    def has_weekly_schedule(self):
+        """Return boolean indicate if any day-specific field has been marked"""
+        return any(self._week_booleans())
+
+    def get_verbose_week_description(self):
+        return self.get_week_description(verbose=True)
+
     def get_week_description(self, verbose=False):
         """Return a string describing when the event occurs"""
         description_key = 'name' if verbose else 'abbrev'
+        if verbose and self.end_date:
+            pluralize = self.end_date - self.start_date > timedelta(days=7)
+        else:
+            pluralize = False
         week = self._week_booleans()
         if all(week):
             return u'All week'
@@ -162,12 +177,15 @@ class DaysBase(models.Model):
             # try to retrieve end of sequence, create appropriate description
             sequence_end = self.get_last_sequential_day_index(start_on=day_idx)
             if sequence_end == day_idx:
-                description += '%s, ' % self.days[day_idx][description_key]
+                description += '{0}{1}, '.format(
+                    self.days[day_idx][description_key],
+                    's' if pluralize else '')
                 described.append(day_idx)
             else:
-                sequence_description = '%s-%s, ' % (
-                    self.days[day_idx][description_key],
-                    self.days[sequence_end][description_key])
+                sequence_description = '{day1}{plural}-{day2}{plural}, '.format(
+                    day1=self.days[day_idx][description_key],
+                    day2=self.days[sequence_end][description_key],
+                    plural='s' if pluralize else '')
                 description += sequence_description
                 if day_idx < sequence_end:
                     described += range(day_idx, sequence_end+1)
@@ -357,11 +375,6 @@ class Production(DaysBase):
         'is a one-person show.')
 
     venue = models.ForeignKey('Venue')
-    start_date = models.DateField(verbose_name='Date of first performance')
-
-    end_date = models.DateField(null=True, blank=True, 
-        verbose_name='Date of last performance', help_text='Leave blank for '
-        'productions with a single performance.')
 
     event_details = models.TextField(null=True, blank=True,
         help_text='Provide additional event information, such as a weekly '
@@ -406,7 +419,7 @@ class Production(DaysBase):
 
     def detailed_duration(self):
         """Alias to duration with detailed date_format and conjuction args"""
-        return self.duration(date_format='%B %d, %Y', conjuction='through')
+        return self.duration(date_format='%B %d, %Y')
 
     def get_slug(self):
         """Return a unique slug for this Production"""

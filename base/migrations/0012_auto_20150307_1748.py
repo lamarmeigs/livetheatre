@@ -53,4 +53,16 @@ class Migration(migrations.Migration):
             field=models.BooleanField(default=False, verbose_name=b'Occurs on Wednesday'),
             preserve_default=True,
         ),
+        migrations.AlterField(
+            model_name='production',
+            name='end_date',
+            field=models.DateField(help_text=b'Leave blank for events that last only a single day.', null=True, verbose_name=b'Date of last event.', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='production',
+            name='start_date',
+            field=models.DateField(verbose_name=b'Date of first event.'),
+            preserve_default=True,
+        ),
     ]
