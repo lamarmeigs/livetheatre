@@ -262,6 +262,10 @@ form.search-full .search-models label {margin-right:10px;}
 #sidebar .module small h4 {font-size:14px;}
 #sidebar .module img {max-width:100%; margin:0 auto;}
 
+.nested h1 {font-size:17px;}
+.nested h2 {font-size:16px;}
+.nested h3 {font-size:15px;}
+.nested h4 {font-size:14px;}
 
 .label-container {margin-bottom:10px;}
 .label-container .label {margin-right:5px;}
