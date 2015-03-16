@@ -1,7 +1,9 @@
 {% load tz %}
 <dt>
     <a href="{{ news.get_absolute_url }}">
-        {% if news.external_url %}
+        {% if news.is_job_ooprtunity %}
+            <i class="fa fa-usd"></i>
+        {% elif news.external_url %}
             <i class="fa fa-external-link"></i>
         {% elif news.video_embed %}
             <i class="fa fa-video-camera"></i>

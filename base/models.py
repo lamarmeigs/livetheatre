@@ -526,6 +526,9 @@ class ArtsNews(models.Model):
     content = models.TextField(null=True, blank=True, help_text='Do not '
         'include the video embed or any images from the slideshow here.')
 
+    is_job_opportunity = models.BooleanField(default=False, help_text='Check '
+        'if this news item is about a job opportunity.')
+
     external_url = models.URLField(null=True, blank=True,
         help_text='If this news item links to an external location, provide '
         'the full URL.')
