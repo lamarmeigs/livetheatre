@@ -1,0 +1,36 @@
+<p>
+    <em><strong><a href="{% url 'production_detail' slug=production.slug %}">{{ production.play.title }}</a></em></strong>
+    {% if production.play.playwright %}
+        <br />by {{ production.play.playwright }}
+    {% endif %}
+    {% if production.production_company %}
+        <br /><a href="{% url 'production_company' slug=production.production_company.slug %}">{{ production.production_company.name }}</a>
+    {% endif %}
+</p>
+
+<div class="row">
+    <div class="col-sm-6">
+        {% if production.has_weekly_schedule %}
+            <strong>{{ production.get_verbose_week_description }},</strong><br />
+        {% endif %}
+        {{ production.semi_detailed_duration }}
+    </div>
+    <div class="col-sm-6">
+    {% with address=production.venue.address %}
+        <address>
+            <strong>
+            {% if address.venue.map_url %}
+                <a href="{{ address.venue.map_url }}" target="_blank">{{ address.venue }}</a>
+            {% else %}
+                {{ address.venue }}
+            {% endif %}
+            </strong><br />
+            {{ address.line_1 }}<br />
+            {% if address.line_2 %}{{ address.line_2 }}<br />{% endif %}
+            {{ address.city }}, TX, {{ address.zip_code }}
+        </address>
+    {% endwith %}
+    </div>
+</div>
+
+{{ production.event_details|safe }}

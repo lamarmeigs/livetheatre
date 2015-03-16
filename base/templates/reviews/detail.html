@@ -14,18 +14,9 @@
 {% block article_content %}
 {{ review.content|safe }}
 <hr />
-<p><em><strong><a href="{% url 'production_detail' slug=review.production.slug %}">{{ review.production.play.title }}</a></strong> plays {{ review.production.detailed_duration }}.</em></p>
-
-{% with address=review.production.venue.address %}
-<address>
-    <strong>{{ address.venue }}</strong><br />
-    {{ address.line_1 }}<br />
-    {% if address.line_2 %}{{ address.line_2 }}<br />{% endif %}
-    {{ address.city }}, TX, {{ address.zip_code }}
-</address>
+{% with production=review.production %}
+    {% include 'snippets/production_details.html' %}
 {% endwith %}
-
-{{ review.production.event_details|safe }}
 {% endblock %}
 
 {% block extra_content %}
