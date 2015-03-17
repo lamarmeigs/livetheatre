@@ -1,6 +1,6 @@
-<div class="module nested">
+<div class="module">
     <h4>About {{ company.name }}</h4>
-    <small>{{ company.description|removetags:"img iframe br"|truncatewords_html:30|safe }}</small>
+    <small class="nested">{{ company.description|removetags:"img iframe br"|truncatewords_html:30|safe }}</small>
 
     <p class="small">This company has:</p>
     <ul>
