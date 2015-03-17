@@ -523,8 +523,10 @@ class ArtsNewsManager(models.Manager):
 class ArtsNews(models.Model):
     """A news item of interest to the theatre world"""
     title = models.CharField(max_length=150)
-    content = models.TextField(null=True, blank=True, help_text='Do not '
-        'include the video embed or any images from the slideshow here.')
+    content = models.TextField(null=True, blank=True, help_text='Add the main '
+        'content of the news story here. Do not include any content from other '
+        'fields or related objects (such as video embeds, slideshow images, or '
+        'related production or company details).')
 
     is_job_opportunity = models.BooleanField(default=False, help_text='Check '
         'if this news item is about a job opportunity.')
@@ -537,6 +539,14 @@ class ArtsNews(models.Model):
         help_text='If this story includes a video, enter the embed code here '
         'to feature it on the homepage. Be sure to remove any width and height '
         'attributes.')
+
+    related_production = models.ForeignKey(Production, null=True, blank=True,
+        help_text='If appropriate, specify the production that this story '
+        'addresses.')
+
+    related_company = models.ForeignKey(ProductionCompany, null=True,
+        blank=True, help_text='If appropriate, specify the production company '
+        'that this story addresses.')
 
     created_on = models.DateTimeField(auto_now_add=True)
     created_on.editable = True # force editable while migrating old data

@@ -54,12 +54,56 @@
 {% endif %}
 
 {{ news.content|safe }}
+{% if news.related_production %}
+    <hr />
+    {% with production=news.related_production %}
+        {% include 'snippets/production_details.html' %}
+    {% endwith %}
+{% endif %}
 {% endblock %}
 
 {% block extra_content %}
 {% endblock %}
 
 {% block sidebar_content %}
+
+{% if news.related_production %}
+
+    {% if news.related_production.poster %}
+    <a href="{{ news.related_production.poster.url }}" class="thumbnail colorbox">
+        <img src="{{ news.related_production.poster.url }}" alt="{{ news.related_production.title }}" />
+    </a>
+    {% endif %}
+    {% if news.related_production.production_company %}
+        {% with company=news.related_production.production_company %}
+            {% include 'snippets/sidebar/about_company.html' %}
+            {% if news.related_production.production_company.production_set.filter_current.exists %}
+            {% with company_productions=news.related_production.production_company.production_set.filter_current exclude_production=news.related_production %}
+                {% include 'snippets/sidebar/company_related/company_productions.html' %}
+            {% endwith %}
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+
+{% elif news.related_company %}
+
+    {% if news.related_company.logo %}
+    <a href="{{ news.related_company.logo.url }}" class="thumbnail colorbox">
+        <img src="{{ news.related_company.logo.url }}" alt="{{ news.related_company.name }}" />
+    </a>
+    {% endif %}
+    {% with company=news.related_company %}
+        {% include 'snippets/sidebar/about_company.html' %}
+        {% if company.production_set.filter_current.exists %}
+            {% with company_productions=company.production_set.filter_current %}
+                {% include 'snippets/sidebar/company_related/company_productions.html' %}
+            {% endwith %}
+        {% endif %}
+    {% endwith %}
+
+{% endif %}
+
+
 
 {% if recent_reviews.exists %}
     {% include 'snippets/sidebar/active/recent_reviews.html' %}

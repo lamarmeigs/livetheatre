@@ -146,7 +146,7 @@ class NewsSlideshowImageInline(admin.TabularInline):
     model = NewsSlideshowImage
     extra = 3
 
-class ArtsNewsAdmin(admin.ModelAdmin):
+class ArtsNewsAdmin(ForeignKeyAutocompleteAdmin):
     prepopulated_fields = {'slug': ('title',)}
     actions_on_bottom = True
     save_on_top = True
@@ -155,10 +155,31 @@ class ArtsNewsAdmin(admin.ModelAdmin):
     ordering = ('created_on',)
 
     search_fields = ['title', 'external_url']
+    related_search_fields = {
+        'related_production': ('play__title', 'production_company__name'),
+        'related_company': ('name',)}
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
     }
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'content', 'created_on', 'slug')
+        }),
+        ('Related Objects', {
+            'description': ('Select the items that are the subject of the '
+                'news story. Excepts of these items will be displayed on the '
+                "story's detail page. NOTE: an associated production takes "
+                'priority over an associated company.'),
+            'fields': ('related_production', 'related_company'),
+        }),
+        ('Additional Media', {
+            'description': ('Provide any additional media for this story. '
+                'Additional fields for slideshow images are below.'),
+            'fields': ('is_job_opportunity', 'external_url', 'video_embed',)
+        })
+    )
     inlines = [NewsSlideshowImageInline]
 
 
