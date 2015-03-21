@@ -100,11 +100,13 @@ class CompanyViewTests(BaseViewTestCase):
 
     def test_company_list(self):
         """Test 'Local Theatres' page"""
+        make_production(production_company=self.company1)
+        make_audition(production_company=self.company2)
         url = reverse('local_theatres')
         response = self.client.get(url)
         self.assertIn(self.company1.name, response.content)
         self.assertIn(self.company2.name, response.content)
-        self.assertIn(self.company3.name, response.content)
+        self.assertNotIn(self.company3.name, response.content)
 
     def test_company_detail(self):
         """Test ProductionCompany detail page"""

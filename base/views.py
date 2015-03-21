@@ -132,7 +132,7 @@ class ProductionCompanyView(DetailView):
 class LocalTheatresView(ListView):
     """Display all ProductionCompany objects"""
     model = ProductionCompany
-    queryset = ProductionCompany.objects.order_by('name')
+    queryset = ProductionCompany.objects.filter_active().order_by('name')
     template_name = 'companies/list.html'
     context_object_name = 'companies'
 
