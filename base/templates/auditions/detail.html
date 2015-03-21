@@ -1,5 +1,8 @@
 {% extends 'base_internal.html' %}
 
+{% block meta_title %}{{ audition.get_title }}{% endblock %}
+{% block meta_description %}{{ audition.content|truncatewords_html:80|striptags }}{% endblock %}
+
 {% block body_classes %}section-audition{% endblock %}
 
 {% block admin_edit_link %}{% url 'admin:base_audition_change' audition.id %}{% endblock %}

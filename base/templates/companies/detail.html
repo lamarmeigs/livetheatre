@@ -1,5 +1,8 @@
 {% extends 'base_internal.html' %}
 
+{% block meta_title %}{{ company.name }}{% endblock %}
+{% block meta_description %}{{ company.description|truncatewords_html:80|striptags }}{% endblock %}
+
 {% block page_title %}{{ company.name }} | {% endblock %}
 {% block body_classes %}section-company{% endblock %}
 

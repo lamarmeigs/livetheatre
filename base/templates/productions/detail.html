@@ -1,5 +1,11 @@
 {% extends 'base_internal.html' %}
 
+{% block meta_title %}
+    {{ production.play.title }}
+    {% if production.production_company %}, by {{ production.production_company.name }}{% endif %}
+{% endblock %}
+{% block meta_description %}{{ production.description|truncatewords_html:80|striptags }}{% endblock %}
+
 {% block page_title %}{{ production.play.title }} | {% endblock %}
 {% block body_classes %}section-productions{% endblock %}
 
