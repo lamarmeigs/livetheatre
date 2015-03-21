@@ -19,9 +19,17 @@
             {% for review in reviews %}
                 {% block review_tile %}
                 <div class="review-long">
+                    {% if review.cover_image or review.production.poster or review.production.production_company.logo %}
                     <a href="{% url 'review_detail' slug=review.slug %}" class="thumbnail col-md-4 col-sm-5 col-xs-12">
-                        <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}" />
+                        {% if review.cover_image %}
+                            <img src="{{ review.cover_image.url }}" alt="{{ review.get_title }}" />
+                        {% elif review.production.poster %}
+                            <img src="{{ review.production.poster.url }}" alt="{{ review.get_title }}" />
+                        {% elif review.production.production_company.logo %}
+                            <img src="{{ review.production.production_company.logo.url }}" alt="{{ review.get_title }}" />
+                        {% endif %}
                     </a>
+                    {% endif %}
                     <h4><a href="{% url 'review_detail' slug=review.slug %}">{{ review.get_title }}</a></h4>
                     <p>
                         <strong>by <a href="{% url 'reviewers' %}#{{ review.reviewer.full_name|slugify }}">{{ review.reviewer.full_name }}</a></strong><br />
