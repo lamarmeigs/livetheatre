@@ -20,7 +20,8 @@ class HomepageView(TemplateView):
 
         # get reviews, productions, auditions, and news to display
         today = date.today()
-        published_reviews = Review.objects.filter(is_published=True)
+        published_reviews = Review.objects.filter(is_published=True,
+            cover_image__isnull=False).exclude(cover_image='')
         current_productions = Production.objects.filter_current().exclude(
             poster__isnull=True)
         upcoming_auditions = Audition.objects.filter(
