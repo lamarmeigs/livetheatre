@@ -80,11 +80,6 @@
     {% if news.related_production.production_company %}
         {% with company=news.related_production.production_company %}
             {% include 'snippets/sidebar/about_company.html' %}
-            {% if news.related_production.production_company.production_set.filter_current.exists %}
-            {% with company_productions=news.related_production.production_company.production_set.filter_current exclude_production=news.related_production %}
-                {% include 'snippets/sidebar/company_related/company_productions.html' %}
-            {% endwith %}
-            {% endif %}
         {% endwith %}
     {% endif %}
 
