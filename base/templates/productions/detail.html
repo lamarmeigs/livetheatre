@@ -115,8 +115,10 @@
     {% endwith %}
 {% endif %}
 
-{% if current_productions.exists %}
-    {% include 'snippets/sidebar/active/current_productions.html' %}
+{% if production.artsnews_set.exists %}
+    {% with related_news=production.artsnews_set.all %}
+        {% include 'snippets/sidebar/related_news.html' %}
+    {% endwith %}
 {% endif %}
 
 {% endblock %}

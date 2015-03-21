@@ -69,6 +69,12 @@
         {% include 'snippets/sidebar/company_related/company_reviews.html' %}
     {% endwith %}
 {% endif %}
+
+{% if company.artsnews_set.exists %}
+    {% with related_news=company.artsnews_set.all %}
+        {% include 'snippets/sidebar/related_news.html' %}
+    {% endwith %}
+{% endif %}
 {% endblock %}
 
 {% block extra_content %}
