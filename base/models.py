@@ -311,6 +311,21 @@ class Audition(models.Model):
         return unicode(self.get_title())
 
 
+class ProductionCompanyManager(models.Manager):
+    def filter_active(self):
+        """Return ProductionCompany objects that been active in the past year"""
+        # get Productions or Auditions since the past year
+        one_year_ago = now - timedelta(days=365)
+        productions = Production.objects.filter(start_date__gte=one_year_ago)
+        auditions = Audition.objects.filter(start_date__gte=one_year_ago)
+
+        # extract distinct company ids
+        company_ids = (productions.values_list('production_company', flat=True)
+            + auditions.values_list('production_company', flat=True))
+        company_ids = set(company_ids)
+        return ProductionCompany.objects.filter(id__in=company_ids)
+
+
 class ProductionCompany(models.Model):
     """A company or theatre group -- those who put on the show """
     name = models.CharField(max_length=150)
