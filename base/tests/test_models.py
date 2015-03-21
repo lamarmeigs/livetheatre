@@ -2,7 +2,8 @@ from django.test import TestCase
 from datetime import timedelta
 from django.utils import timezone
 
-from base.models import Audition, Production, Reviewer, Venue, ArtsNews
+from base.models import (Audition, Production, Reviewer, Venue, ArtsNews, 
+    ProductionCompany)
 from base.tests import (make_review, make_audition, make_play, make_address,
     make_production_company, make_production, make_venue, make_news,
     make_news_slideshow_image, make_reviewer)
@@ -144,6 +145,44 @@ class AuditionTests(TestCase):
         """Test returning an Audition object's url"""
         audition = make_audition()
         self.assertIn(audition.slug, audition.get_absolute_url())
+
+
+class ProductionCompanyManagerTests(TestCase):
+    """Test the methods on ProductionCompanyManager class"""
+    def test_filter_active(self):
+        """Test returning only active companies"""
+        eight_months_ago = timezone.now() - timedelta(days=8*365/12)
+        two_years_ago = timezone.now() - timedelta(days=365*2)
+
+        # create company with a recent production
+        active_production_company = make_production_company()
+        make_production(production_company=active_production_company,
+            start_date=eight_months_ago)
+
+        # create company with a recent audition
+        active_audition_company = make_production_company()
+        make_audition(production_company=active_audition_company,
+            start_date=eight_months_ago)
+
+        # create company with an old production
+        inactive_production_company = make_production_company()
+        make_production(production_company=inactive_production_company,
+            start_date=two_years_ago)
+
+        # create_company with an old audition
+        inactive_audition_company = make_production_company()
+        make_audition(production_company=inactive_audition_company,
+            start_date=two_years_ago)
+
+        # create completely inactive company
+        inactive_company = make_production_company()
+
+        active_companies = ProductionCompany.objects.filter_active()
+        self.assertIn(active_production_company, active_companies)
+        self.assertIn(active_audition_company, active_companies)
+        self.assertNotIn(inactive_production_company, active_companies)
+        self.assertNotIn(inactive_audition_company, active_companies)
+        self.assertNotIn(inactive_company, active_companies)
 
 
 class ProductionCompanyTests(TestCase):

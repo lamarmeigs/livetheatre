@@ -314,16 +314,10 @@ class Audition(models.Model):
 class ProductionCompanyManager(models.Manager):
     def filter_active(self):
         """Return ProductionCompany objects that been active in the past year"""
-        # get Productions or Auditions since the past year
-        one_year_ago = now - timedelta(days=365)
-        productions = Production.objects.filter(start_date__gte=one_year_ago)
-        auditions = Audition.objects.filter(start_date__gte=one_year_ago)
-
-        # extract distinct company ids
-        company_ids = (productions.values_list('production_company', flat=True)
-            + auditions.values_list('production_company', flat=True))
-        company_ids = set(company_ids)
-        return ProductionCompany.objects.filter(id__in=company_ids)
+        one_year_ago = timezone.now() - timedelta(days=365)
+        return ProductionCompany.objects.filter(
+            Q(production__start_date__gte=one_year_ago) |
+            Q(audition__start_date__gte=one_year_ago))
 
 
 class ProductionCompany(models.Model):
@@ -348,6 +342,8 @@ class ProductionCompany(models.Model):
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this company's detail page.")
+
+    objects = ProductionCompanyManager()
 
     class Meta:
         ordering = ['name']
