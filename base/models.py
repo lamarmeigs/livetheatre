@@ -317,7 +317,7 @@ class ProductionCompanyManager(models.Manager):
         one_year_ago = timezone.now() - timedelta(days=365)
         return ProductionCompany.objects.filter(
             Q(production__start_date__gte=one_year_ago) |
-            Q(audition__start_date__gte=one_year_ago))
+            Q(audition__start_date__gte=one_year_ago)).distinct()
 
 
 class ProductionCompany(models.Model):
