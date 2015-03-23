@@ -70,10 +70,8 @@
     {% endwith %}
 {% endif %}
 
-{% if company.artsnews_set.exists %}
-    {% with related_news=company.artsnews_set.all %}
-        {% include 'snippets/sidebar/related_news.html' %}
-    {% endwith %}
+{% if related_news %}
+    {% include 'snippets/sidebar/related_news.html' %}
 {% endif %}
 {% endblock %}
 

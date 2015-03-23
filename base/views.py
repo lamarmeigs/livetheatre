@@ -129,6 +129,17 @@ class ProductionCompanyView(DetailView):
     template_name = 'companies/detail.html'
     context_object_name = 'company'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductionCompanyView, self).get_context_data(
+            *args, **kwargs)
+
+        # add news stories belong to this company & all its productions
+        related_news = ArtsNews.objects.filter(
+            Q(related_company=self.object) |
+            Q(related_production__production_company=self.object)).distinct()
+        context['related_news'] = related_news
+        return context
+
 
 class LocalTheatresView(ListView):
     """Display all ProductionCompany objects"""
