@@ -99,20 +99,21 @@
         {% endif %}
     {% endwith %}
 
-{% endif %}
+{% else %}
 
+    {% if recent_reviews.exists %}
+        {% include 'snippets/sidebar/active/recent_reviews.html' %}
+    {% endif %}
 
+    {% if current_productions.exists %}
+        {% include 'snippets/sidebar/active/current_productions.html' %}
+    {% endif %}
 
-{% if recent_reviews.exists %}
-    {% include 'snippets/sidebar/active/recent_reviews.html' %}
 {% endif %}
 
 {% if recent_news.exists %}
     {% include 'snippets/sidebar/active/recent_news.html' %}
 {% endif %}
 
-{% if current_productions.exists %}
-    {% include 'snippets/sidebar/active/current_productions.html' %}
-{% endif %}
 
 {% endblock %}
