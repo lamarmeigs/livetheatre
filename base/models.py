@@ -354,6 +354,13 @@ class ProductionCompany(models.Model):
         """Return the reviews related to this company's productions"""
         return Review.objects.filter(production__production_company=self)
 
+    def get_related_news(self):
+        """Return news related to this company or this company's productions"""
+        related_news = ArtsNews.objects.filter(
+            Q(related_company=self) |
+            Q(related_production__production_company=self)).distinct()
+        return related_news
+
     def get_absolute_url(self):
         return reverse('production_company', kwargs={'slug':self.slug})
 

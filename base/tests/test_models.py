@@ -199,6 +199,21 @@ class ProductionCompanyTests(TestCase):
         self.assertIn(review, review_set)
         self.assertNotIn(review2, review_set)
 
+    def test_get_related_news(self):
+        """Test retrieving news related to a company and its productions"""
+        company = make_production_company()
+        production = make_production(production_company=company)
+        company_news = make_news(related_company=company)
+        production_news = make_news(related_production=production)
+        both_news = make_news(related_company=company,
+            related_production=production)
+
+        related_news = company.get_related_news()
+        self.assertIn(company_news, related_news)
+        self.assertIn(production_news, related_news)
+        self.assertIn(both_news, related_news)
+        self.assertEqual(related_news.count(), 3)
+
     def test_get_absolute_url(self):
         """Test returning a ProductionCompany object's url"""
         company = make_production_company(slug='test-company')
