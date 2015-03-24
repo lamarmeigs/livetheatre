@@ -240,6 +240,9 @@ class NewsListView(ListView):
     model = ArtsNews
     template_name = 'news/list.html'
 
+    def get_queryset(self):
+        return ArtsNews.objects.all()
+
     def get_context_data(self, *args, **kwargs):
         context = super(NewsListView, self).get_context_data(*args, **kwargs)
 
@@ -251,7 +254,8 @@ class NewsListView(ListView):
         stories_per_page = stories_per_group * num_groups
 
         # paginate news
-        paginator = Paginator(ArtsNews.objects.all(), stories_per_page)
+        news_stories = self.get_queryset()
+        paginator = Paginator(news_stories, stories_per_page)
         page = self.request.GET.get('page')
         try:
             page = paginator.page(page)
@@ -506,6 +510,15 @@ class CompanyObjectListView(ListView):
             *args, **kwargs)
         context['company'] = self.company
         return context
+
+
+class CompanyNewsListView(CompanyObjectListView, NewsListView):
+    """Display all ArtsNews related to a Production Company"""
+    order_by = '-created_on'
+    template_name = 'news/company.html'
+
+    def get_queryset(self):
+        return self.company.get_related_news()
 
 
 class CompanyProductionListView(CompanyObjectListView):

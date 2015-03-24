@@ -46,6 +46,10 @@ urlpatterns = patterns('',
         views.CompanyProductionListView.as_view(),
         name='company_productions'),
 
+    url(r'^local_theatres/(?P<slug>[-\w]+)/news/$',
+        views.CompanyNewsListView.as_view(),
+        name='company_news'),
+
 
     # News pages
     url(r'^news/$',
