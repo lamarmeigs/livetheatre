@@ -6,6 +6,10 @@
         {% endfor %}
     </ul>
     <div class="text-right">
-        <a href="{% url 'news_list' %}">See more &raquo;</a>
+        {% if production %}
+            <a href="{% url 'production_news' slug=production.slug %}">See more &raquo;</a>
+        {% elif company %}
+            <a href="{% url 'company_news' slug=company.slug %}">See more &raquo;</a>
+        {% endif %}
     </div>
 </div>
