@@ -280,6 +280,25 @@ class NewsListView(ListView):
         return context
 
 
+class ProductionNewsListView(NewsListView):
+    """Display all news items associated with a production"""
+    template_name = 'news/production.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.production = get_object_or_404(Production, slug=kwargs['slug'])
+        return super(ProductionNewsListView, self).dispatch(request,
+            *args, **kwargs)
+
+    def get_queryset(self):
+        return self.production.artsnews_set.all()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductionNewsListView, self).get_context_data(
+            *args, **kwargs)
+        context['production'] = self.production
+        return context
+
+
 class ProductionDetailView(DetailView):
     """Display all details about a Production object"""
     model = Production
