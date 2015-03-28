@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from base import views
+from base import views, feeds
 
 urlpatterns = patterns('',
     url(r'^$', views.HomepageView.as_view(), name='home'),
@@ -119,4 +119,10 @@ urlpatterns = patterns('',
     url(r'^about/reviewers/$',
         views.ReviewerListView.as_view(),
         name='reviewers'),
+
+
+    # RSS feeds
+    url(r'^rss/all/$',
+        feeds.AggregatedFeed(),
+        name='aggregated_rss_feed')
 )
