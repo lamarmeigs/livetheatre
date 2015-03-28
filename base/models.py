@@ -238,6 +238,9 @@ class Audition(models.Model):
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this auditions's detail page.")
 
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_on.editable = True # force editable while migrating old data
+
     objects = AuditionManager()
 
     def get_title(self):
@@ -407,6 +410,9 @@ class Production(DaysBase):
 
     slug = models.SlugField(help_text='This field will be used in the URL for '
         "this production's detail page.")
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_on.editable = True # force editable while migrating old data
 
     objects = ProductionManager()
 

@@ -108,7 +108,8 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
                 'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
                 'on_sunday', 'event_details'),
         }),
-        ('Description & Poster', {'fields': ('description', 'poster')})
+        ('Description & Poster', {'fields': ('description', 'poster')}),
+        (None, {'fields': ('created_on',)})
     )
     inlines = [ProductionPosterInline]
 
