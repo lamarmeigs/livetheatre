@@ -364,6 +364,11 @@ class ProductionCompany(models.Model):
             Q(related_production__production_company=self)).distinct()
         return related_news
 
+    def published_reviews(self):
+        """Return published reviews for this company's productions"""
+        return Review.objects.filter(
+            production__production_company=self, is_published=True)
+
     def get_absolute_url(self):
         return reverse('production_company', kwargs={'slug':self.slug})
 
@@ -453,6 +458,10 @@ class Production(DaysBase):
     def detailed_duration(self):
         """Alias to duration with detailed date_format and conjuction args"""
         return self.duration(date_format='%B %d, %Y')
+
+    def published_reviews(self):
+        """Return this production's published reviews"""
+        return self.review_set.filter(is_published=True)
 
     def get_slug(self):
         """Return a unique slug for this Production"""
