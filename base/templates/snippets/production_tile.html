@@ -33,10 +33,8 @@
     </div>
     {% if production.review_set.exists or production.externalreview_set.exists %}
     <div class="label-container">
-        {% for review in production.review_set.all %}
-            {% if review.is_published %}
+        {% for review in production.published_reviews %}
             <a href="{% url 'review_detail' slug=review.slug %}" class="label label-review">CTX Live Theatre Review</a>
-            {% endif %}
         {% endfor %}
 
         {% for review in production.externalreview_set.all %}

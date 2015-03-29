@@ -26,9 +26,9 @@
     <small>{% if production.has_weekly_schedule %}{{ production.get_verbose_week_description }}{% endif %}</small>
 </h3>
 
-{% if production.review_set.exists %}
+{% if production.published_reviews.exists %}
 <div class="label-container">
-    {% for review in production.review_set.all %}
+    {% for review in production.published_reviews %}
     <a href="{% url 'review_detail' slug=review.slug %}" class="label label-review">CTX Live Theatre Review</a>
     {% endfor %}
 </div>

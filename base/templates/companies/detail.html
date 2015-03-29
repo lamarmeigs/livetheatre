@@ -64,8 +64,8 @@
     {% endwith %}
 {% endif %}
 
-{% if company.review_set.exists %}
-    {% with company_reviews=company.review_set.all|slice:":4" %}
+{% if company.published_reviews.exists %}
+    {% with company_reviews=company.published_reviews.all|slice:":4" %}
         {% include 'snippets/sidebar/company_related/company_reviews.html' %}
     {% endwith %}
 {% endif %}

@@ -7,8 +7,8 @@
         {% if company.production_set.exists %}
         <li><a href="{% url 'company_productions' company.slug%}">{{ company.production_set.count }} production{{ company.production_set.count|pluralize }}</a></li>
         {% endif %}
-        {% if company.review_set.exists %}
-        <li><a href="{% url 'company_reviews' company.slug %}">{{ company.review_set.count }} review{{ company.review_set.count|pluralize }}</a></li>
+        {% if company.published_reviews.exists %}
+        <li><a href="{% url 'company_reviews' company.slug %}">{{ company.published_reviews.count }} review{{ company.published_reviews.count|pluralize }}</a></li>
         {% endif %}
         {% if company.audition_set.exists %}
         <li><a href="{% url 'company_auditions' company.slug %}">{{ company.audition_set.count }} casting call{{ company.audition_set.count|pluralize }}</a></li>
