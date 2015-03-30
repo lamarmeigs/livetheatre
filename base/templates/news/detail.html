@@ -73,7 +73,7 @@
 {% if news.related_production %}
 
     {% if news.related_production.poster %}
-    <a href="{{ news.related_production.poster.url }}" class="thumbnail colorbox">
+    <a href="{% url 'production_detail' slug=news.related_production.slug %}" class="thumbnail">
         <img src="{{ news.related_production.poster.url }}" alt="{{ news.related_production.title }}" />
     </a>
     {% endif %}
