@@ -12,7 +12,7 @@
 {% block article_content %}
 <p>This is a listing of theatre venues located in Central Texas. You can also search through a listing of <a href="{% url 'local_theatres' %}">local theatre companies</a>.</p>
 
-{% for city, venues in city_venues %}
+{% for city, venues in object_list %}
     <a id="{{ city|slugify }}" name="{{ city|slugify }}" class="anchor clearfix"></a>
     <h3>{{ city }}</h3>
     {% for venue in venues %}
@@ -56,7 +56,7 @@
 <div class="module">
     <h4>Jump to:</h4>
     <ul class="anchors">
-        {% for city, venues in city_venues %}
+        {% for city, venues in object_list %}
         <li><a href="#{{ city|slugify }}">{{ city }}</a></li>
         {% endfor %}
     </ul>

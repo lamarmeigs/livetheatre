@@ -31,7 +31,7 @@ class TemplateViewTests(BaseViewTestCase):
 
     def test_homepage(self):
         """Test homepage"""
-        review = make_review()
+        review = make_review(cover_image='foobar')
         review.publish()
         news = make_news()
         production = make_production(
@@ -75,10 +75,11 @@ class VenueViewTests(BaseViewTestCase):
 
     def test_venue_list(self):
         """Test 'Venues' list page"""
+        production = make_production(venue=self.venue1)
         url = reverse('venues')
         response = self.client.get(url)
         self.assertIn(self.venue1.name, response.content)
-        self.assertIn(self.venue2.name, response.content)
+        self.assertNotIn(self.venue2.name, response.content)
 
     def test_venue_production_list(self):
         """Test 'Venue Productions' page"""

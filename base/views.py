@@ -582,11 +582,14 @@ class VenueListView(ListView):
     model = Venue
     template_name = 'venues/list.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(VenueListView, self).get_context_data(*args, **kwargs)
-        city_venues = Venue.objects.filter_cities()
-        context['city_venues'] = sorted(city_venues.items())
-        return context
+    def get_queryset(self, *args, **kwargs):
+        """Return a dictionary that categorizes active venues by city"""
+        venues = Venue.objects.filter_active()
+        cities = venues.values_list('address__city', flat=True).distinct()
+        city_venues = {}
+        for city in cities:
+            city_venues[city] = venues.filter(address__city=city)
+        return sorted(city_venues.items())
 
 
 class VenueProductionListView(ListView):
