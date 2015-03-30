@@ -410,6 +410,22 @@ class VenueManagerTests(TestCase):
         self.assertIn(venue1, by_city.get(city1))
         self.assertIn(venue2, by_city.get(city2))
 
+    def test_filter_active(self):
+        """Test returning only active venues"""
+        active_venue = make_venue()
+        inactive_venue = make_venue()
+        empty_venue = make_venue()
+
+        now = timezone.now()
+        two_years_ago = now - timedelta(days=364*2)
+        make_production(start_date=two_years_ago, venue=inactive_venue)
+        make_production(start_date=now, venue=active_venue)
+
+        active_venues = Venue.objects.filter_active()
+        self.assertIn(active_venue, active_venues)
+        self.assertNotIn(inactive_venue, active_venues)
+        self.assertNotIn(empty_venue, active_venues)
+
 
 class ArtsNewsManagerTests(TestCase):
     """Test methods on ArtsNewsManager class"""

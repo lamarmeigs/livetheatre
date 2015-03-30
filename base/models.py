@@ -503,6 +503,13 @@ class VenueManager(models.Manager):
             city_venues[city] = self.filter(address__city=city)
         return city_venues
 
+    def filter_active(self):
+        """Return Venue objects that been active in the past year"""
+        one_year_ago = timezone.now() - timedelta(days=365)
+        return Venue.objects.filter(
+            production__start_date__gte=one_year_ago).distinct()
+
+
 class Venue(models.Model):
     """A location in which a production can be performed"""
     name = models.CharField(max_length=80)
