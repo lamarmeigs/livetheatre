@@ -241,7 +241,23 @@ class NewsListView(ListView):
     template_name = 'news/list.html'
 
     def get_queryset(self):
-        return ArtsNews.objects.all()
+        # if a category is provided, return only news items in that category
+        category = self.request.GET.get('category')
+        if category == 'external':
+            news = ArtsNews.objects.filter(external_url__isnull=False).exclude(
+                external_url='')
+        elif category == 'videos':
+            news = ArtsNews.objects.filter(video_embed__isnull=False).exclude(
+                video_embed='')
+        elif category == 'slideshows':
+            news = ArtsNews.objects.filter(
+                newsslideshowimage__isnull=False).distinct()
+        elif category == 'opportunities':
+            news = ArtsNews.objects.filter(is_job_opportunity=True)
+        else:
+            news = ArtsNews.objects.all()
+
+        return news
 
     def get_context_data(self, *args, **kwargs):
         context = super(NewsListView, self).get_context_data(*args, **kwargs)
@@ -290,7 +306,8 @@ class ProductionNewsListView(NewsListView):
             *args, **kwargs)
 
     def get_queryset(self):
-        return self.production.artsnews_set.all()
+        all_news = super(ProductionNewsListView, self).get_queryset()
+        return all_news.filter(related_production=self.production)
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductionNewsListView, self).get_context_data(
@@ -531,13 +548,16 @@ class CompanyObjectListView(ListView):
         return context
 
 
-class CompanyNewsListView(CompanyObjectListView, NewsListView):
+class CompanyNewsListView(NewsListView, CompanyObjectListView):
     """Display all ArtsNews related to a Production Company"""
     order_by = '-created_on'
     template_name = 'news/company.html'
 
     def get_queryset(self):
-        return self.company.get_related_news()
+        all_news = super(CompanyNewsListView, self).get_queryset()
+        return all_news.filter(
+            Q(related_company=self.company) |
+            Q(related_production__production_company=self.company)).distinct()
 
 
 class CompanyProductionListView(CompanyObjectListView):

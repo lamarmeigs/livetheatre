@@ -225,9 +225,11 @@ class NewsViewTests(BaseViewTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.news1 = make_news(content='foobarbaz')
-        cls.news2 = make_news(content='lorem ipsum')
-        cls.news3 = make_news(content='dolor sit amet')
+        cls.news1 = make_news(content='foobarbaz', external_url='google.com')
+        cls.news2 = make_news(content='lorem ipsum', video_embed='<iframe />')
+        cls.news3 = make_news(content='dolor sit amet', is_job_opportunity=True)
+        cls.news4 = make_news(content='eggs ham spam')
+        make_news_slideshow_image(news=cls.news4)
 
     def test_news_list_view(self):
         """Test ArtsNews list page"""
@@ -236,6 +238,37 @@ class NewsViewTests(BaseViewTestCase):
         self.assertIn(self.news1.title, response.content)
         self.assertIn(self.news2.title, response.content)
         self.assertIn(self.news3.title, response.content)
+        self.assertIn(self.news4.title, response.content)
+
+    def test_news_list_category_view(self):
+        """Test filtering ArtsNews list page by category"""
+        url = reverse('news_list') + '?category=external'
+        response = self.client.get(url)
+        self.assertIn(self.news1.title, response.content)
+        self.assertNotIn(self.news2.title, response.content)
+        self.assertNotIn(self.news3.title, response.content)
+        self.assertNotIn(self.news4.title, response.content)
+
+        url = reverse('news_list') + '?category=videos'
+        response = self.client.get(url)
+        self.assertNotIn(self.news1.title, response.content)
+        self.assertIn(self.news2.title, response.content)
+        self.assertNotIn(self.news3.title, response.content)
+        self.assertNotIn(self.news4.title, response.content)
+
+        url = reverse('news_list') + '?category=opportunities'
+        response = self.client.get(url)
+        self.assertNotIn(self.news1.title, response.content)
+        self.assertNotIn(self.news2.title, response.content)
+        self.assertIn(self.news3.title, response.content)
+        self.assertNotIn(self.news4.title, response.content)
+
+        url = reverse('news_list') + '?category=slideshows'
+        response = self.client.get(url)
+        self.assertNotIn(self.news1.title, response.content)
+        self.assertNotIn(self.news2.title, response.content)
+        self.assertNotIn(self.news3.title, response.content)
+        self.assertIn(self.news4.title, response.content)
 
     def test_news_detail_view(self):
         """Test ArtsNews detail page"""
