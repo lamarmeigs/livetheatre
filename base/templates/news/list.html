@@ -10,6 +10,28 @@
                 <h2>{% block page_header %}CTX Arts News{% endblock %}</h2>
             </div>
         </div>
+        <div class="row news-categories">
+            <div class="col-sm-3 col-xs-12 text-center news-category">
+                <a href="?category=opportunities">
+                    <i class="fa fa-usd"></i> Job/Volunteer Opportunities
+                </a>
+            </div>
+            <div class="col-sm-3 col-xs-12 text-center news-category">
+                <a href="?category=videos">
+                    <i class="fa fa-video-camera"></i> Videos
+                </a>
+            </div>
+            <div class="col-sm-3 col-xs-12 text-center news-category">
+                <a href="?category=slideshows">
+                    <i class="fa fa-image"></i> Slideshows
+                </a>
+            </div>
+            <div class="col-sm-3 col-xs-12 text-center news-category">
+                <a href="?category=external">
+                    <i class="fa fa-external-link"></i> External Links
+                </a>
+            </div>
+        </div>
         {% for news_group in news_groups %}
         <div class="row">
             {% if not forloop.first %}

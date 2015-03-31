@@ -191,6 +191,8 @@ dl.news-list dd h4 {font-size:14px;}
 .media_news img {max-width:100%;}
 .media_news iframe {width:100%; min-height:350px;}
 #news-slideshow {height:400px; overflow:hidden; background-color:#000;}
+.news-categories {margin-bottom:20px;}
+.news-category {padding:7px 0 7px;}
 
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
