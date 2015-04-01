@@ -18,11 +18,11 @@
             <div class="col-md-6 audition-long">
                 <h4><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></h4>
                 {% if audition.poster %}
-                    <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
+                    <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs pull-right">
                         <img src="{{ audition.poster.url }}" alt="{{ audition.get_title }}" />
                     </a>
                 {% elif audition.production_company.logo %}
-                    <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs">
+                    <a href="{% url 'audition_detail' slug=audition.slug %}" class="thumbnail col-md-4 col-sm-4 col-xs-6 hidden-xs pull-right">
                         <img src="{{ audition.production_company.logo.url }}" alt="{{ audition.production_company.name }}" />
                     </a>
                 {% endif %}
@@ -37,7 +37,7 @@
 
         {% empty %}
             <div class="col-md-12">
-                <p>No upcoming auditions!</p>
+                <p>No upcoming auditions! Be sure to see <a href="{% url 'auditions_past' %}">past auditions.</a></p>
             </div>
         {% endfor %}
     </div>
