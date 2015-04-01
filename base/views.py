@@ -99,7 +99,8 @@ class ReviewDetailView(DetailView):
 class ReviewListView(ListView):
     """Display all published Review objects, paginated"""
     model = Review
-    queryset = Review.objects.filter(is_published=True)
+    queryset = Review.objects.filter(is_published=True).order_by(
+        '-published_on')
     template_name = 'reviews/list.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -571,7 +572,7 @@ class CompanyProductionListView(CompanyObjectListView):
 class CompanyReviewListView(CompanyObjectListView, ReviewListView):
     """Display all published Review objects for a Production Company"""
     model = Review
-    order_by = 'id'
+    order_by = '-published_on'
     template_name = 'reviews/company.html'
 
     def get_queryset(self):
