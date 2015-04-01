@@ -263,15 +263,9 @@ class NewsListView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(NewsListView, self).get_context_data(*args, **kwargs)
 
-        # set number of news items
-        num_columns = 3
-        column_length = 5
-        stories_per_group = column_length * num_columns
-        num_groups = 4
-        stories_per_page = stories_per_group * num_groups
-
         # paginate news
         news_stories = self.get_queryset()
+        stories_per_page = 36
         paginator = Paginator(news_stories, stories_per_page)
         page = self.request.GET.get('page')
         try:
@@ -281,19 +275,7 @@ class NewsListView(ListView):
         except EmptyPage:
             page = paginator.page(paginator.num_pages)
 
-        # break page news into groups of 21
-        page_news = page.object_list
-        page_news_groups = utils.chunks(page_news, stories_per_group)
-
-        # break news groups into 3-column groupings
-        news_groups = []
-        for news_group in page_news_groups:
-            news_groups.append(utils.chunks(news_group, column_length))
-
-        context.update({
-            'news_groups': news_groups,
-            'page': page,
-        })
+        context['page'] = page
         return context
 
 

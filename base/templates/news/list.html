@@ -10,6 +10,7 @@
                 <h2>{% block page_header %}CTX Arts News{% endblock %}</h2>
             </div>
         </div>
+
         <div class="row news-categories">
             <div class="col-sm-3 col-xs-12 text-center news-category">
                 <a href="?category=opportunities">
@@ -32,22 +33,14 @@
                 </a>
             </div>
         </div>
-        {% for news_group in news_groups %}
+
         <div class="row">
-            {% if not forloop.first %}
-                <hr class="hidden-xs" />
-            {% endif %}
-            {% for news_column in news_group %}
-            <div class="col-md-4 col-sm-4">
-                <dl class="news-list">
-                    {% for news in news_column %}
-                        {% include "snippets/news_dl_item.html" %}
-                    {% endfor %}
-                </dl>
-            </div>
-            {% endfor %}
-        </div>
+        {% for news in page.object_list %}
+            <dl class="news-list col-lg-3 col-sm-4">
+                {% include "snippets/news_dl_item.html" %}
+            </dl>
         {% endfor %}
+        </div>
 
         {% if page.has_other_pages %}
         <div class="row">
