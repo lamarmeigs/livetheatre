@@ -170,32 +170,31 @@ class AuditionDetailView(DetailView):
         return context
 
 
-class AuditionListView(ListView):
-    """Display all Audition objects, paginated"""
+class UpcomingAuditionListView(ListView):
+    """Display all upcoming Audition objects"""
     model = Audition
-    template_name = 'auditions/list.html'
+    queryset = Audition.objects.filter_upcoming().order_by('start_date')
+    template_name = 'auditions/upcoming_list.html'
 
-    def get_upcoming_auditions(self):
-        """Return upcoming auditions"""
-        return Audition.objects.filter_upcoming()
 
-    def get_previous_auditions(self):
-        """Return past auditions"""
-        upcoming = self.get_upcoming_auditions()
+class PastAuditionListView(ListView):
+    """Display all past Audition objects, paginated"""
+    model = Audition
+    template_name = 'auditions/past_list.html'
+
+    def get_queryset(self):
+        upcoming = Audition.objects.filter_upcoming()
         return Audition.objects.exclude(
             id__in=[audition.id for audition in upcoming]
             ).order_by('-start_date')
 
     def get_context_data(self, *args, **kwargs):
-        context = super(AuditionListView, self).get_context_data(
+        context = super(PastAuditionListView, self).get_context_data(
             *args, **kwargs)
 
-        # split upcoming and past auditions
-        upcoming = self.get_upcoming_auditions()
-        all_past = self.get_previous_auditions()
-
         # paginate past auditions
-        paginator = Paginator(all_past, 30)
+        auditions = self.get_queryset()
+        paginator = Paginator(auditions, 24)
         page = self.request.GET.get('page')
         try:
             page = paginator.page(page)
@@ -204,11 +203,7 @@ class AuditionListView(ListView):
         except EmptyPage:
             page = paginator.page(paginator.num_pages)
 
-        context.update({
-            'upcoming_auditions': upcoming,
-            'past_auditions': page.object_list,
-            'page': page,
-        })
+        context['page'] = page
         return context
 
 
@@ -564,20 +559,27 @@ class CompanyReviewListView(CompanyObjectListView, ReviewListView):
         return self.order_queryset(queryset)
 
 
-class CompanyAuditionListView(CompanyObjectListView, AuditionListView):
+class CompanyAuditionListView(UpcomingAuditionListView, CompanyObjectListView):
     """Display all Auditions for a Production Company"""
     model = Audition
     order_by = 'start_date'
-    template_name = 'auditions/company.html'
+    template_name = 'auditions/company_upcoming.html'
 
-    def get_upcoming_auditions(self):
-        return Audition.objects.filter_upcoming().filter(
-            production_company=self.company)
+    def get_queryset(self):
+        upcoming = super(CompanyAuditionListView, self).queryset
+        return upcoming.filter(production_company=self.company).order_by(
+            'start_date')
 
-    def get_previous_auditions(self):
-        all_previous = super(
-            CompanyAuditionListView, self).get_previous_auditions()
-        return all_previous.filter(production_company=self.company)
+
+class CompanyPastAuditionListView(PastAuditionListView, CompanyObjectListView):
+    """Display all Auditions for a Production Company"""
+    model = Audition
+    order_by = 'start_date'
+    template_name = 'auditions/company_past.html'
+
+    def get_queryset(self):
+        past = super(CompanyPastAuditionListView, self).get_queryset()
+        return past.filter(production_company=self.company)
 
 
 class VenueListView(ListView):

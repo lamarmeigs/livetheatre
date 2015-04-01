@@ -1,0 +1,9 @@
+{% extends 'auditions/past_list.html' %}
+
+{% block main_title %}
+<h2>Past Auditions with {{ company.name }}</h2>
+{% endblock %}
+
+{% block current_auditions %}
+<p><em><a href="{% url 'company_auditions' slug=company.slug %}">See current auditions &raquo;</a></em></p>
+{% endblock %}

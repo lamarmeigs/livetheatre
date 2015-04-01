@@ -1,0 +1,70 @@
+{% extends 'base_internal.html' %}
+
+{% block page_title %}{% if page_title %}{{ page_title }}{% else %}Auditions{% endif %} | {% endblock %}
+{% block body_classes %}section-audition{% endblock %}
+
+{% block body_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main_title %}
+            <h2>Past Auditions</h2>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% block current_auditions %}
+            <p><em><a href="{% url 'auditions' %}">See current auditions &raquo;</a></em></p>
+            {% endblock %}
+            <hr />
+        </div>
+    </div>
+    <div id="past-auditions" class="row">
+        {% for audition in page.object_list %}
+            <div class="col-md-4 col-sm-6 audition">
+                <dl>
+                    <dt><strong><a href="{% url 'audition_detail' slug=audition.slug %}">{{ audition.get_title }}</a></strong></dt>
+                    <dd class="small"><em>{{ audition.duration }}</em></dd>
+                    <dd>
+                        {% if audition.content %}
+                        {{ audition.content|removetags:"img iframe br div"|truncatewords_html:15|safe }}
+                        {% else %}
+                        {{ audition.get_alt_description }}
+                        {% endif %}
+                        <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
+                    </dd>
+                </dl>
+            </div>
+        {% empty %}
+            <p>No past auditions!</p>
+        {% endfor %}
+    </div>
+
+    {% if page.has_other_pages %}
+    <div class="row">
+        <div class="pagination col-md-12 text-center">
+            <div class="pull-left">
+                {% if page.has_previous %}
+                <a href="?page={{ page.previous_page_number }}#past-auditions">
+                    <span class="glyphicon glyphicon-backward small"></span> Previous Page
+                </a>
+                {% endif %}
+            </div>
+
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+
+            <div class="pull-right">
+                {% if page.has_next %}
+                <a href="?page={{ page.next_page_number }}#past-auditions">
+                    Next Page <span class="glyphicon glyphicon-forward small"></span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

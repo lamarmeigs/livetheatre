@@ -17,8 +17,12 @@ urlpatterns = patterns('',
 
     # Audition pages
     url(r'^auditions/$',
-        views.AuditionListView.as_view(),
+        views.UpcomingAuditionListView.as_view(),
         name='auditions'),
+
+    url(r'^auditions/past/$',
+        views.PastAuditionListView.as_view(),
+        name='auditions_past'),
 
     url(r'^auditions/(?P<slug>[-\w]+)/$',
         views.AuditionDetailView.as_view(),
@@ -41,6 +45,10 @@ urlpatterns = patterns('',
     url(r'^local_theatres/(?P<slug>[-\w]+)/auditions/$',
         views.CompanyAuditionListView.as_view(),
         name='company_auditions'),
+
+    url(r'^local_theatres/(?P<slug>[-\w]+)/auditions/past/$',
+        views.CompanyPastAuditionListView.as_view(),
+        name='company_auditions_past'),
 
     url(r'^local_theatres/(?P<slug>[-\w]+)/productions/$',
         views.CompanyProductionListView.as_view(),
