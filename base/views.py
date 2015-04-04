@@ -633,7 +633,8 @@ class VenueProductionListView(ListView):
             request, *args, **kwargs)
 
     def get_queryset(self):
-        return Production.objects.filter(venue=self.venue)
+        return Production.objects.filter(venue=self.venue).order_by(
+            '-start_date')
 
     def get_context_data(self, *args, **kwargs):
         context = super(VenueProductionListView, self).get_context_data(
