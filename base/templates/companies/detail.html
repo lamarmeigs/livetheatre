@@ -12,14 +12,12 @@
 <h2>{{ company.name }}</h2>
 {% endblock %}
 
-{% block terciary_title %}
-{% if company.company_site %}
-<h3><a href="{{ company.company_site }}">{{ company.company_site }}</a></h3>
-{% endif %}
-{% endblock %}
-
 {% block article_content %}
 {{ company.description|safe }}
+
+{% if company.company_site %}
+<p class="text-right"><em><a href="{{ company.company_site }}" target="_blank">Read more on their website &raquo;</a></em></p>
+{% endif %}
 
 {% if company.contact_info %}
 <hr />
