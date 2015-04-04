@@ -193,6 +193,8 @@ dl.news-list dd h4 {font-size:14px;}
 #news-slideshow {height:400px; overflow:hidden; background-color:#000;}
 .news-categories {margin-bottom:20px;}
 .news-category {padding:7px 0 7px;}
+#news_slideshow .item {max-height:400px}
+#news_slideshow .item img {max-height:400px; margin:0 auto;}
 
 .production {box-shadow:none; border:none;}
 .production:nth-child(3n+1) {clear:left;}
