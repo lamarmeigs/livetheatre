@@ -13,55 +13,31 @@
             </div>
         </div>
 
-        <p>This is a listing of theatre companies located in Central Texas. You can also search through a listing of <a href="{% url 'venues' %}">local theatre venues</a>.</p>
+        <p>This is a listing of active theatre companies located in Central Texas. You can also search through a listing of <a href="{% url 'venues' %}">local theatre venues</a>.</p>
 
-        {% for company in companies %}
-            {% block company_tile %}
-            <div class="row">
-                <div class="col-md-12">
-                    <h3><a href="{% url 'production_company' slug=company.slug %}">{{ company.name }}</a></h3>
-                </div>
-                <div class="col-md-8">
-                    {% if company.description %}
-                        {{ company.description|truncatewords_html:200|safe }}
-                    {% elif company.contact_info %}
-                        {{ company.contact_info|safe }}
-                    {% elif company.home_venues.exists %}
-                        {% for venue in company.home_venues.all %}
-                            <address>
-                                <strong>{{ venue.name }}</strong><br />
-                                {{ venue.address.line_1 }}<br />
-                                {% if venue.address.line_2 %}{{ venue.address.line_2 }}<br />{% endif %}
-                                {{ venue.address.city }}, TX, {{ venue.address.zip_code }}
-                            </address>
+        <div class="row">
+            <div class="col-sm-10">
+                {% for category, companies in object_list %}
+                    <a id="{{category}}" name="{{category}}"></a>
+                    <h3>{{ category }}</h3>
+                    <ul>
+                        {% for company in companies %}
+                        <li><a href="{% url 'production_company' slug=company.slug %}">{{ company.name }}</a></li>
                         {% endfor %}
-                    {% endif %}
-                    {% if company.production_set.exists or company.review_set.exists or company.audition_set.exists %}
-                        <p>This company has:</p>
-                        <ul>
-                            {% if company.production_set.exists %}
-                            <li><a href="{% url 'company_productions' company.slug%}">{{ company.production_set.count }} production{{ company.production_set.count|pluralize }}</a></li>
-                            {% endif %}
-                            {% if company.review_set.exists %}
-                            <li><a href="{% url 'company_reviews' company.slug %}">{{ company.review_set.count }} review{{ company.review_set.count|pluralize }}</a></li>
-                            {% endif %}
-                            {% if company.audition_set.exists %}
-                            <li><a href="{% url 'company_auditions' company.slug %}">{{ company.audition_set.count }} casting call{{ company.audition_set.count|pluralize }}</a></li>
-                            {% endif %}
-                        </ul>
-                    {% endif %}
-                    <p><a href="{% url 'production_company' slug=company.slug %}">Read more &raquo;</a></p>
-                </div>
-                <div class="col-md-4">
-                    {% if company.logo %}
-                        <a href="{% url 'production_company' slug=company.slug %}" class="thumbnail col-md-12 hidden-xs">
-                            <img src="{{ company.logo.url }}" alt="{{ company.name }}" />
-                        </a>
-                    {% endif %}
+                    </ul>
+                {% endfor %}
+            </div>
+            <div class="col-sm-2 hidden-xs">
+                <div class="module">
+                    <h4>Jump to:</h4>
+                    <ul>
+                        {% for category, companies in object_list %}
+                        <li><a href="#{{category}}">{{ category }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-            {% endblock %}
-        {% endfor %}
+        </div>
 
     </div>
 {% endblock %}

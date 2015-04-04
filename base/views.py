@@ -144,6 +144,30 @@ class LocalTheatresView(ListView):
     template_name = 'companies/list.html'
     context_object_name = 'companies'
 
+    def get_queryset(self):
+        active_companies = self.queryset
+
+        # categorize companies by the first letter in their name
+        categorized = {}
+        previous_category = None
+        for company in active_companies:
+            first_letter = (company.name[len('the ')].upper()
+                if company.name.lower().startswith('the ')
+                else company.name[0].upper() )
+            if previous_category != first_letter:
+                categorized[first_letter] = [company]
+                previous_category = first_letter
+            else:
+                categorized[previous_category].append(company)
+
+        # sort companies alphabetically into a list of tuples
+        ordered = []
+        ordered_categories = sorted(categorized.keys())
+        for category in ordered_categories:
+            ordered.append((category, categorized.get(category)))
+
+        return ordered
+
 
 class AuditionDetailView(DetailView):
     """Display all details about an Audition object"""
