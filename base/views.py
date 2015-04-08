@@ -140,7 +140,7 @@ class ProductionCompanyView(DetailView):
 class LocalTheatresView(ListView):
     """Display all ProductionCompany objects"""
     model = ProductionCompany
-    queryset = ProductionCompany.objects.filter_active().order_by('name')
+    queryset = ProductionCompany.objects.filter_active()
     template_name = 'companies/list.html'
     context_object_name = 'companies'
 
@@ -149,16 +149,14 @@ class LocalTheatresView(ListView):
 
         # categorize companies by the first letter in their name
         categorized = {}
-        previous_category = None
         for company in active_companies:
             first_letter = (company.name[len('the ')].upper()
                 if company.name.lower().startswith('the ')
                 else company.name[0].upper() )
-            if previous_category != first_letter:
-                categorized[first_letter] = [company]
-                previous_category = first_letter
+            if first_letter in categorized.keys():
+                categorized[first_letter].append(company)
             else:
-                categorized[previous_category].append(company)
+                categorized[first_letter] = [company]
 
         # sort companies alphabetically into a list of tuples
         ordered = []
