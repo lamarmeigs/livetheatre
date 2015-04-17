@@ -293,6 +293,9 @@ body.section-news #main-content .carousel .item {background-color:#000;}
 body.section-news #main-content .carousel .item img {margin:0 auto;}
 body.section-news .news-list:nth-child(3n+1) {clear:left;}
 
+a.colorbox {position:relative;}
+a.colorbox i.fa-search-plus {position:absolute; top:5px; right:5px; color:#999;}
+
 /********************
 *** Media Queries ***
 *********************/

@@ -44,6 +44,7 @@
 {% block main_image %}
 {% if company.logo %}
     <a href="{{ company.logo.url }}" class="thumbnail colorbox">
+        <i class="fa fa-search-plus"></i>
         <img src="{{ company.logo.url }}" alt="{{ company.name }}" />
     </a>
 {% endif %}

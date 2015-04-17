@@ -63,6 +63,7 @@
             {% if production.poster %}
             <div class="item active">
                 <a class="colorbox" href="{{ production.poster.url }}">
+                    <i class="fa fa-search-plus"></i>
                     <img src="{{ production.poster.url }}" alt="{{ production.poster.name }}" />
                 </a>
             </div>
@@ -70,6 +71,7 @@
             {% for image in production.productionposter_set.all %}
                 <div class="item {% if forloop.first and not production.poster %}active{% endif %}">
                     <a class="colorbox" href="{{ image.image.url }}">
+                        <i class="fa fa-search-plus"></i>
                         <img src="{{ image.image.url }}" alt="{{ image.image.name }}" />
                     </a>
                 </div>
@@ -90,12 +92,14 @@
 {% elif production.poster %}
 
     <a href="{{ production.poster.url }}" class="thumbnail colorbox">
+        <i class="fa fa-search-plus"></i>
         <img src="{{ production.poster.url }}" alt="{{ production.title }}" />
     </a>
 
 {% elif production.production_company.logo %}
 
 <a href="{{ production.production_company.logo.url }}" class="thumbnail colorbox">
+    <i class="fa fa-search-plus"></i>
     <img src="{{ production.production_company.logo.url }}" alt="{{ production.production_company.name }}" />
 </a>
 

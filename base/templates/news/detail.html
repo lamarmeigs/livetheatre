@@ -24,6 +24,7 @@
     {% for image in news.newsslideshowimage_set.all %}
     <div class="item">
         <a class="colorbox" href="{{ image.image.url }}">
+            <i class="fa fa-search-plus"></i>
             <img src="{{ image.image.url }}" alt="{{ image.image.name }}" class="no-caption"/>
         </a>
     </div>
@@ -63,6 +64,7 @@
 
     {% if news.related_company.logo %}
     <a href="{{ news.related_company.logo.url }}" class="thumbnail colorbox">
+        <i class="fa fa-search-plus"></i>
         <img src="{{ news.related_company.logo.url }}" alt="{{ news.related_company.name }}" />
     </a>
     {% endif %}
