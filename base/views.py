@@ -79,7 +79,7 @@ class ReviewDetailView(DetailView):
         context = super(ReviewDetailView, self).get_context_data(
             *args, **kwargs)
 
-        recent_reviews = Review.objects.all()
+        recent_reviews = Review.objects.filter(is_published=True)
         recent_news = ArtsNews.objects.all()
 
         review = self.get_object()
