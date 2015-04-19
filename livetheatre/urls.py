@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^bossman/', include(admin.site.urls)),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^search/', include('haystack.urls')),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('base.urls')),
 )
 
