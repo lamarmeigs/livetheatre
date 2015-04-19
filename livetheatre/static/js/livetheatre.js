@@ -17,7 +17,7 @@ $(document).ready(function() {
 
 
     /* Add captions to in-body images */
-    $("#main-content img[alt]:not(.no-caption)").each(function() {
+    $("#main-content img[alt]:not(.no-caption,.captcha)").each(function() {
         caption_text = $(this).attr('alt');
         float_str = this.style.float;
         width = $(this).attr('width');

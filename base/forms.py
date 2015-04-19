@@ -1,5 +1,6 @@
 from django import forms
 from django.core.mail import EmailMessage
+from captcha.fields import CaptchaField
 from livetheatre import settings
 
 CONTACT_SUBJECTS = (
@@ -21,6 +22,7 @@ class ContactForm(forms.Form):
         label='Attach any relevant material',
         help_text='If you have multiple files to attach, please consider '
         'condensing them into a zipped archive.')
+    captcha = CaptchaField(label="Please prove you're not a robot")
 
     def get_subject(self):
         """Return the subject corresponding to the user's choice"""

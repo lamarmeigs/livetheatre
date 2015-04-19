@@ -37,6 +37,13 @@
     {% endif %}
     {{ form.attachment }}</p>
 
+    <p><label for="{{ form.captcha.auto_id }}">{{ form.captcha.label }}:</label><br />
+    {% if form.captcha.errors %}
+        <div class="bg-danger">{{ form.captcha.errors }}</div>
+    {% endif %}
+    {{ form.captcha }}</p>
+    
+
     <input type="submit" value="Submit" class="btn btn-default" />
 </form>
 
