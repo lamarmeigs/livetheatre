@@ -1,0 +1,43 @@
+{% extends 'about/base.html' %}
+
+{% block page_title %}Contact Us | {% endblock %}
+{% block main_title %}
+<h2>Contact Us</h2>
+{% endblock %}
+
+{% block article_content %}
+<form id="contact" enctype="multipart/form-data" method="post" action=".">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <p><label for="{{ form.subject.auto_id }}">{{ form.subject.label }}</label>:<br />
+    <small>{{ form.subject.help_text }}</small><br />
+    {% if form.subject.errors %}
+        <div class="bg-danger">{{ form.subject.errors }}</div>
+    {% endif %}
+    {{ form.subject }}</p>
+
+    <p><label for="{{ form.email.auto_id }}">{{ form.email.label }}:</label><br />
+    <small>{{ form.email.help_text }}</small><br />
+    {% if form.email.errors %}
+        <div class="bg-danger">{{ form.email.errors }}</div>
+    {% endif %}
+    {{ form.email }}</p>
+
+    <p><label for="{{ form.message.auto_id }}">{{ form.message.label }}:</label><br />
+    {% if form.message.errors %}
+        <div class="bg-danger">{{ form.message.errors }}</div>
+    {% endif %}
+    {{ form.message }}</p>
+
+    <p><label for="{{ form.attachment.auto_id }}">{{ form.attachment.label }}:</label><br />
+    <small>{{ form.attachment.help_text }}</small><br />
+    {% if form.attachment.errors %}
+        <div class="bg-danger">{{ form.attachment.errors }}</div>
+    {% endif %}
+    {{ form.attachment }}</p>
+
+    <input type="submit" value="Submit" class="btn btn-default" />
+</form>
+
+{% endblock %}

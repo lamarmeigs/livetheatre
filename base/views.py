@@ -5,9 +5,10 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 
-from base import utils
+from base import utils, forms
 from base.models import *
 
 
@@ -672,3 +673,21 @@ class AboutView(TemplateView):
 class PrinciplesServicesView(TemplateView):
     """Render static Principles & Services page"""
     template_name = 'about/principles_and_services.html'
+
+
+class ContactFormView(FormView):
+    """Handles the contact form"""
+    form_class = forms.ContactForm
+    template_name = 'about/contact.html'
+
+    def get_success_url(self):
+        return reverse('contact_thanks')
+
+    def form_valid(self, form):
+        form.send_message()
+        return super(ContactFormView, self).form_valid(form)
+
+
+class ContactThanksView(TemplateView):
+    """Display a thank-you page after the contact form is submitted"""
+    template_name = 'about/contact_thanks.html'

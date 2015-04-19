@@ -127,6 +127,12 @@ urlpatterns = patterns('',
     url(r'^about/reviewers/$',
         views.ReviewerListView.as_view(),
         name='reviewers'),
+    url(r'^about/contact/$',
+        views.ContactFormView.as_view(),
+        name='contact'),
+    url(r'^about/contact/thanks/$',
+        views.ContactThanksView.as_view(),
+        name='contact_thanks'),
 
 
     # RSS feeds

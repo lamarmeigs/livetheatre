@@ -296,6 +296,10 @@ body.section-news .news-list:nth-child(3n+1) {clear:left;}
 a.colorbox {position:relative;}
 a.colorbox i.fa-search-plus {position:absolute; top:5px; right:5px; color:#999;}
 
+form#contact label {margin-bottom:0;}
+form#contact ul#id_subject {list-style:none;}
+form#contact ul#id_subject label {font-weight:normal;}
+
 /********************
 *** Media Queries ***
 *********************/
