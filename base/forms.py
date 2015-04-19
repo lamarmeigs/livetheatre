@@ -1,5 +1,6 @@
 from django import forms
 from django.core.mail import EmailMessage
+from django.template.defaultfilters import filesizeformat
 from captcha.fields import CaptchaField
 from livetheatre import settings
 
@@ -21,8 +22,18 @@ class ContactForm(forms.Form):
     attachment = forms.FileField(required=False,
         label='Attach any relevant material',
         help_text='If you have multiple files to attach, please consider '
-        'condensing them into a zipped archive.')
+        'condensing them into a zipped archive. Size limit: 5MB')
     captcha = CaptchaField(label="Please prove you're not a robot")
+
+    def clean_attachment(self):
+        attachment = self.cleaned_data.get('attachment')
+        if attachment and attachment._size > settings.MAX_UPLOAD_SIZE:
+            readable_filesize = filesizeformat(attachment._size)
+            readable_limit = filesizeformat(settings.MAX_UPLOAD_SIZE)
+            raise forms.ValidationError('Please keep your attachments smaller '
+                'than %s. This file is %s' % (readable_limit, readable_filesize)
+            )
+        return attachment
 
     def get_subject(self):
         """Return the subject corresponding to the user's choice"""
@@ -36,7 +47,7 @@ class ContactForm(forms.Form):
 
         choice = self.cleaned_data.get('subject')
         choice = choice if choice in subjects.keys() else 'default'
-        subject = subjects[choice]
+        subject = settings.EMAIL_SUBJECT_PREFIX + subjects[choice]
         return subject
 
     def send_message(self):
@@ -44,14 +55,12 @@ class ContactForm(forms.Form):
         if not self.cleaned_data:
             self.clean()
 
-        subject = self.get_subject()
-        attachment = self.cleaned_data.get('attachment')
-
         email = EmailMessage(
-            subject=self.cleaned_data.get('subject'),
+            subject=self.get_subject(),
             body=self.cleaned_data.get('message'),
             from_email=self.cleaned_data.get('email'),
             to=settings.DEFAULT_CONTACT_EMAILS)
+        attachment = self.cleaned_data.get('attachment')
         if attachment:
             email.attach(attachment.name, attachment.read())
         email.send()
