@@ -200,6 +200,8 @@ class ExternalReviewAdmin(ForeignKeyAutocompleteAdmin):
     save_on_top = True
 
     list_display = ('production', 'source_name', 'review_url')
+    search_fields = ['production__play__title', 'source_name', 'review_url',
+        'production__production_company__name']
     related_search_fields = {
         'production': ('play__title', 'production_company__name')}
 
