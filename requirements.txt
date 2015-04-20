@@ -1,5 +1,6 @@
 Django==1.7.5
 Pillow==2.6.1
+Whoosh==2.7.0
 django-extensions==1.5.0
 django-filebrowser==3.5.7
 django-grappelli==2.6.3

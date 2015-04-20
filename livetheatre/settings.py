@@ -118,7 +118,8 @@ GRAPPELLI_ADMIN_TITLE = 'CTX Live Theatre Admin'
 # http://django-haystack.readthedocs.org/en/latest/tutorial.html
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
     },
 }
 
