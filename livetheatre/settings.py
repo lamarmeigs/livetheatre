@@ -116,6 +116,7 @@ GRAPPELLI_ADMIN_TITLE = 'CTX Live Theatre Admin'
 
 # Search Configuration
 # http://django-haystack.readthedocs.org/en/latest/tutorial.html
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
