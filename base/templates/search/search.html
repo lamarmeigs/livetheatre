@@ -9,22 +9,24 @@
 <h3>Results</h3>
 {% if query %}
     {% for result in page.object_list %}
-        <div class="result">
-            <h4><a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a></h4>
-            <p>
-            {% if result.object.detailed_duration %}
-                <em>{{ result.object.detailed_duration }}</em> &mdash;
-            {% endif %}
-            {% if result.object.lede %}
-                {{ result.object.lede }}
-            {% elif result.object.content %}
-                {{ result.object.content|removetags:"img iframe br div"|truncatewords_html:50|safe }}
-            {% elif result.object.description %}
-                {{ result.object.description|removetags:"img iframe br div"|truncatewords_html:50|safe }}
-            {% endif %}
-            <a href="{{ result.object.get_absolute_url }}">Read more &raquo;</a>
-            </p>
-        </div>
+        {% if result %}
+            <div class="result">
+                <h4><a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a></h4>
+                <p>
+                {% if result.object.detailed_duration %}
+                    <em>{{ result.object.detailed_duration }}</em> &mdash;
+                {% endif %}
+                {% if result.object.lede %}
+                    {{ result.object.lede }}
+                {% elif result.object.content %}
+                    {{ result.object.content|removetags:"img iframe br div"|truncatewords_html:50|safe }}
+                {% elif result.object.description %}
+                    {{ result.object.description|removetags:"img iframe br div"|truncatewords_html:50|safe }}
+                {% endif %}
+                <a href="{{ result.object.get_absolute_url }}">Read more &raquo;</a>
+                </p>
+            </div>
+        {% endif %}
     {% empty %}
         <p>No results found.</p>
     {% endfor %}
