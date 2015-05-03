@@ -20,8 +20,9 @@ class AggregatedFeed(Feed):
         reviews = Review.objects.filter(is_published=True)
         aggregated = (list(productions) + list(auditions) + 
             list(news) + list(reviews))
-        return sorted(aggregated, reverse=True, key=lambda item: item.created_on 
-            if hasattr(item, 'created_on') else item.published_on)
+        return sorted(aggregated, reverse=True,
+            key=lambda item: (item.created_on if hasattr(item, 'created_on')
+            else item.published_on)
 
     def item_title(self, object):
         return object.title
