@@ -42,6 +42,7 @@ class ContactForm(forms.Form):
             'audition': 'Audition Notice from %s' % user_email,
             'production': 'Production Notice from %s' % user_email,
             'inquiry': 'Inquiry from %s' % user_email,
+            'correction': 'Correction from %s' % user_email,
             'default': 'Contact Form Submission from %s' % user_email,
         }
 
@@ -58,8 +59,8 @@ class ContactForm(forms.Form):
         email = EmailMessage(
             subject=self.get_subject(),
             body=self.cleaned_data.get('message'),
-            from_email=self.cleaned_data.get('email'),
-            to=settings.DEFAULT_CONTACT_EMAILS)
+            to=settings.DEFAULT_CONTACT_EMAILS,
+            headers={'Reply-To':self.cleaned_data.get('email')})
         attachment = self.cleaned_data.get('attachment')
         if attachment:
             email.attach(attachment.name, attachment.read())
