@@ -22,7 +22,7 @@ class AggregatedFeed(Feed):
             list(news) + list(reviews))
         return sorted(aggregated, reverse=True,
             key=lambda item: (item.created_on if hasattr(item, 'created_on')
-            else item.published_on)
+            else item.published_on))
 
     def item_title(self, object):
         return object.title
