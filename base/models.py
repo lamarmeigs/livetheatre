@@ -211,7 +211,7 @@ class AuditionManager(models.Manager):
 class Audition(models.Model):
     """Represents a casting call"""
     title = models.CharField(max_length=150, null=True, blank=True,
-        help_text="If none, defaults to 'Audition for *play*, by *company*'")
+        help_text="If none, defaults to 'Auditions for *play*, by *company*'")
 
     production_company = models.ForeignKey('ProductionCompany',
         null=True, blank=True, help_text='The production company conducting '
@@ -252,12 +252,12 @@ class Audition(models.Model):
         if self.title:
             title = self.title
         elif self.play and self.production_company:
-            title = 'Audition for %s, by %s' % (
+            title = 'Auditions for %s, by %s' % (
                 self.play, self.production_company)
         elif self.play or self.production_company:
-            title = 'Audition for %s' % (self.play or self.production_company)
+            title = 'Auditions for %s' % (self.play or self.production_company)
         else:
-            title = 'Audition'
+            title = 'Auditions'
         return unicode(title)
 
     def get_alt_description(self):
@@ -265,7 +265,7 @@ class Audition(models.Model):
         To be used if self.content is empty, this method will return a rough
         description of the record based on other field values
         """
-        description = 'Audition'
+        description = 'Auditions'
         if self.play:
             description += ' for a role in %s' % self.play
 
