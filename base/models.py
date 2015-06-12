@@ -41,7 +41,7 @@ class Review(models.Model):
         ordering = ['-published_on']
 
     def get_title(self):
-        title = self.title if self.title else 'Review: %s' % self.production
+        title = self.title if self.title else u'Review: %s' % self.production
         return title
 
     def get_slug(self):
