@@ -42,11 +42,12 @@ class ReviewTests(TestCase):
 
     def test_save(self):
         """Test overridden save method"""
-        review = make_review(slug='bad-slug')
+        review = make_review(slug='bad-slug', is_published=True)
         review.save()
         self.assertEqual(review.title, review.get_title())
         self.assertEqual(review.slug, review.get_slug())
         self.assertNotEqual(review.slug, 'bad-slug')
+        self.assertIsNotNone(review.published_on)
 
     def test_get_absolute_url(self):
         """Test getting this review's url"""
@@ -95,7 +96,7 @@ class AuditionTests(TestCase):
         self.assertIn(company.name, company_audition.get_title())
 
         empty_audition = make_audition()
-        self.assertEqual(empty_audition.get_title(), 'Audition')
+        self.assertEqual(empty_audition.get_title(), 'Auditions')
 
     def test_get_alt_description(self):
         """Test crafting an alternate description"""
