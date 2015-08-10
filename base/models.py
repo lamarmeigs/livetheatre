@@ -427,7 +427,7 @@ class Production(DaysBase):
     def title(self):
         title = unicode(self.play)
         if self.production_company:
-            title += ' by %s' % self.production_company
+            title += u' by %s' % self.production_company
         return title
 
     def save(self, *args, **kwargs):
