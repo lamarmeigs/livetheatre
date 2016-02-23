@@ -306,7 +306,7 @@ form#contact ul#id_subject label {font-weight:normal;}
 
 /* smallest */
 @media (max-width: 480px) {
-    body {margin-bottom: 410px;}
+    body {margin-bottom: 450px;}
     .footer {height: auto;}
     body.section-news #main-content .video-embed iframe {height:200px;}
     .media_news iframe {min-height:200px;}
