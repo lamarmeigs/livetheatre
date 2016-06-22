@@ -94,7 +94,7 @@ urlpatterns = patterns('',
         views.CityPerformanceView.as_view(),
         name='productions_city'),
 
-    url(r'^productions/city/(?P<city>[-\w ]+)/$',
+    url(r'^productions/city/(?P<city>[-\w\. ]+)/$',
         views.CityPerformanceView.as_view(),
         name='productions_city'),
 
