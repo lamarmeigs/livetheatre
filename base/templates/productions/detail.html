@@ -45,7 +45,11 @@
 {% endblock %}
 
 {% block article_content %}
-{{ production.description|safe }}
+{% if production.description %}
+  {{ production.description|safe }}
+{% else %}
+  {{ production.play.synopsis|safe }}
+{% endif %}
 <hr />
 {% include 'snippets/production_details.html' %}
 {% endblock %}
