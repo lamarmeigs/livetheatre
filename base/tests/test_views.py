@@ -3,9 +3,12 @@ from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 
-from base.tests import (make_review, make_audition, make_play, make_address,
+from base.tests import (
+    make_review, make_audition, make_address,
     make_production_company, make_production, make_venue, make_news,
-    make_news_slideshow_image, make_reviewer)
+    make_news_slideshow_image, make_reviewer
+)
+
 
 class BaseViewTestCase(TestCase):
     """Base TestCase class with available test client"""
@@ -75,7 +78,7 @@ class VenueViewTests(BaseViewTestCase):
 
     def test_venue_list(self):
         """Test 'Venues' list page"""
-        production = make_production(venue=self.venue1)
+        make_production(venue=self.venue1)
         url = reverse('venues')
         response = self.client.get(url)
         self.assertIn(self.venue1.name, response.content)
@@ -84,7 +87,7 @@ class VenueViewTests(BaseViewTestCase):
     def test_venue_production_list(self):
         """Test 'Venue Productions' page"""
         production = make_production(venue=self.venue1)
-        url = reverse('venue_productions', kwargs={'slug':self.venue1.slug})
+        url = reverse('venue_productions', kwargs={'slug': self.venue1.slug})
         response = self.client.get(url)
         self.assertIn(production.title, response.content)
         self.assertIn(self.venue1.name, response.content)
@@ -111,7 +114,10 @@ class CompanyViewTests(BaseViewTestCase):
 
     def test_company_detail(self):
         """Test ProductionCompany detail page"""
-        url = reverse('production_company', kwargs={'slug':self.company1.slug})
+        url = reverse(
+            'production_company',
+            kwargs={'slug': self.company1.slug}
+        )
         response = self.client.get(url)
         self.assertIn(self.company1.name, response.content)
         self.assertNotIn(self.company2.name, response.content)
@@ -119,7 +125,10 @@ class CompanyViewTests(BaseViewTestCase):
     def test_company_production_list(self):
         """Test Company Productions list page"""
         production1 = make_production(production_company=self.company1)
-        url = reverse('company_productions', kwargs={'slug':self.company1.slug})
+        url = reverse(
+            'company_productions',
+            kwargs={'slug': self.company1.slug}
+        )
         response = self.client.get(url)
         self.assertIn(production1.play.title, response.content)
         self.assertIn(self.company1.name, response.content)
@@ -129,7 +138,10 @@ class CompanyViewTests(BaseViewTestCase):
         production1 = make_production(production_company=self.company1)
         review1 = make_review(production=production1)
         review1.publish()
-        url = reverse('company_reviews', kwargs={'slug':self.company1.slug})
+        url = reverse(
+            'company_reviews',
+            kwargs={'slug': self.company1.slug}
+        )
         response = self.client.get(url)
         self.assertIn(review1.production.play.title, response.content)
         self.assertIn(production1.title, response.content)
@@ -138,7 +150,7 @@ class CompanyViewTests(BaseViewTestCase):
     def test_company_audition_list(self):
         """Test Company Audition list page"""
         audition1 = make_audition(production_company=self.company1)
-        url = reverse('company_auditions', kwargs={'slug':self.company1.slug})
+        url = reverse('company_auditions', kwargs={'slug': self.company1.slug})
         response = self.client.get(url)
         self.assertIn(audition1.title, response.content)
         self.assertIn(self.company1.name, response.content)
@@ -155,8 +167,10 @@ class ProductionViewTests(BaseViewTestCase):
 
     def test_production_detail_view(self):
         """Test Production detail page"""
-        url = reverse('production_detail',
-            kwargs={'slug':self.production1.slug})
+        url = reverse(
+            'production_detail',
+            kwargs={'slug': self.production1.slug}
+        )
         response = self.client.get(url)
         self.assertIn(self.production1.title, response.content)
         self.assertIn(self.production1.venue.name, response.content)
@@ -177,11 +191,15 @@ class ProductionViewTests(BaseViewTestCase):
         """Test Productions by Week page"""
         start_date = timezone.now()
         current_production = make_production(
-            start_date=start_date+timedelta(days=1))
+            start_date=start_date+timedelta(days=1)
+        )
         previous_production = make_production(
-            start_date=start_date-timedelta(days=1))
-        url = reverse('productions_weekly',
-            kwargs={'start_date':start_date.strftime('%Y%m%d')})
+            start_date=start_date-timedelta(days=1)
+        )
+        url = reverse(
+            'productions_weekly',
+            kwargs={'start_date': start_date.strftime('%Y%m%d')}
+        )
         response = self.client.get(url)
         self.assertIn(current_production.title, response.content)
         self.assertNotIn(previous_production.title, response.content)
@@ -191,12 +209,18 @@ class ProductionViewTests(BaseViewTestCase):
         start_date = timezone.now()
         current_production = make_production(start_date=start_date)
         previous_production = make_production(
-            start_date=start_date-timedelta(days=50))
+            start_date=start_date-timedelta(days=50)
+        )
         future_production = make_production(
-            start_date=start_date+timedelta(days=50))
-        url = reverse('productions_monthly', kwargs={
-            'year':start_date.strftime('%Y'),
-            'month':start_date.strftime('%m')})
+            start_date=start_date+timedelta(days=50)
+        )
+        url = reverse(
+            'productions_monthly',
+            kwargs={
+                'year': start_date.strftime('%Y'),
+                'month': start_date.strftime('%m')
+            }
+        )
         response = self.client.get(url)
         self.assertIn(current_production.title, response.content)
         self.assertNotIn(previous_production.title, response.content)
@@ -210,11 +234,11 @@ class ProductionViewTests(BaseViewTestCase):
         city_production = make_production(venue=city_venue)
         other_production = make_production(venue=other_venue)
 
-        url = reverse('productions_city', kwargs={'city':city})
+        url = reverse('productions_city', kwargs={'city': city})
         response = self.client.get(url)
         self.assertIn(city, response.content)
 
-        url = reverse('productions_city', kwargs={'city':city})
+        url = reverse('productions_city', kwargs={'city': city})
         response = self.client.get(url)
         self.assertIn(city_production.title, response.content)
         self.assertNotIn(other_production.title, response.content)
@@ -272,7 +296,7 @@ class NewsViewTests(BaseViewTestCase):
 
     def test_news_detail_view(self):
         """Test ArtsNews detail page"""
-        url = reverse('news_detail', kwargs={'slug':self.news1.slug})
+        url = reverse('news_detail', kwargs={'slug': self.news1.slug})
         response = self.client.get(url)
         self.assertIn(self.news1.title, response.content)
         self.assertNotIn(self.news2.content, response.content)
@@ -288,7 +312,7 @@ class AuditionViewTests(BaseViewTestCase):
 
     def audition_detail_view(self):
         """Test Audition detail page"""
-        url = reverse('audition_detail', kwargs={'slug':self.audition1.slug})
+        url = reverse('audition_detail', kwargs={'slug': self.audition1.slug})
         response = self.client.get(url)
         self.assertIn(self.audition1.get_title(), response.content)
         self.assertIn(self.audition1.content, response.content)
@@ -320,7 +344,7 @@ class ReviewViewTests(BaseViewTestCase):
 
     def review_detail_view(self):
         """Test Review detail page"""
-        url = reverse('reviews', kwargs={'slug':self.review1.slug})
+        url = reverse('reviews', kwargs={'slug': self.review1.slug})
         response = self.client.get(url)
         self.assertIn(self.review1.title, response.content)
         self.assertIn(self.review1.content, response.content)

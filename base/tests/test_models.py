@@ -2,11 +2,14 @@ from django.test import TestCase
 from datetime import timedelta
 from django.utils import timezone
 
-from base.models import (Audition, Production, Reviewer, Venue, ArtsNews, 
-    ProductionCompany)
-from base.tests import (make_review, make_audition, make_play, make_address,
+from base.models import (
+    Audition, Production, Reviewer, Venue, ArtsNews, ProductionCompany
+)
+from base.tests import (
+    make_review, make_audition, make_play, make_address,
     make_production_company, make_production, make_venue, make_news,
     make_news_slideshow_image, make_reviewer)
+
 
 class ReviewTests(TestCase):
     """Test methods in Review model class"""
@@ -18,14 +21,17 @@ class ReviewTests(TestCase):
             untitled_review.get_title(),
             'Review: %s' % untitled_review.production)
 
-        titled_review = make_review(title='Test Review')
+        make_review(title='Test Review')
         self.assertEqual(untitled_review.title, untitled_review.get_title())
 
     def test_get_slug(self):
         """Test crafting slugs from titles"""
-        review1 = make_review(title='Indexed Review'); review1.save()
-        review2 = make_review(title='Indexed Review'); review2.save()
-        review3 = make_review(title='Indexed Review'); review3.save()
+        review1 = make_review(title='Indexed Review')
+        review2 = make_review(title='Indexed Review')
+        review3 = make_review(title='Indexed Review')
+        review1.save()
+        review2.save()
+        review3.save()
         self.assertNotEqual(review1.slug, review2.slug)
         self.assertNotEqual(review2.slug, review3.slug)
         self.assertTrue(review2.slug.endswith('1'))
@@ -84,8 +90,10 @@ class AuditionTests(TestCase):
 
         play = make_play()
         company = make_production_company()
-        play_company_audition = make_audition(play=play, 
-            production_company=company)
+        play_company_audition = make_audition(
+            play=play,
+            production_company=company
+        )
         self.assertIn(play.title, play_company_audition.get_title())
         self.assertIn(company.name, play_company_audition.get_title())
 
@@ -104,8 +112,10 @@ class AuditionTests(TestCase):
         company = make_production_company()
         start_date = timezone.now()
         end_date = start_date + timedelta(days=1)
-        audition = make_audition(play=play, production_company=company,
-            start_date=start_date, end_date=end_date)
+        audition = make_audition(
+            play=play, production_company=company,
+            start_date=start_date, end_date=end_date
+        )
 
         alt_description = audition.get_alt_description()
         self.assertIn(play.title, alt_description)
@@ -134,9 +144,12 @@ class AuditionTests(TestCase):
 
     def test_get_slug(self):
         """Test building an Audition object's slug"""
-        audition1 = make_audition(title='Indexed Audition'); audition1.save()
-        audition2 = make_audition(title='Indexed Audition'); audition2.save()
-        audition3 = make_audition(title='Indexed Audition'); audition3.save()
+        audition1 = make_audition(title='Indexed Audition')
+        audition2 = make_audition(title='Indexed Audition')
+        audition3 = make_audition(title='Indexed Audition')
+        audition1.save()
+        audition2.save()
+        audition3.save()
         self.assertNotEqual(audition1.slug, audition2.slug)
         self.assertNotEqual(audition2.slug, audition3.slug)
         self.assertTrue(audition2.slug.endswith('1'))
@@ -157,23 +170,31 @@ class ProductionCompanyManagerTests(TestCase):
 
         # create company with a recent production
         active_production_company = make_production_company()
-        make_production(production_company=active_production_company,
-            start_date=eight_months_ago)
+        make_production(
+            production_company=active_production_company,
+            start_date=eight_months_ago
+        )
 
         # create company with a recent audition
         active_audition_company = make_production_company()
-        make_audition(production_company=active_audition_company,
-            start_date=eight_months_ago)
+        make_audition(
+            production_company=active_audition_company,
+            start_date=eight_months_ago
+        )
 
         # create company with an old production
         inactive_production_company = make_production_company()
-        make_production(production_company=inactive_production_company,
-            start_date=two_years_ago)
+        make_production(
+            production_company=inactive_production_company,
+            start_date=two_years_ago
+        )
 
         # create_company with an old audition
         inactive_audition_company = make_production_company()
-        make_audition(production_company=inactive_audition_company,
-            start_date=two_years_ago)
+        make_audition(
+            production_company=inactive_audition_company,
+            start_date=two_years_ago
+        )
 
         # create completely inactive company
         inactive_company = make_production_company()
@@ -206,8 +227,10 @@ class ProductionCompanyTests(TestCase):
         production = make_production(production_company=company)
         company_news = make_news(related_company=company)
         production_news = make_news(related_production=production)
-        both_news = make_news(related_company=company,
-            related_production=production)
+        both_news = make_news(
+            related_company=company,
+            related_production=production
+        )
 
         related_news = company.get_related_news()
         self.assertIn(company_news, related_news)
@@ -312,7 +335,7 @@ class ProductionTests(TestCase):
         self.assertIn(end_date.strftime(date_fmt), duration)
         self.assertIn(str(start_date.year), duration)
 
-    def test_detailed_duration(self):
+    def test_semi_detailed_duration(self):
         """Test return a semi-detailed duration display"""
         start_date = timezone.now()
         end_date = start_date + timedelta(days=1)
@@ -322,7 +345,7 @@ class ProductionTests(TestCase):
         duration = production.duration(date_format=date_fmt)
         self.assertIn(start_date.strftime(date_fmt), duration)
         self.assertIn(end_date.strftime(date_fmt), duration)
-        self.assertIn(str(start_date.year), duration)
+        self.assertNotIn(str(start_date.year), duration)
 
     def test_detailed_duration(self):
         """Test returned a detailed duration display"""
@@ -338,9 +361,12 @@ class ProductionTests(TestCase):
     def test_get_slug(self):
         """Test creating unique slugs for Production objects"""
         play = make_play()
-        production1 = make_production(play=play); production1.save()
-        production2 = make_production(play=play); production2.save()
-        production3 = make_production(play=play); production3.save()
+        production1 = make_production(play=play)
+        production2 = make_production(play=play)
+        production3 = make_production(play=play)
+        production1.save()
+        production2.save()
+        production3.save()
         self.assertNotEqual(production1.slug, production2.slug)
         self.assertNotEqual(production2.slug, production3.slug)
         self.assertTrue(production2.slug.endswith('1'))
@@ -353,16 +379,20 @@ class ProductionTests(TestCase):
 
     def test_week_booleans(self):
         """Test creating a list of booleans of the days when production runs"""
-        production = make_production(on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True)
+        production = make_production(
+            on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True
+        )
         self.assertEqual(
             production._week_booleans(),
             [True, False, True, False, False, True, True])
 
     def test_get_last_sequential_day_index(self):
         """Test returning an index of the last day in a sequence"""
-        production = make_production(on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True)
+        production = make_production(
+            on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True
+        )
         self.assertEqual(production.get_last_sequential_day_index(), 0)
         self.assertIsNone(production.get_last_sequential_day_index(start_on=1))
         self.assertEqual(
@@ -372,21 +402,26 @@ class ProductionTests(TestCase):
 
     def test_get_week_description(self):
         """Test returning a string describing the days of the week"""
-        no_wrap_production = make_production(on_monday=True, on_wednesday=True,
-            on_thursday=True, on_friday=True)
+        no_wrap_production = make_production(
+            on_monday=True, on_wednesday=True,
+            on_thursday=True, on_friday=True
+        )
         self.assertEqual(no_wrap_production.get_week_description(), 'M, W-F')
         self.assertEqual(
             no_wrap_production.get_week_description(verbose=True),
             'Monday, Wednesday-Friday')
 
-        wrap_production = make_production(on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True)
+        wrap_production = make_production(
+            on_monday=True, on_wednesday=True,
+            on_saturday=True, on_sunday=True
+        )
         self.assertEqual(wrap_production.get_week_description(), 'W, Sat-M')
         self.assertEqual(
             wrap_production.get_week_description(verbose=True),
             'Wednesday, Saturday-Monday')
 
-        all_week_production = make_production(on_monday=True,
+        all_week_production = make_production(
+            on_monday=True,
             on_tuesday=True, on_wednesday=True, on_thursday=True,
             on_friday=True, on_saturday=True, on_sunday=True)
         self.assertEqual(all_week_production.get_week_description(), 'All week')
@@ -466,9 +501,12 @@ class ArtsNewsTests(TestCase):
 
     def test_get_slug(self):
         """Test creating unique slugs"""
-        news1 = make_news(title='Indexed News'); news1.save()
-        news2 = make_news(title='Indexed News'); news2.save()
-        news3 = make_news(title='Indexed News'); news3.save()
+        news1 = make_news(title='Indexed News')
+        news2 = make_news(title='Indexed News')
+        news3 = make_news(title='Indexed News')
+        news1.save()
+        news2.save()
+        news3.save()
         self.assertNotEqual(news1.slug, news2.slug)
         self.assertNotEqual(news2.slug, news3.slug)
         self.assertTrue(news2.slug.endswith('1'))
