@@ -1,14 +1,18 @@
+from datetime import date, timedelta
+
 from django.test import TestCase
-from datetime import timedelta
 from django.utils import timezone
+from mock import patch
 
 from base.models import (
-    Audition, Production, Reviewer, Venue, ArtsNews, ProductionCompany
+    Audition, DaysBase, Production, Reviewer, Venue, ArtsNews,
+    ProductionCompany, SlideshowImage
 )
 from base.tests import (
     make_review, make_audition, make_play, make_address,
     make_production_company, make_production, make_venue, make_news,
-    make_news_slideshow_image, make_reviewer)
+    make_news_slideshow_image, make_reviewer, make_external_review
+)
 
 
 class ReviewTests(TestCase):
@@ -59,6 +63,47 @@ class ReviewTests(TestCase):
         """Test getting this review's url"""
         review = make_review()
         self.assertIn(review.slug, review.get_absolute_url())
+
+    def test_unicode(self):
+        """Test unicode method"""
+        review = make_review()
+        with patch.object(review, 'get_title', return_value='title') as mock:
+            title = review.__unicode__()
+        mock.assert_called_once_with()
+        self.assertEqual(title, unicode('title'))
+
+
+class DaysBaseTests(TestCase):
+    """Test methods in DaysBase class"""
+    def get_last_sequential_day_index(self):
+        pass
+
+    def test_week_booleans(self):
+        pass
+
+    def test_has_weekly_schedule(self):
+        days_base = DaysBase()
+        with patch.object(days_base, '_week_booleans', return_value=[True]):
+            has_schedule = days_base.has_weekly_schedule()
+        self.assertTrue(has_schedule)
+        with patch.object(days_base, '_week_booleans', return_value=[False]):
+            has_schedule = days_base.has_weekly_schedule()
+        self.assertFalse(has_schedule)
+
+    def test_get_verbose_week_description(self):
+        days_base = DaysBase()
+        with patch.object(days_base, 'get_week_description') as mock_get_week:
+            days_base.get_verbose_week_description()
+        mock_get_week.assert_called_once_with(verbose=True)
+
+    def test_get_week_description(self):
+        days_base = DaysBase(
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=1)
+        )
+        with patch.object(days_base, '_week_booleans', return_value=[True]):
+            description = days_base.get_week_description(verbose=True)
+        self.assertEqual(description, u'All week')
 
 
 class AuditionManagerTests(TestCase):
@@ -123,6 +168,12 @@ class AuditionTests(TestCase):
         self.assertIn(start_date.strftime('%b %d'), alt_description)
         self.assertIn(end_date.strftime('%b %d'), alt_description)
 
+        audition = make_audition(start_date=start_date)
+        self.assertEqual(
+            audition.get_alt_description(),
+            'Auditions on {}.'.format(start_date.strftime('%b %d'))
+        )
+
     def test_duration(self):
         """Test creating the display of an Audition object's duration"""
         start_date = timezone.now() - timedelta(days=365)
@@ -159,6 +210,13 @@ class AuditionTests(TestCase):
         """Test returning an Audition object's url"""
         audition = make_audition()
         self.assertIn(audition.slug, audition.get_absolute_url())
+
+    def test_unicode(self):
+        """Test unicode method"""
+        audition = make_audition()
+        with patch.object(audition, 'get_title', return_value='title'):
+            title = audition.__unicode__()
+        self.assertEqual(title, unicode('title'))
 
 
 class ProductionCompanyManagerTests(TestCase):
@@ -463,6 +521,23 @@ class VenueManagerTests(TestCase):
         self.assertNotIn(empty_venue, active_venues)
 
 
+class AddressTests(TestCase):
+    """Test methods on Address class"""
+
+    def test_unicode_with_line_2(self):
+        address = make_address(
+            line_1='line_1', line_2='line_2', city='city', zip_code='12345'
+        )
+        self.assertEqual(
+            address.__unicode__(),
+            'line_1, line_2, city TX, 12345'
+        )
+
+    def test_unicode_without_line_2(self):
+        address = make_address(line_1='line_1', city='city', zip_code='12345')
+        self.assertEqual(address.__unicode__(), 'line_1, city TX, 12345')
+
+
 class ArtsNewsManagerTests(TestCase):
     """Test methods on ArtsNewsManager class"""
 
@@ -520,6 +595,20 @@ class ArtsNewsTests(TestCase):
         external_news = make_news(external_url=external_url)
         self.assertEqual(external_url, external_news.get_absolute_url())
 
+    def test_unicode(self):
+        """Test unicode method"""
+        news = make_news(title='short title', created_on=date(2016, 8, 2))
+        self.assertEqual(news.__unicode__(), '08/02/16: short title')
+
+        news = make_news(
+            title='this is a title longer than 20 characters',
+            created_on=date(2016, 8, 2)
+        )
+        self.assertEqual(
+            news.__unicode__(),
+            '08/02/16: this is a title long...'
+        )
+
 
 class ReviewerManagerTests(TestCase):
     """Test methods on ReviewerManager class"""
@@ -573,3 +662,29 @@ class ReviewerTests(TestCase):
         for _ in range(num_reviews):
             make_review(reviewer=reviewer)
         self.assertEqual(num_reviews, reviewer.review_count)
+
+    def test_unicode(self):
+        reviewer = make_reviewer(first_name='Foo', last_name='Bar')
+        self.assertEqual(reviewer.__unicode__(), reviewer.full_name)
+
+
+class ExternalReviewTests(TestCase):
+    """Test methods on ExternalReview model class"""
+
+    def test_unicode(self):
+        review = make_external_review(source_name='source_name')
+        self.assertEqual(
+            review.__unicode__(),
+            u"{name}'s review of {production}".format(
+                name=review.source_name,
+                production=str(review.production)
+            )
+        )
+
+
+class SlideshowImageTests(TestCase):
+    """Test methods on SlideshowImage model class"""
+
+    def test_unicode(self):
+        image = SlideshowImage(image='image')
+        self.assertEqual(image.__unicode__(), unicode(image.image))

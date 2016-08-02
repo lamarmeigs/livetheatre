@@ -580,9 +580,9 @@ class Address(models.Model):
         verbose_name_plural = 'addresses'
 
     def __unicode__(self):
-        address_str = '%s, ' % self.line_1
+        address_str = '%s,' % self.line_1
         if self.line_2:
-            address_str += ' %s, ' % self.line_2
+            address_str += ' %s,' % self.line_2
         return u'%s %s TX, %s' % (address_str, self.city, self.zip_code)
 
 
