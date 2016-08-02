@@ -1,123 +1,176 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
+from django.utils.text import slugify
 from mock import patch
 
 from base.models import (
-    Audition, DaysBase, Production, Reviewer, Venue, ArtsNews,
+    Audition, AuditionManager, DaysBase, Production, Reviewer, Venue, ArtsNews,
     ProductionCompany, SlideshowImage
 )
-from base.tests import (
-    make_review, make_audition, make_play, make_address,
-    make_production_company, make_production, make_venue, make_news,
-    make_news_slideshow_image, make_reviewer, make_external_review
+from base.tests.fixtures import (
+    AddressFactory, ArtsNewsFactory, AuditionFactory, ExternalReviewFactory,
+    NewsSlideshowImageFactory, PlayFactory, ProductionFactory,
+    ProductionCompanyFactory, ReviewFactory, ReviewerFactory, VenueFactory
 )
 
 
-class ReviewTests(TestCase):
-    """Test methods in Review model class"""
-
+class ReviewTestCase(TestCase):
     def test_get_title(self):
-        """Test retrieving titles from connected production"""
-        untitled_review = make_review()
-        self.assertEqual(
-            untitled_review.get_title(),
-            'Review: %s' % untitled_review.production)
+        review = ReviewFactory(title='Some Title')
+        self.assertEqual(review.get_title(), review.title)
 
-        make_review(title='Test Review')
-        self.assertEqual(untitled_review.title, untitled_review.get_title())
+        review = ReviewFactory()
+        self.assertEqual(
+            review.get_title(),
+            'Review: {}'.format(review.production)
+        )
 
     def test_get_slug(self):
-        """Test crafting slugs from titles"""
-        review1 = make_review(title='Indexed Review')
-        review2 = make_review(title='Indexed Review')
-        review3 = make_review(title='Indexed Review')
-        review1.save()
-        review2.save()
-        review3.save()
-        self.assertNotEqual(review1.slug, review2.slug)
-        self.assertNotEqual(review2.slug, review3.slug)
-        self.assertTrue(review2.slug.endswith('1'))
-        self.assertTrue(review3.slug.endswith('2'))
+        review = ReviewFactory()
+        self.assertEqual(review.get_slug(), slugify(review.get_title()[:47]))
+        review_2 = ReviewFactory()
+        self.assertEqual(
+            review_2.get_slug(),
+            '{}1'.format(slugify(review.get_title()[:47]))
+        )
 
-    def test_publishing(self):
-        """Test publish and unpublish methods"""
-        review = make_review()
-        review.publish()
+    def test_publish(self):
+        review = ReviewFactory(is_published=False, published_on=None)
+        with patch.object(review, 'save') as mock_save:
+            review.publish()
+        mock_save.assert_called_once_with()
         self.assertTrue(review.is_published)
         self.assertIsNotNone(review.published_on)
-        review.unpublish()
+
+    def test_unpublish(self):
+        review = ReviewFactory(is_published=True, published_on=timezone.now())
+        with patch.object(review, 'save') as mock_save:
+            review.unpublish()
+        mock_save.assert_called_once_with()
         self.assertFalse(review.is_published)
 
     def test_save(self):
-        """Test overridden save method"""
-        review = make_review(slug='bad-slug', is_published=True)
-        review.save()
+        review = ReviewFactory(pk=None, title=None, slug=None)
+        with patch('django.db.models.Model.save') as mock_save:
+            review.save()
         self.assertEqual(review.title, review.get_title())
         self.assertEqual(review.slug, review.get_slug())
-        self.assertNotEqual(review.slug, 'bad-slug')
+        mock_save.assert_called_once_with()
+
+    def test_save_published_review(self):
+        review = ReviewFactory(is_published=True, published_on=None)
+        with patch('django.db.models.Model.save') as mock_save:
+            review.save()
         self.assertIsNotNone(review.published_on)
+        mock_save.assert_called_once_with()
 
     def test_get_absolute_url(self):
-        """Test getting this review's url"""
-        review = make_review()
-        self.assertIn(review.slug, review.get_absolute_url())
+        review = ReviewFactory()
+        try:
+            absolute_url = review.get_absolute_url()
+        except Exception as e:
+            self.fail(
+                'Review.get_absolute_url() unexpectedly raised error: '
+                '{}'.format(str(e))
+            )
+        self.assertIsInstance(absolute_url, str)
 
     def test_unicode(self):
-        """Test unicode method"""
-        review = make_review()
-        with patch.object(review, 'get_title', return_value='title') as mock:
-            title = review.__unicode__()
-        mock.assert_called_once_with()
-        self.assertEqual(title, unicode('title'))
+        review = ReviewFactory()
+        self.assertEqual(review.__unicode__(), unicode(review.get_title()))
 
 
-class DaysBaseTests(TestCase):
-    """Test methods in DaysBase class"""
-    def get_last_sequential_day_index(self):
-        pass
+class DaysBaseTestCase(TestCase):
+    def test_get_last_sequential_day_index(self):
+        days_base = DaysBase(
+            on_monday=True,
+            on_tuesday=True,
+            on_wednesday=True
+        )
+        self.assertEqual(days_base.get_last_sequential_day_index(), 2)
+
+        days_base = DaysBase(on_saturday=True, on_sunday=True, on_monday=True)
+        self.assertEqual(
+            days_base.get_last_sequential_day_index(start_on=5, wrap=False),
+            6
+        )
+        self.assertEqual(
+            days_base.get_last_sequential_day_index(start_on=5),
+            0
+        )
 
     def test_week_booleans(self):
-        pass
+        days_base = DaysBase(
+            on_monday=True,
+            on_wednesday=True,
+            on_thursday=True,
+            on_saturday=True
+        )
+        self.assertEqual(
+            days_base._week_booleans(),
+            [True, False, True, True, False, True, False]
+        )
 
     def test_has_weekly_schedule(self):
         days_base = DaysBase()
-        with patch.object(days_base, '_week_booleans', return_value=[True]):
-            has_schedule = days_base.has_weekly_schedule()
-        self.assertTrue(has_schedule)
-        with patch.object(days_base, '_week_booleans', return_value=[False]):
-            has_schedule = days_base.has_weekly_schedule()
-        self.assertFalse(has_schedule)
+        self.assertFalse(days_base.has_weekly_schedule())
+        days_base = DaysBase(on_friday=True)
+        self.assertTrue(days_base.has_weekly_schedule())
 
     def test_get_verbose_week_description(self):
         days_base = DaysBase()
-        with patch.object(days_base, 'get_week_description') as mock_get_week:
+        with patch.object(days_base, 'get_week_description') as mock:
             days_base.get_verbose_week_description()
-        mock_get_week.assert_called_once_with(verbose=True)
+        mock.assert_called_once_with(verbose=True)
 
     def test_get_week_description(self):
         days_base = DaysBase(
-            start_date=date.today(),
-            end_date=date.today() + timedelta(days=1)
+            on_monday=True,
+            on_tuesday=True,
+            on_wednesday=True,
+            on_thursday=True,
+            on_friday=True,
+            on_saturday=True,
+            on_sunday=True,
         )
-        with patch.object(days_base, '_week_booleans', return_value=[True]):
-            description = days_base.get_week_description(verbose=True)
-        self.assertEqual(description, u'All week')
+        self.assertEqual(days_base.get_week_description(), u'All week')
+
+        days_base = DaysBase(on_monday=True, on_thursday=True, on_friday=True)
+        self.assertEqual(days_base.get_week_description(), 'M, Th-F')
+        self.assertEqual(
+            days_base.get_week_description(verbose=True),
+            'Monday, Thursday-Friday'
+        )
+
+        days_base = DaysBase(
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(days=10),
+            on_friday=True,
+            on_saturday=True,
+            on_sunday=True,
+            on_monday=True,
+            on_wednesday=True,
+        )
+        self.assertEqual(
+            days_base.get_week_description(verbose=True),
+            'Wednesdays, Fridays-Mondays'
+        )
 
 
-class AuditionManagerTests(TestCase):
-    """Test methods in AuditionManager class"""
+class AuditionManagerTestCase(TestCase):
     def test_filter_upcoming(self):
-        """Test finding ongoing or upcoming auditions"""
         today = timezone.now()
         yesterday = today - timedelta(days=1)
         tomorrow = today + timedelta(days=1)
 
-        past_audition = make_audition(start_date=yesterday)
-        ongoing_audition = make_audition(
-            start_date=yesterday, end_date=tomorrow)
-        future_audition = make_audition(start_date=tomorrow)
+        past_audition = AuditionFactory(start_date=yesterday)
+        ongoing_audition = AuditionFactory(
+            start_date=yesterday,
+            end_date=tomorrow
+        )
+        future_audition = AuditionFactory(start_date=tomorrow)
 
         upcoming = Audition.objects.filter_upcoming()
         self.assertNotIn(past_audition, upcoming)
@@ -125,137 +178,201 @@ class AuditionManagerTests(TestCase):
         self.assertIn(future_audition, upcoming)
 
 
-class AuditionTests(TestCase):
-    """Test methods in Audition model class"""
+class AuditionTestCase(TestCase):
+    def test_assigned_manager(self):
+        self.assertIsInstance(Audition.objects, AuditionManager)
 
     def test_get_title(self):
-        """Test crafting a title from connected objects"""
-        titled_audition = make_audition(title='Test Title')
-        self.assertEqual(titled_audition.title, titled_audition.get_title())
+        audition = AuditionFactory()
+        self.assertEqual(audition.get_title(), u'Auditions')
 
-        play = make_play()
-        company = make_production_company()
-        play_company_audition = make_audition(
-            play=play,
-            production_company=company
+        audition = AuditionFactory(title='Test Title')
+        self.assertEqual(audition.get_title(), u'Test Title')
+
+        audition = AuditionFactory(play=PlayFactory())
+        self.assertEqual(
+            audition.get_title(),
+            u'Auditions for {}'.format(str(audition.play))
         )
-        self.assertIn(play.title, play_company_audition.get_title())
-        self.assertIn(company.name, play_company_audition.get_title())
 
-        play_audition = make_audition(play=play)
-        self.assertIn(play.title, play_audition.get_title())
+        audition = AuditionFactory(
+            production_company=ProductionCompanyFactory()
+        )
+        self.assertEqual(
+            audition.get_title(),
+            u'Auditions for {}'.format(str(audition.production_company))
+        )
 
-        company_audition = make_audition(production_company=company)
-        self.assertIn(company.name, company_audition.get_title())
-
-        empty_audition = make_audition()
-        self.assertEqual(empty_audition.get_title(), 'Auditions')
+        audition = AuditionFactory(
+            play=PlayFactory(),
+            production_company=ProductionCompanyFactory(),
+        )
+        self.assertEqual(
+            audition.get_title(),
+            u'Auditions for {play}, by {company}'.format(
+                play=str(audition.play),
+                company=str(audition.production_company),
+            )
+        )
 
     def test_get_alt_description(self):
-        """Test crafting an alternate description"""
-        play = make_play()
-        company = make_production_company()
-        start_date = timezone.now()
-        end_date = start_date + timedelta(days=1)
-        audition = make_audition(
-            play=play, production_company=company,
-            start_date=start_date, end_date=end_date
-        )
-
-        alt_description = audition.get_alt_description()
-        self.assertIn(play.title, alt_description)
-        self.assertIn(company.name, alt_description)
-        self.assertIn(start_date.strftime('%b %d'), alt_description)
-        self.assertIn(end_date.strftime('%b %d'), alt_description)
-
-        audition = make_audition(start_date=start_date)
+        audition = AuditionFactory()
         self.assertEqual(
             audition.get_alt_description(),
-            'Auditions on {}.'.format(start_date.strftime('%b %d'))
+            'Auditions on {}.'.format(audition.start_date.strftime('%b %d'))
+        )
+
+        audition = AuditionFactory(play=PlayFactory())
+        self.assertEqual(
+            audition.get_alt_description(),
+            'Auditions for a role in {} on {}.'.format(
+                str(audition.play),
+                audition.start_date.strftime('%b %d'),
+            )
+        )
+
+        audition = AuditionFactory(
+            production_company=ProductionCompanyFactory()
+        )
+        self.assertEqual(
+            audition.get_alt_description(),
+            'Auditions with {} on {}.'.format(
+                str(audition.production_company),
+                audition.start_date.strftime('%b %d'),
+            )
+        )
+
+        audition = AuditionFactory(end_date=timezone.now() + timedelta(days=1))
+        self.assertEqual(
+            audition.get_alt_description(),
+            'Auditions on {} through {}.'.format(
+                audition.start_date.strftime('%b %d'),
+                audition.end_date.strftime('%b %d'),
+            )
+        )
+
+        audition = AuditionFactory(
+            play=PlayFactory(),
+            production_company=ProductionCompanyFactory(),
+            end_date=timezone.now() + timedelta(days=1)
+        )
+        self.assertEqual(
+            audition.get_alt_description(),
+            'Auditions for a role in {} with {} on {} through {}.'.format(
+                str(audition.play),
+                str(audition.production_company),
+                audition.start_date.strftime('%b %d'),
+                audition.end_date.strftime('%b %d'),
+            )
         )
 
     def test_duration(self):
-        """Test creating the display of an Audition object's duration"""
-        start_date = timezone.now() - timedelta(days=365)
-        end_date = start_date + timedelta(days=1)
-        date_fmt = '%b %d'
-        audition = make_audition(start_date=start_date, end_date=end_date)
-        duration = audition.duration(date_fmt)
-        self.assertIn(start_date.strftime(date_fmt), duration)
-        self.assertIn(end_date.strftime('%b %d'), duration)
-        self.assertIn(str(start_date.year), duration)
+        audition = AuditionFactory()
+        self.assertEqual(
+            audition.duration(),
+            audition.start_date.strftime('%b. %d')
+        )
+
+        audition = AuditionFactory()
+        self.assertEqual(
+            audition.duration(date_format='%y'),
+            audition.start_date.strftime('%y')
+        )
+
+        audition = AuditionFactory(end_date=timezone.now() + timedelta(days=1))
+        self.assertEqual(
+            audition.duration(),
+            '{} - {}'.format(
+                audition.start_date.strftime('%b. %d'),
+                audition.end_date.strftime('%b. %d'),
+            )
+        )
+
+        audition = AuditionFactory(
+            start_date=timezone.now() - timedelta(days=365),
+            end_date=timezone.now() - timedelta(days=364)
+        )
+        self.assertEqual(
+            audition.duration(),
+            '{} - {} ({})'.format(
+                audition.start_date.strftime('%b. %d'),
+                audition.end_date.strftime('%b. %d'),
+                audition.start_date.year
+            )
+        )
+
+        audition = AuditionFactory(
+            start_date=timezone.now() - timedelta(days=365)
+        )
+        self.assertEqual(
+            audition.duration(date_format='%Y'),
+            str(audition.start_date.year)
+        )
 
     def test_save(self):
-        """Test overridden save method"""
-        audition = make_audition(slug='bad-slug')
-        audition.save()
+        audition = AuditionFactory(pk=None, title=None, slug=None)
+        with patch('django.db.models.Model.save') as mock_save:
+            audition.save()
+        mock_save.assert_called_once_with()
         self.assertEqual(audition.title, audition.get_title())
         self.assertEqual(audition.slug, audition.get_slug())
-        self.assertNotEqual(audition.slug, 'bad-slug')
 
     def test_get_slug(self):
-        """Test building an Audition object's slug"""
-        audition1 = make_audition(title='Indexed Audition')
-        audition2 = make_audition(title='Indexed Audition')
-        audition3 = make_audition(title='Indexed Audition')
-        audition1.save()
-        audition2.save()
-        audition3.save()
-        self.assertNotEqual(audition1.slug, audition2.slug)
-        self.assertNotEqual(audition2.slug, audition3.slug)
-        self.assertTrue(audition2.slug.endswith('1'))
-        self.assertTrue(audition3.slug.endswith('2'))
+        audition = AuditionFactory()
+        self.assertEqual(
+            audition.get_slug(),
+            slugify(unicode(audition.get_title()))[:47]
+        )
+        audition_2 = AuditionFactory()
+        self.assertEqual(
+            audition_2.get_slug(),
+            '{}1'.format(slugify(unicode(audition.get_title()))[:47])
+        )
 
     def test_get_absolute_url(self):
-        """Test returning an Audition object's url"""
-        audition = make_audition()
-        self.assertIn(audition.slug, audition.get_absolute_url())
+        audition = AuditionFactory()
+        self.assertIsInstance(audition.get_absolute_url(), str)
 
     def test_unicode(self):
-        """Test unicode method"""
-        audition = make_audition()
-        with patch.object(audition, 'get_title', return_value='title'):
-            title = audition.__unicode__()
-        self.assertEqual(title, unicode('title'))
+        audition = AuditionFactory()
+        self.assertEqual(audition.__unicode__(), unicode(audition.get_title()))
 
 
-class ProductionCompanyManagerTests(TestCase):
-    """Test the methods on ProductionCompanyManager class"""
+class ProductionCompanyManagerTestCase(TestCase):
     def test_filter_active(self):
-        """Test returning only active companies"""
         eight_months_ago = timezone.now() - timedelta(days=8*365/12)
         two_years_ago = timezone.now() - timedelta(days=365*2)
 
         # create company with a recent production
-        active_production_company = make_production_company()
-        make_production(
+        active_production_company = ProductionCompanyFactory()
+        ProductionFactory(
             production_company=active_production_company,
             start_date=eight_months_ago
         )
 
         # create company with a recent audition
-        active_audition_company = make_production_company()
-        make_audition(
+        active_audition_company = ProductionCompanyFactory()
+        AuditionFactory(
             production_company=active_audition_company,
             start_date=eight_months_ago
         )
 
         # create company with an old production
-        inactive_production_company = make_production_company()
-        make_production(
+        inactive_production_company = ProductionCompanyFactory()
+        ProductionFactory(
             production_company=inactive_production_company,
             start_date=two_years_ago
         )
 
         # create_company with an old audition
-        inactive_audition_company = make_production_company()
-        make_audition(
+        inactive_audition_company = ProductionCompanyFactory()
+        AuditionFactory(
             production_company=inactive_audition_company,
             start_date=two_years_ago
         )
 
         # create completely inactive company
-        inactive_company = make_production_company()
+        inactive_company = ProductionCompanyFactory()
 
         active_companies = ProductionCompany.objects.filter_active()
         self.assertIn(active_production_company, active_companies)
@@ -265,75 +382,90 @@ class ProductionCompanyManagerTests(TestCase):
         self.assertNotIn(inactive_company, active_companies)
 
 
-class ProductionCompanyTests(TestCase):
-    """Test the methods and properties of ProductionCompany model class"""
+class ProductionCompanyTestCase(TestCase):
+    def setUp(self):
+        self.company = ProductionCompanyFactory()
 
     def test_review_set(self):
-        """Test retrieving reviews for this company's productions"""
-        company = make_production_company()
-        production = make_production(production_company=company)
-        review = make_review(production=production)
-        review2 = make_review()
-
-        review_set = company.review_set.all()
-        self.assertIn(review, review_set)
-        self.assertNotIn(review2, review_set)
+        production = ProductionFactory(production_company=self.company)
+        review = ReviewFactory(production=production)
+        self.assertIn(review, self.company.review_set)
 
     def test_get_related_news(self):
-        """Test retrieving news related to a company and its productions"""
-        company = make_production_company()
-        production = make_production(production_company=company)
-        company_news = make_news(related_company=company)
-        production_news = make_news(related_production=production)
-        both_news = make_news(
-            related_company=company,
-            related_production=production
+        production = ProductionFactory(production_company=self.company)
+        production_news = ArtsNewsFactory(related_production=production)
+        company_news = ArtsNewsFactory(related_company=self.company)
+
+        related_news = self.company.get_related_news()
+        self.assertIn(production_news, related_news)
+        self.assertIn(company_news, related_news)
+
+    def test_published_reviews(self):
+        production_1 = ProductionFactory(production_company=self.company)
+        production_2 = ProductionFactory(production_company=self.company)
+        published_review = ReviewFactory(
+            production=production_1,
+            is_published=True
+        )
+        unpublished_review = ReviewFactory(
+            production=production_2,
+            is_published=False
         )
 
-        related_news = company.get_related_news()
-        self.assertIn(company_news, related_news)
-        self.assertIn(production_news, related_news)
-        self.assertIn(both_news, related_news)
-        self.assertEqual(related_news.count(), 3)
+        published_reviews = self.company.published_reviews()
+        self.assertIn(published_review, published_reviews)
+        self.assertNotIn(unpublished_review, published_reviews)
 
     def test_get_absolute_url(self):
-        """Test returning a ProductionCompany object's url"""
-        company = make_production_company(slug='test-company')
-        self.assertIn(company.slug, company.get_absolute_url())
+        self.assertIsInstance(self.company.get_absolute_url(), str)
+
+    def test_unicode(self):
+        self.assertEqual(
+            self.company.__unicode__(),
+            unicode(self.company.name)
+        )
 
 
-class ProductionManagerTests(TestCase):
-    """Test the methods on the ProductionManager class"""
-
+class ProductionManagerTestCase(TestCase):
     def test_filter_in_range(self):
-        """Test retrieving productions in a range"""
         range_start = timezone.now()
         range_end = range_start + timedelta(days=5)
 
-        past_full = make_production(
+        past_full = ProductionFactory(
             start_date=range_start-timedelta(days=5),
-            end_date=range_start-timedelta(days=3))
-        past_short = make_production(start_date=range_start-timedelta(days=2))
+            end_date=range_start-timedelta(days=3)
+        )
+        past_short = ProductionFactory(
+            start_date=range_start-timedelta(days=2)
+        )
 
-        future_full = make_production(
+        future_full = ProductionFactory(
             start_date=range_end+timedelta(days=3),
-            end_date=range_end+timedelta(days=5))
-        future_short = make_production(start_date=range_end+timedelta(days=2))
+            end_date=range_end+timedelta(days=5)
+        )
+        future_short = ProductionFactory(
+            start_date=range_end+timedelta(days=2)
+        )
 
-        current_short = make_production(
-            start_date=range_start+timedelta(days=1))
-        current_within = make_production(
+        current_short = ProductionFactory(
+            start_date=range_start+timedelta(days=1)
+        )
+        current_within = ProductionFactory(
             start_date=range_start+timedelta(days=1),
-            end_date=range_end-timedelta(days=1))
-        current_cover = make_production(
+            end_date=range_end-timedelta(days=1)
+        )
+        current_cover = ProductionFactory(
             start_date=range_start-timedelta(days=1),
-            end_date=range_end+timedelta(days=1))
-        current_overlap_start = make_production(
+            end_date=range_end+timedelta(days=1)
+        )
+        current_overlap_start = ProductionFactory(
             start_date=range_start-timedelta(days=1),
-            end_date=range_start+timedelta(days=1))
-        current_overlap_end = make_production(
+            end_date=range_start+timedelta(days=1)
+        )
+        current_overlap_end = ProductionFactory(
             start_date=range_end-timedelta(days=1),
-            end_date=range_end+timedelta(days=1))
+            end_date=range_end+timedelta(days=1)
+        )
 
         in_range = Production.objects.filter_in_range(range_start, range_end)
         self.assertNotIn(past_full, in_range)
@@ -346,16 +478,18 @@ class ProductionManagerTests(TestCase):
         self.assertIn(current_overlap_start, in_range)
         self.assertIn(current_overlap_end, in_range)
 
-    def filter_current(self):
-        """Test filtering current productions"""
+    def test_filter_current(self):
         today = timezone.now()
         yesterday = today - timedelta(days=1)
         tomorrow = today + timedelta(days=1)
 
-        past = make_production(start_date=yesterday)
-        future = make_production(start_date=yesterday)
-        current_short = make_production(start_date=today)
-        current_long = make_production(start_date=yesterday, end_date=tomorrow)
+        past = ProductionFactory(start_date=yesterday)
+        future = ProductionFactory(start_date=yesterday)
+        current_short = ProductionFactory(start_date=today)
+        current_long = ProductionFactory(
+            start_date=yesterday,
+            end_date=tomorrow
+        )
 
         current_productions = Production.objects.filter_current()
         self.assertNotIn(past, current_productions)
@@ -364,139 +498,150 @@ class ProductionManagerTests(TestCase):
         self.assertIn(current_long, current_productions)
 
 
-class ProductionTests(TestCase):
-    """Test methods on the Production model class"""
-
+class ProductionTestCase(TestCase):
     def test_title(self):
-        """Test crafting the title property from the connected objects"""
-        company = make_production_company()
-        production = make_production(production_company=company)
-        self.assertIn(production.play.title, production.title)
-        self.assertIn(production.production_company.name, production.title)
+        production = ProductionFactory()
+        self.assertEqual(production.title, unicode(production.play))
+
+        company = ProductionCompanyFactory()
+        production = ProductionFactory(production_company=company)
+        self.assertEqual(
+            production.title,
+            u'{} by {}'.format(production.play, production.production_company)
+        )
 
     def test_save(self):
-        """Test overridden save method"""
-        production = make_production(slug='bad-slug')
-        production.save()
+        production = ProductionFactory(pk=None, slug=None)
+        with patch('django.db.models.Model.save') as mock_save:
+            production.save()
         self.assertEqual(production.slug, production.get_slug())
-        self.assertNotEqual(production.slug, 'bad-slug')
+        mock_save.assert_called_once_with()
 
     def test_duration(self):
-        """Test crafting display of duration"""
-        start_date = timezone.now() - timedelta(days=365)
-        end_date = start_date + timedelta(days=1)
-        production = make_production(start_date=start_date, end_date=end_date)
+        production = ProductionFactory()
+        self.assertEqual(
+            production.duration(),
+            production.start_date.strftime('%b. %d')
+        )
+        self.assertEqual(
+            production.duration(append_year=True),
+            '{}, {}'.format(
+                production.start_date.strftime('%b. %d'),
+                str(production.start_date.year)
+            )
+        )
 
-        date_fmt = '%b %d'
-        duration = production.duration(date_format=date_fmt)
-        self.assertIn(start_date.strftime(date_fmt), duration)
-        self.assertIn(end_date.strftime(date_fmt), duration)
-        self.assertIn(str(start_date.year), duration)
+        production = ProductionFactory(
+            end_date=timezone.now() + timedelta(days=1)
+        )
+        self.assertEqual(
+            production.duration(),
+            '{} - {}'.format(
+                production.start_date.strftime('%b. %d'),
+                production.end_date.strftime('%b. %d'),
+            )
+        )
+        self.assertEqual(
+            production.duration(conjuction='=+='),
+            '{} =+= {}'.format(
+                production.start_date.strftime('%b. %d'),
+                production.end_date.strftime('%b. %d'),
+            )
+        )
+
+        production = ProductionFactory(
+            start_date=timezone.now() - timedelta(days=365),
+            end_date=timezone.now() - timedelta(days=364)
+        )
+        self.assertEqual(
+            production.duration(date_format='%b'),
+            '{} - {}, {}'.format(
+                production.start_date.strftime('%b'),
+                production.end_date.strftime('%b'),
+                str(production.start_date.year)
+            )
+        )
+        self.assertEqual(
+            production.duration(date_format='%Y'),
+            '{} - {}'.format(
+                production.start_date.strftime('%Y'),
+                production.end_date.strftime('%Y'),
+            )
+        )
 
     def test_semi_detailed_duration(self):
-        """Test return a semi-detailed duration display"""
-        start_date = timezone.now()
-        end_date = start_date + timedelta(days=1)
-        production = make_production(start_date=start_date, end_date=end_date)
-
-        date_fmt = '%b %d'
-        duration = production.duration(date_format=date_fmt)
-        self.assertIn(start_date.strftime(date_fmt), duration)
-        self.assertIn(end_date.strftime(date_fmt), duration)
-        self.assertNotIn(str(start_date.year), duration)
+        production = ProductionFactory()
+        with patch.object(
+            production,
+            'duration',
+            return_value='mock_duration'
+        ) as mock_duration:
+            duration = production.semi_detailed_duration()
+        mock_duration.assert_called_once_with(
+            date_format='%B %d',
+            append_year=True
+        )
+        self.assertEqual(duration, 'mock_duration')
 
     def test_detailed_duration(self):
-        """Test returned a detailed duration display"""
-        start_date = timezone.now() - timedelta(days=365)
-        end_date = start_date + timedelta(days=1)
-        production = make_production(start_date=start_date, end_date=end_date)
+        production = ProductionFactory()
+        with patch.object(
+            production,
+            'duration',
+            return_value='mock_duration'
+        ) as mock_duration:
+            duration = production.detailed_duration()
+        mock_duration.assert_called_once_with(date_format='%B %d, %Y')
+        self.assertEqual(duration, 'mock_duration')
 
-        date_fmt = '%B %d, %Y'
-        duration = production.detailed_duration()
-        self.assertIn(start_date.strftime(date_fmt), duration)
-        self.assertIn(end_date.strftime(date_fmt), duration)
+    def test_published_reviews(self):
+        production = ProductionFactory()
+        published_review = ReviewFactory(
+            production=production,
+            is_published=True
+        )
+        unpublished_review = ReviewFactory(
+            production=production,
+            is_published=False
+        )
+
+        published_reviews = production.published_reviews()
+        self.assertIn(published_review, published_reviews)
+        self.assertNotIn(unpublished_review, published_reviews)
 
     def test_get_slug(self):
-        """Test creating unique slugs for Production objects"""
-        play = make_play()
-        production1 = make_production(play=play)
-        production2 = make_production(play=play)
-        production3 = make_production(play=play)
-        production1.save()
-        production2.save()
-        production3.save()
-        self.assertNotEqual(production1.slug, production2.slug)
-        self.assertNotEqual(production2.slug, production3.slug)
-        self.assertTrue(production2.slug.endswith('1'))
-        self.assertTrue(production3.slug.endswith('2'))
+        production = ProductionFactory()
+        self.assertEqual(
+            production.get_slug(),
+            slugify(unicode(production.title))[:47]
+        )
+        production_2 = ProductionFactory()
+        self.assertEqual(
+            production_2.get_slug(),
+            '{}1'.format(slugify(unicode(production.title))[:47])
+        )
 
     def test_get_absolute_url(self):
-        """Test return a Production object's url"""
-        production = make_production()
-        self.assertIn(production.slug, production.get_absolute_url())
+        production = ProductionFactory()
+        self.assertIsInstance(production.get_absolute_url(), str)
 
-    def test_week_booleans(self):
-        """Test creating a list of booleans of the days when production runs"""
-        production = make_production(
-            on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True
-        )
-        self.assertEqual(
-            production._week_booleans(),
-            [True, False, True, False, False, True, True])
-
-    def test_get_last_sequential_day_index(self):
-        """Test returning an index of the last day in a sequence"""
-        production = make_production(
-            on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True
-        )
-        self.assertEqual(production.get_last_sequential_day_index(), 0)
-        self.assertIsNone(production.get_last_sequential_day_index(start_on=1))
-        self.assertEqual(
-            production.get_last_sequential_day_index(start_on=5, wrap=False), 6)
-        self.assertEqual(
-            production.get_last_sequential_day_index(start_on=5), 0)
-
-    def test_get_week_description(self):
-        """Test returning a string describing the days of the week"""
-        no_wrap_production = make_production(
-            on_monday=True, on_wednesday=True,
-            on_thursday=True, on_friday=True
-        )
-        self.assertEqual(no_wrap_production.get_week_description(), 'M, W-F')
-        self.assertEqual(
-            no_wrap_production.get_week_description(verbose=True),
-            'Monday, Wednesday-Friday')
-
-        wrap_production = make_production(
-            on_monday=True, on_wednesday=True,
-            on_saturday=True, on_sunday=True
-        )
-        self.assertEqual(wrap_production.get_week_description(), 'W, Sat-M')
-        self.assertEqual(
-            wrap_production.get_week_description(verbose=True),
-            'Wednesday, Saturday-Monday')
-
-        all_week_production = make_production(
-            on_monday=True,
-            on_tuesday=True, on_wednesday=True, on_thursday=True,
-            on_friday=True, on_saturday=True, on_sunday=True)
-        self.assertEqual(all_week_production.get_week_description(), 'All week')
-
-        no_day_production = make_production()
-        self.assertEqual(no_day_production.get_week_description(), '')
+    def test_unicode(self):
+        production = ProductionFactory()
+        self.assertEqual(production.__unicode__(), unicode(production.title))
 
 
-class VenueManagerTests(TestCase):
-    """Test filter methods on VenueManager class"""
+class PlayTestCase(TestCase):
+    def test_unicode(self):
+        play = PlayFactory()
+        self.assertEqual(play.__unicode__(), unicode(play.title))
 
+
+class VenueManagerTestCase(TestCase):
     def test_filter_cities(self):
-        """Test categorizing Venue objects by their city field"""
         city1 = 'Austin'
         city2 = 'San Antonio'
-        venue1 = make_venue(address=make_address(city=city1))
-        venue2 = make_venue(address=make_address(city=city2))
+        venue1 = VenueFactory(address=AddressFactory(city=city1))
+        venue2 = VenueFactory(address=AddressFactory(city=city2))
 
         by_city = Venue.objects.filter_cities()
         self.assertIn(city1, by_city)
@@ -505,15 +650,14 @@ class VenueManagerTests(TestCase):
         self.assertIn(venue2, by_city.get(city2))
 
     def test_filter_active(self):
-        """Test returning only active venues"""
-        active_venue = make_venue()
-        inactive_venue = make_venue()
-        empty_venue = make_venue()
+        active_venue = VenueFactory()
+        inactive_venue = VenueFactory()
+        empty_venue = VenueFactory()
 
         now = timezone.now()
         two_years_ago = now - timedelta(days=364*2)
-        make_production(start_date=two_years_ago, venue=inactive_venue)
-        make_production(start_date=now, venue=active_venue)
+        ProductionFactory(start_date=two_years_ago, venue=inactive_venue)
+        ProductionFactory(start_date=now, venue=active_venue)
 
         active_venues = Venue.objects.filter_active()
         self.assertIn(active_venue, active_venues)
@@ -521,31 +665,40 @@ class VenueManagerTests(TestCase):
         self.assertNotIn(empty_venue, active_venues)
 
 
-class AddressTests(TestCase):
-    """Test methods on Address class"""
+class VenueTestCase(TestCase):
+    def test_unicode(self):
+        venue = VenueFactory()
+        self.assertEqual(venue.__unicode__(), unicode(venue.name))
 
-    def test_unicode_with_line_2(self):
-        address = make_address(
-            line_1='line_1', line_2='line_2', city='city', zip_code='12345'
-        )
+
+class AddressTestCase(TestCase):
+    def test_unicode(self):
+        address = AddressFactory()
         self.assertEqual(
             address.__unicode__(),
-            'line_1, line_2, city TX, 12345'
+            '{}, {} TX, {}'.format(
+                address.line_1,
+                address.city,
+                address.zip_code
+            )
+        )
+        address = AddressFactory(line_2='Suite 32')
+        self.assertEqual(
+            address.__unicode__(),
+            '{}, {}, {} TX, {}'.format(
+                address.line_1,
+                address.line_2,
+                address.city,
+                address.zip_code
+            )
         )
 
-    def test_unicode_without_line_2(self):
-        address = make_address(line_1='line_1', city='city', zip_code='12345')
-        self.assertEqual(address.__unicode__(), 'line_1, city TX, 12345')
 
-
-class ArtsNewsManagerTests(TestCase):
-    """Test methods on ArtsNewsManager class"""
-
+class ArtsNewsManagerTestCase(TestCase):
     def test_filter_media(self):
-        """Test retrieving only ArtsNews objects with populated media fields"""
-        video_news = make_news(video_embed='<iframe />')
-        slideshow_news = make_news_slideshow_image().news
-        basic_news = make_news()
+        video_news = ArtsNewsFactory(video_embed='<iframe />')
+        slideshow_news = NewsSlideshowImageFactory().news
+        basic_news = ArtsNewsFactory()
 
         media_news = ArtsNews.objects.filter_media()
         self.assertIn(video_news, media_news)
@@ -553,138 +706,112 @@ class ArtsNewsManagerTests(TestCase):
         self.assertNotIn(basic_news, media_news)
 
 
-class ArtsNewsTests(TestCase):
-    """Test methods on ArtsNews model class"""
-
+class ArtsNewsTestCase(TestCase):
     def test_has_media(self):
-        """Test checking for media fields"""
-        video_news = make_news(video_embed='<iframe />')
-        self.assertTrue(video_news.has_media())
+        news = ArtsNewsFactory()
+        self.assertFalse(news.has_media())
 
-        slideshow_news = make_news_slideshow_image().news
-        self.assertTrue(slideshow_news.has_media())
+        NewsSlideshowImageFactory(news=news)
+        self.assertTrue(news.has_media())
 
-        basic_news = make_news()
-        self.assertFalse(basic_news.has_media())
+        news = ArtsNewsFactory(video_embed='<iframe src="" />')
+        self.assertTrue(news.has_media())
 
     def test_save(self):
-        """Test overridden save method"""
-        news = make_news(slug='bad-slug')
-        news.save()
+        news = ArtsNewsFactory(pk=None, slug=None)
+        with patch('django.db.models.Model.save') as mock_save:
+            news.save()
         self.assertEqual(news.slug, news.get_slug())
-        self.assertNotEqual(news.slug, 'bad-slug')
+        mock_save.assert_called_once_with()
 
     def test_get_slug(self):
-        """Test creating unique slugs"""
-        news1 = make_news(title='Indexed News')
-        news2 = make_news(title='Indexed News')
-        news3 = make_news(title='Indexed News')
-        news1.save()
-        news2.save()
-        news3.save()
-        self.assertNotEqual(news1.slug, news2.slug)
-        self.assertNotEqual(news2.slug, news3.slug)
-        self.assertTrue(news2.slug.endswith('1'))
-        self.assertTrue(news3.slug.endswith('2'))
+        news = ArtsNewsFactory()
+        self.assertEqual(news.slug, slugify(unicode(news.title))[:47])
+        news_2 = ArtsNewsFactory()
+        self.assertEqual(
+            news_2.slug,
+            '{}1'.format(slugify(unicode(news_2.title))[:47])
+        )
 
     def test_get_absolute_url(self):
-        """Test returning the url for an ArtsNews object"""
-        basic_news = make_news()
-        self.assertIn(basic_news.slug, basic_news.get_absolute_url())
-        external_url = 'http://www.nytimes.com/'
-        external_news = make_news(external_url=external_url)
-        self.assertEqual(external_url, external_news.get_absolute_url())
+        news = ArtsNewsFactory(external_url='http://www.google.com/')
+        self.assertEqual(news.get_absolute_url(), news.external_url)
+        news = ArtsNewsFactory(external_url=None)
+        self.assertIsInstance(news.get_absolute_url(), str)
 
     def test_unicode(self):
-        """Test unicode method"""
-        news = make_news(title='short title', created_on=date(2016, 8, 2))
-        self.assertEqual(news.__unicode__(), '08/02/16: short title')
-
-        news = make_news(
-            title='this is a title longer than 20 characters',
-            created_on=date(2016, 8, 2)
-        )
+        news = ArtsNewsFactory(title='Short Title')
         self.assertEqual(
             news.__unicode__(),
-            '08/02/16: this is a title long...'
+            u'{}: {}'.format(
+                news.created_on.strftime('%m/%d/%y'),
+                news.title
+            )
         )
 
-
-class ReviewerManagerTests(TestCase):
-    """Test methods on ReviewerManager class"""
-
-    def test_filter_active(self):
-        """Test returning active Reviewer objects"""
-        active_reviewer = make_reviewer()
-        inactive_reviewer = make_reviewer()
-        six_months_ago = timezone.now() - timedelta(days=6*365/12)
-        make_review(
-            reviewer=active_reviewer, is_published=True,
-            published_on=six_months_ago + timedelta(days=40))
-        make_review(
-            reviewer=inactive_reviewer, is_published=True,
-            published_on=six_months_ago - timedelta(days=40))
-
-        active = Reviewer.objects.filter_active()
-        self.assertIn(active_reviewer, active)
-        self.assertNotIn(inactive_reviewer, active)
-
-    def test_filter_inactive(self):
-        """Test returning inactive Reviewer objects"""
-        active_reviewer = make_reviewer()
-        inactive_reviewer = make_reviewer()
-        six_months_ago = timezone.now() - timedelta(days=6*365/12)
-        make_review(
-            reviewer=active_reviewer, is_published=True,
-            published_on=six_months_ago + timedelta(days=40))
-        make_review(
-            reviewer=inactive_reviewer, is_published=True,
-            published_on=six_months_ago - timedelta(days=40))
-
-        active = Reviewer.objects.filter_inactive()
-        self.assertIn(inactive_reviewer, active)
-        self.assertNotIn(active_reviewer, active)
-
-
-class ReviewerTests(TestCase):
-    """Test methods and properties on Reviewer model classes"""
-
-    def test_full_name(self):
-        """Test crafting a Reviewer objects full name"""
-        reviewer = make_reviewer()
-        self.assertIn(reviewer.first_name, reviewer.full_name)
-        self.assertIn(reviewer.last_name, reviewer.full_name)
-
-    def test_review_count(self):
-        """Test returning the count of Reviews associated with this Reviewer"""
-        reviewer = make_reviewer()
-        num_reviews = 2
-        for _ in range(num_reviews):
-            make_review(reviewer=reviewer)
-        self.assertEqual(num_reviews, reviewer.review_count)
-
-    def test_unicode(self):
-        reviewer = make_reviewer(first_name='Foo', last_name='Bar')
-        self.assertEqual(reviewer.__unicode__(), reviewer.full_name)
-
-
-class ExternalReviewTests(TestCase):
-    """Test methods on ExternalReview model class"""
-
-    def test_unicode(self):
-        review = make_external_review(source_name='source_name')
+        news = ArtsNewsFactory(title='This is a very long news title')
         self.assertEqual(
-            review.__unicode__(),
-            u"{name}'s review of {production}".format(
-                name=review.source_name,
-                production=str(review.production)
+            news.__unicode__(),
+            u'{}: {}...'.format(
+                news.created_on.strftime('%m/%d/%y'),
+                news.title[:20]
             )
         )
 
 
-class SlideshowImageTests(TestCase):
-    """Test methods on SlideshowImage model class"""
+class ReviewerManagerTestCase(TestCase):
+    def setUp(self):
+        self.active_reviewer = ReviewerFactory()
+        self.inactive_reviewer = ReviewerFactory()
+        six_months_ago = timezone.now() - timedelta(days=6*365/12)
+        ReviewFactory(
+            is_published=True,
+            reviewer=self.active_reviewer,
+            published_on=six_months_ago + timedelta(days=40)
+        )
+        ReviewFactory(
+            is_published=True,
+            reviewer=self.inactive_reviewer,
+            published_on=six_months_ago - timedelta(days=40)
+        )
 
+    def test_filter_active(self):
+        active = Reviewer.objects.filter_active()
+        self.assertIn(self.active_reviewer, active)
+        self.assertNotIn(self.inactive_reviewer, active)
+
+    def test_filter_inactive(self):
+        active = Reviewer.objects.filter_inactive()
+        self.assertIn(self.inactive_reviewer, active)
+        self.assertNotIn(self.active_reviewer, active)
+
+
+class ReviewerTestCase(TestCase):
+    def test_full_name(self):
+        reviewer = ReviewerFactory(first_name='Jane', last_name='Doe')
+        self.assertEqual(reviewer.full_name, 'Jane Doe')
+
+    def test_review_account(self):
+        reviewer = ReviewerFactory()
+        self.assertEqual(reviewer.review_count, 0)
+        ReviewFactory(reviewer=reviewer)
+        self.assertEqual(reviewer.review_count, 1)
+
+    def test_unicode(self):
+        reviewer = ReviewerFactory()
+        self.assertEqual(reviewer.__unicode__(), unicode(reviewer.full_name))
+
+
+class ExternalReviewTestCase(TestCase):
+    def test_unicode(self):
+        review = ExternalReviewFactory()
+        self.assertEqual(
+            review.__unicode__(),
+            u"{}'s review of {}".format(review.source_name, review.production)
+        )
+
+
+class SlideshowImageTestCase(TestCase):
     def test_unicode(self):
         image = SlideshowImage(image='image')
         self.assertEqual(image.__unicode__(), unicode(image.image))

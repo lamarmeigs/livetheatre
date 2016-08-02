@@ -80,7 +80,7 @@ class Review(models.Model):
             self.title = self.get_title()
             self.slug = self.get_slug()
         if self.is_published and not self.published_on:
-                self.published_on = timezone.now()
+            self.published_on = timezone.now()
         return super(Review, self).save(**kwargs)
 
     def get_absolute_url(self):
