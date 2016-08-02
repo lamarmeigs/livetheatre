@@ -2,7 +2,8 @@ from django.conf.urls import patterns, url
 
 from base import views, feeds
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$', views.HomepageView.as_view(), name='home'),
 
     # Review pages

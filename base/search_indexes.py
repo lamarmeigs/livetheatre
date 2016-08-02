@@ -1,6 +1,7 @@
 from haystack import indexes
-from base.models import (Review, Audition, ProductionCompany, Production,
-    ArtsNews)
+from base.models import (
+    Review, Audition, ProductionCompany, Production, ArtsNews
+)
 
 
 class ReviewIndex(indexes.SearchIndex, indexes.Indexable):

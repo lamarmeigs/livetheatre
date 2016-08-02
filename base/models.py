@@ -1,41 +1,55 @@
-from datetime import date, datetime, timedelta
+from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
 
-__all__ = ['Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
+__all__ = (
+    'Review', 'Audition', 'ProductionCompany', 'Production', 'Play',
     'Venue', 'Address', 'ArtsNews', 'Reviewer', 'ExternalReview',
-    'NewsSlideshowImage', 'ProductionPoster']
+    'NewsSlideshowImage', 'ProductionPoster'
+)
+
 
 class Review(models.Model):
     """A written review of a production"""
-    title = models.CharField(max_length=150, null=True, blank=True,
-        help_text="If blank, defaults to 'Review: *production*'")
+    title = models.CharField(
+        max_length=150, null=True, blank=True,
+        help_text="If blank, defaults to 'Review: *production*'"
+    )
 
-    cover_image = FileBrowseField(max_length=200, null=True, blank=True,
+    cover_image = FileBrowseField(
+        max_length=200, null=True, blank=True,
         format='image', directory='review_covers', help_text='Image to display '
-        'at the top of the review and in the homepage feature area')
+        'at the top of the review and in the homepage feature area'
+    )
 
     production = models.ForeignKey('Production')
     reviewer = models.ForeignKey('Reviewer')
     content = models.TextField()
 
-    lede = models.CharField(max_length=300, null=True, blank=True,
+    lede = models.CharField(
+        max_length=300, null=True, blank=True,
         help_text='Enter a brief (< 300 character) introduction to the review. '
         'If blank, the first 50 words of the content will be used on the '
-        'homepage.')
+        'homepage.'
+    )
 
-    is_published = models.BooleanField(default=False, verbose_name='Published',
-        help_text='If false, this review will not be visible on the site')
+    is_published = models.BooleanField(
+        default=False, verbose_name='Published',
+        help_text='If false, this review will not be visible on the site'
+    )
 
-    published_on = models.DateTimeField(null=True, blank=True,
-        help_text='Stores the time when this review was published.')
+    published_on = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Stores the time when this review was published.'
+    )
 
-    slug = models.SlugField(help_text='This field will be used in the URL for '
-        "this review's page.")
+    slug = models.SlugField(
+        help_text="This field will be used in the URL for this review's page."
+    )
 
     class Meta:
         ordering = ['-published_on']
@@ -70,7 +84,7 @@ class Review(models.Model):
         return super(Review, self).save(**kwargs)
 
     def get_absolute_url(self):
-        return reverse('review_detail', kwargs={'slug':self.slug})
+        return reverse('review_detail', kwargs={'slug': self.slug})
 
     def __unicode__(self):
         return unicode(self.get_title())
@@ -79,9 +93,10 @@ class Review(models.Model):
 class DaysBase(models.Model):
     """Abstract base class to handle event object that occurs on certain days"""
     start_date = models.DateField(verbose_name='Date of first event.')
-    end_date = models.DateField(null=True, blank=True, 
-        verbose_name='Date of last event.', help_text='Leave blank for events '
-        'that last only a single day.')
+    end_date = models.DateField(
+        null=True, blank=True, verbose_name='Date of last event.',
+        help_text='Leave blank for events that last only a single day.'
+    )
     on_monday = models.BooleanField(
         default=False, verbose_name='Occurs on Monday')
     on_tuesday = models.BooleanField(
@@ -98,20 +113,21 @@ class DaysBase(models.Model):
         default=False, verbose_name='Occurs on Sunday')
 
     days = (
-        {'abbrev':'M', 'name':'Monday', 'boolean_field':'on_monday'},
-        {'abbrev':'T', 'name':'Tuesday', 'boolean_field':'on_tuesday'},
-        {'abbrev':'W', 'name':'Wednesday', 'boolean_field':'on_wednesday'},
-        {'abbrev':'Th', 'name':'Thursday', 'boolean_field':'on_thursday'},
-        {'abbrev':'F', 'name':'Friday', 'boolean_field':'on_friday'},
-        {'abbrev':'Sat', 'name':'Saturday', 'boolean_field':'on_saturday'},
-        {'abbrev':'Sun', 'name':'Sunday', 'boolean_field':'on_sunday'},
+        {'abbrev': 'M', 'name': 'Monday', 'boolean_field': 'on_monday'},
+        {'abbrev': 'T', 'name': 'Tuesday', 'boolean_field': 'on_tuesday'},
+        {'abbrev': 'W', 'name': 'Wednesday', 'boolean_field': 'on_wednesday'},
+        {'abbrev': 'Th', 'name': 'Thursday', 'boolean_field': 'on_thursday'},
+        {'abbrev': 'F', 'name': 'Friday', 'boolean_field': 'on_friday'},
+        {'abbrev': 'Sat', 'name': 'Saturday', 'boolean_field': 'on_saturday'},
+        {'abbrev': 'Sun', 'name': 'Sunday', 'boolean_field': 'on_sunday'},
     )
 
     class Meta:
         abstract = True
 
-    def get_last_sequential_day_index(self, start_on=0, wrap=True,
-            stop_before=len(days)):
+    def get_last_sequential_day_index(
+            self, start_on=0, wrap=True, stop_before=len(days)
+    ):
         """
         Returns index of the final day in a sequence when the event occurs
 
@@ -132,7 +148,11 @@ class DaysBase(models.Model):
         if wrap and start_on > 0 and end_on == len(self.days)-1:
             end_on_next_week = self.get_last_sequential_day_index(
                 wrap=False, stop_before=start_on)
-            end_on = end_on_next_week if end_on_next_week != None else end_on
+            end_on = (
+                end_on_next_week
+                if end_on_next_week is not None
+                else end_on
+            )
 
         return end_on
 
@@ -193,8 +213,10 @@ class DaysBase(models.Model):
                     described += range(day_idx, sequence_end+1)
                 else:
                     described += range(day_idx, len(self.days))
-                    described += (range(0, sequence_end) 
-                        if sequence_end > 0 else [0])
+                    described += (
+                        range(0, sequence_end)
+                        if sequence_end > 0 else [0]
+                    )
 
         return description.rstrip(', ')
 
@@ -204,50 +226,56 @@ class AuditionManager(models.Manager):
         """Return ongoing or upcoming auditions"""
         today = timezone.now()
         upcoming = self.filter(
-            Q(end_date__isnull=False, end_date__gte=today) | 
-            Q(end_date__isnull=True, start_date__gte=today)
+            Q(end_date__isnull=False, end_date__gte=today)
+            | Q(end_date__isnull=True, start_date__gte=today)
         ).order_by('start_date')
         return upcoming
 
 
 class Audition(models.Model):
     """Represents a casting call"""
-    title = models.CharField(max_length=150, null=True, blank=True,
+    title = models.CharField(
+        max_length=150, null=True, blank=True,
         help_text="If none, defaults to 'Auditions for *play*, by *company*'")
 
-    production_company = models.ForeignKey('ProductionCompany',
-        null=True, blank=True, help_text='The production company conducting '
-        'the audition.')
+    production_company = models.ForeignKey(
+        'ProductionCompany', null=True, blank=True,
+        help_text='The production company conducting the audition.')
 
     play = models.ForeignKey('Play', null=True, blank=True)
     start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True,
+    end_date = models.DateField(
+        null=True, blank=True,
         help_text='Leave blank if the auditions last a single day')
 
-    event_details = models.TextField(null=True, blank=True,
+    event_details = models.TextField(
+        null=True, blank=True,
         help_text='Use this field to provide additional event information, '
         'such as where the event occurs, at what time, or any relevant '
         'contact information.')
 
-    content = models.TextField(null=True, blank=True,
+    content = models.TextField(
+        null=True, blank=True,
         help_text='Use this field to provide information not directly '
         'relevant to the event, such as available roles, required experience '
         'or additional information about the production.')
 
-    poster = FileBrowseField(max_length=200, null=True, blank=True,
+    poster = FileBrowseField(
+        max_length=200, null=True, blank=True,
         format='image', directory='posters')
 
-    slug = models.SlugField(help_text='This field will be used in the URL for '
+    slug = models.SlugField(
+        help_text='This field will be used in the URL for '
         "this auditions's detail page.")
 
     created_on = models.DateTimeField(auto_now_add=True)
-    created_on.editable = True # force editable while migrating old data
+    created_on.editable = True  # force editable while migrating old data
 
     objects = AuditionManager()
 
     def get_title(self):
         """
-        Assemble and return a string identifying this audition if a custom 
+        Assemble and return a string identifying this audition if a custom
         title is not available
         """
         title = ''
@@ -310,7 +338,7 @@ class Audition(models.Model):
         return slug
 
     def get_absolute_url(self):
-        return reverse('audition_detail', kwargs={'slug':self.slug})
+        return reverse('audition_detail', kwargs={'slug': self.slug})
 
     def __unicode__(self):
         return unicode(self.get_title())
@@ -328,24 +356,29 @@ class ProductionCompanyManager(models.Manager):
 class ProductionCompany(models.Model):
     """A company or theatre group -- those who put on the show """
     name = models.CharField(max_length=150)
-    home_venues = models.ManyToManyField('Venue', null=True, blank=True,
+    home_venues = models.ManyToManyField(
+        'Venue', null=True, blank=True,
         help_text='List any venues at which this company regularly performs.')
 
-    description = models.TextField(null=True, blank=True,
+    description = models.TextField(
+        null=True, blank=True,
         help_text="Provide any additional information, such as the company's "
         "history, goals, or charter.")
 
-    contact_info = models.TextField(null=True, blank=True,
+    contact_info = models.TextField(
+        null=True, blank=True,
         verbose_name="Contact Information")
 
-    company_site = models.URLField(null=True, blank=True,
-        verbose_name='Company Website', help_text="Enter the full URL to the "
-        "company's website.")
+    company_site = models.URLField(
+        null=True, blank=True, verbose_name='Company Website',
+        help_text="Enter the full URL to the company's website.")
 
-    logo = FileBrowseField(max_length=200, null=True, blank=True,
+    logo = FileBrowseField(
+        max_length=200, null=True, blank=True,
         format='image', directory='logos')
 
-    slug = models.SlugField(help_text='This field will be used in the URL for '
+    slug = models.SlugField(
+        help_text='This field will be used in the URL for '
         "this company's detail page.")
 
     objects = ProductionCompanyManager()
@@ -372,7 +405,7 @@ class ProductionCompany(models.Model):
             production__production_company=self, is_published=True)
 
     def get_absolute_url(self):
-        return reverse('production_company', kwargs={'slug':self.slug})
+        return reverse('production_company', kwargs={'slug': self.slug})
 
     def __unicode__(self):
         return unicode(self.name)
@@ -398,28 +431,32 @@ class ProductionManager(models.Manager):
 class Production(DaysBase):
     """A company's interpretation & performance of a play"""
     play = models.ForeignKey('Play')
-    production_company = models.ForeignKey('ProductionCompany', null=True,
-        blank=True, help_text='Leave this field blank if the production '
+    production_company = models.ForeignKey(
+        'ProductionCompany', null=True, blank=True,
+        help_text='Leave this field blank if the production '
         'is a one-person show.')
 
     venue = models.ForeignKey('Venue')
 
-    event_details = models.TextField(null=True, blank=True,
+    event_details = models.TextField(
+        null=True, blank=True,
         help_text='Provide additional event information, such as ticket prices '
         'or daily schedules. Do not include the venue, opening/closing dates, '
         'or company information.')
 
     description = models.TextField(null=True, blank=True)
-    poster = FileBrowseField(max_length=200, null=True, blank=True,
-        format='image', directory='posters', help_text='If this production '
-        'has multiple posters, place the most relevant here. Add the others '
-        'to the secondary posters formset.')
+    poster = FileBrowseField(
+        max_length=200, null=True, blank=True, format='image',
+        directory='posters', help_text='If this production has multiple '
+        'posters, place the most relevant here. Add the others to the '
+        'secondary posters formset.')
 
-    slug = models.SlugField(help_text='This field will be used in the URL for '
+    slug = models.SlugField(
+        help_text='This field will be used in the URL for '
         "this production's detail page.")
 
     created_on = models.DateTimeField(auto_now_add=True)
-    created_on.editable = True # force editable while migrating old data
+    created_on.editable = True  # force editable while migrating old data
 
     objects = ProductionManager()
 
@@ -444,11 +481,12 @@ class Production(DaysBase):
         if self.end_date:
             duration += ' %s %s' % (
                 conjuction, self.end_date.strftime(date_format))
-        
+
         # force inclusion of the year if production is old
         if not append_year:
-            append_year = (self.start_date.year != timezone.now().year and
-                'y' not in date_format.lower())
+            append_year = (
+                self.start_date.year != timezone.now().year
+                and 'y' not in date_format.lower())
         if append_year:
             duration += ', %s' % (self.start_date.year)
         return duration
@@ -475,7 +513,7 @@ class Production(DaysBase):
         return slug
 
     def get_absolute_url(self):
-        return reverse('production_detail', kwargs={'slug':self.slug})
+        return reverse('production_detail', kwargs={'slug': self.slug})
 
     def __unicode__(self):
         return unicode(self.title)
@@ -517,7 +555,8 @@ class Venue(models.Model):
     name = models.CharField(max_length=80)
     address = models.OneToOneField('Address')
     map_url = models.URLField(null=True, blank=True)
-    slug = models.SlugField(help_text='This field will be used in the URL for '
+    slug = models.SlugField(
+        help_text='This field will be used in the URL for '
         "this venue's detail page.")
 
     objects = VenueManager()
@@ -565,35 +604,42 @@ class ArtsNewsManager(models.Manager):
 class ArtsNews(models.Model):
     """A news item of interest to the theatre world"""
     title = models.CharField(max_length=150)
-    content = models.TextField(null=True, blank=True, help_text='Add the main '
-        'content of the news story here. Do not include any content from other '
-        'fields or related objects (such as video embeds, slideshow images, or '
-        'related production or company details).')
+    content = models.TextField(
+        null=True, blank=True, help_text='Add the main content of the news '
+        'story here. Do not include any content from other fields or related '
+        'objects (such as video embeds, slideshow images, or related '
+        'production or company details).')
 
-    is_job_opportunity = models.BooleanField(default=False, help_text='Check '
-        'if this news item is about a job opportunity.')
+    is_job_opportunity = models.BooleanField(
+        default=False,
+        help_text='Check if this news item is about a job opportunity.')
 
-    external_url = models.URLField(null=True, blank=True,
+    external_url = models.URLField(
+        null=True, blank=True,
         help_text='If this news item links to an external location, provide '
         'the full URL.')
 
-    video_embed = models.CharField(max_length=500, null=True, blank=True,
+    video_embed = models.CharField(
+        max_length=500, null=True, blank=True,
         help_text='If this story includes a video, enter the embed code here '
         'to feature it on the homepage. Be sure to remove any width and height '
         'attributes.')
 
-    related_production = models.ForeignKey(Production, null=True, blank=True,
+    related_production = models.ForeignKey(
+        Production, null=True, blank=True,
         help_text='If appropriate, specify the production that this story '
         'addresses.')
 
-    related_company = models.ForeignKey(ProductionCompany, null=True,
-        blank=True, help_text='If appropriate, specify the production company '
+    related_company = models.ForeignKey(
+        ProductionCompany, null=True, blank=True,
+        help_text='If appropriate, specify the production company '
         'that this story addresses.')
 
     created_on = models.DateTimeField(auto_now_add=True)
-    created_on.editable = True # force editable while migrating old data
+    created_on.editable = True  # force editable while migrating old data
 
-    slug = models.SlugField(help_text='This field will be used in the URL for '
+    slug = models.SlugField(
+        help_text='This field will be used in the URL for '
         "this news item's detail page.")
 
     objects = ArtsNewsManager()
@@ -620,15 +666,19 @@ class ArtsNews(models.Model):
         return slug
 
     def get_absolute_url(self):
-        url = self.external_url \
-            if self.external_url \
-            else reverse('news_detail', kwargs={'slug':self.slug})
+        url = (
+            self.external_url
+            if self.external_url
+            else reverse('news_detail', kwargs={'slug': self.slug})
+        )
         return url
 
     def __unicode__(self):
-        title = (self.title 
-            if len(self.title) < 20 
-            else '%s...' % self.title[:20])
+        title = (
+            self.title
+            if len(self.title) < 20
+            else '%s...' % self.title[:20]
+        )
         return u'%s: %s' % (self.created_on.strftime('%m/%d/%y'), title)
 
 
@@ -651,7 +701,8 @@ class Reviewer(models.Model):
     user = models.OneToOneField('auth.User', null=True, blank=True)
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
-    headshot = FileBrowseField(max_length=200, null=True, blank=True,
+    headshot = FileBrowseField(
+        max_length=200, null=True, blank=True,
         format='image', directory='headshots')
     bio = models.TextField(null=True, blank=True)
 
@@ -672,7 +723,8 @@ class Reviewer(models.Model):
 class ExternalReview(models.Model):
     """Contains a link to a review provided by an external source"""
     review_url = models.URLField()
-    source_name = models.CharField(max_length=100, help_text='Provide the name '
+    source_name = models.CharField(
+        max_length=100, help_text='Provide the name '
         'of the reviewer or the group that published it.')
     production = models.ForeignKey(Production)
 
@@ -683,7 +735,8 @@ class ExternalReview(models.Model):
 class SlideshowImage(models.Model):
     """Contains a single image; representing a portion of a slideshow"""
     image = FileBrowseField(max_length=200, format='image')
-    order = models.IntegerField(default=0, help_text='Optional: set the order '
+    order = models.IntegerField(
+        default=0, help_text='Optional: set the order '
         'in which this image should be displayed.')
 
     class Meta:

@@ -4,7 +4,10 @@ from django.db import models
 from django_extensions.admin import ForeignKeyAutocompleteAdmin
 from tinymce.widgets import TinyMCE
 
-from base.models import *
+from base.models import (
+    Address, ArtsNews, Audition, ExternalReview, NewsSlideshowImage, Play,
+    Production, ProductionCompany, ProductionPoster, Review, Reviewer, Venue
+)
 
 
 class ReviewAdmin(ForeignKeyAutocompleteAdmin):
@@ -16,14 +19,16 @@ class ReviewAdmin(ForeignKeyAutocompleteAdmin):
     list_filter = ('is_published',)
     ordering = ('published_on',)
 
-    search_fields = ['title', 'production__play__title',
+    search_fields = [
+        'title', 'production__play__title',
         'production__production_company__name']
     related_search_fields = {
-        'production': ('play__title', 'production_company__name'),}
+        'production': ('play__title', 'production_company__name'),
+    }
     actions = ['publish_reviews', 'unpublish_reviews']
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
     def publish_reviews(self, request, queryset):
@@ -54,7 +59,7 @@ class AuditionAdmin(ForeignKeyAutocompleteAdmin):
         'production_company': ('name',)}
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
 
@@ -67,7 +72,7 @@ class ProductionCompanyAdmin(admin.ModelAdmin):
     search_fields = ['name', 'company_site']
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
 
@@ -76,6 +81,7 @@ class ProductionPosterInline(admin.TabularInline):
     extra = 3
     verbose_name = 'Secondary Poster'
     verbose_name_plural = 'Secondary Posters'
+
 
 class ProductionAdmin(ForeignKeyAutocompleteAdmin):
     exclude = ('slug',)
@@ -94,19 +100,23 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
     }
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
     fieldsets = (
         (None, {
             'fields': ('play', 'production_company', 'venue')
         }),
         ('Schedule Information', {
-            'description': ('Please provide the schedule for this production. '
+            'description': (
+                'Please provide the schedule for this production. '
                 'Provide specific days only if the weekly schedule is '
-                'explicitly stated and consistent.'),
-            'fields': ('start_date', 'end_date', 'on_monday', 'on_tuesday',
+                'explicitly stated and consistent.'
+            ),
+            'fields': (
+                'start_date', 'end_date', 'on_monday', 'on_tuesday',
                 'on_wednesday', 'on_thursday', 'on_friday', 'on_saturday',
-                'on_sunday', 'event_details'),
+                'on_sunday', 'event_details'
+            ),
         }),
         ('Description & Poster', {'fields': ('description', 'poster')}),
         (None, {'fields': ('created_on',)})
@@ -122,7 +132,7 @@ class PlayAdmin(admin.ModelAdmin):
     search_fields = ['title', 'playwright']
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
 
@@ -139,13 +149,14 @@ class VenueAdmin(ForeignKeyAutocompleteAdmin):
         'address': ('line_1', 'line_2', 'city', 'zip_code')}
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
 
 class NewsSlideshowImageInline(admin.TabularInline):
     model = NewsSlideshowImage
     extra = 3
+
 
 class ArtsNewsAdmin(ForeignKeyAutocompleteAdmin):
     prepopulated_fields = {'slug': ('title',)}
@@ -161,7 +172,7 @@ class ArtsNewsAdmin(ForeignKeyAutocompleteAdmin):
         'related_company': ('name',)}
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
     fieldsets = (
@@ -169,15 +180,19 @@ class ArtsNewsAdmin(ForeignKeyAutocompleteAdmin):
             'fields': ('title', 'content', 'created_on', 'slug')
         }),
         ('Related Objects', {
-            'description': ('Select the items that are the subject of the '
+            'description': (
+                'Select the items that are the subject of the '
                 'news story. Excepts of these items will be displayed on the '
                 "story's detail page. NOTE: an associated production takes "
-                'priority over an associated company.'),
+                'priority over an associated company.'
+            ),
             'fields': ('related_production', 'related_company'),
         }),
         ('Additional Media', {
-            'description': ('Provide any additional media for this story. '
-                'Additional fields for slideshow images are below.'),
+            'description': (
+                'Provide any additional media for this story. '
+                'Additional fields for slideshow images are below.'
+            ),
             'fields': ('is_job_opportunity', 'external_url', 'video_embed',)
         })
     )
@@ -191,7 +206,7 @@ class ReviewerAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'review_count')
 
     formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols':80, 'rows':30})},
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
 
 
@@ -200,7 +215,8 @@ class ExternalReviewAdmin(ForeignKeyAutocompleteAdmin):
     save_on_top = True
 
     list_display = ('production', 'source_name', 'review_url')
-    search_fields = ['production__play__title', 'source_name', 'review_url',
+    search_fields = [
+        'production__play__title', 'source_name', 'review_url',
         'production__production_company__name']
     related_search_fields = {
         'production': ('play__title', 'production_company__name')}

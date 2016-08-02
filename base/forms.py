@@ -10,17 +10,21 @@ CONTACT_SUBJECTS = (
     ('production', 'Production notice'),
     ('correction', 'Correction'),
 )
+
+
 class ContactForm(forms.Form):
     """Accepts a message and contact information from the user"""
-    subject = forms.ChoiceField(choices=CONTACT_SUBJECTS,
-       widget=forms.RadioSelect,
-       label='Subject Matter',
-       help_text="Please let us know why you're reaching out")
-    email = forms.EmailField(label='Email Address',
+    subject = forms.ChoiceField(
+        choices=CONTACT_SUBJECTS,
+        widget=forms.RadioSelect,
+        label='Subject Matter',
+        help_text="Please let us know why you're reaching out")
+    email = forms.EmailField(
+        label='Email Address',
         help_text='Please provide an address where we can reach you.')
     message = forms.CharField(widget=forms.Textarea)
-    attachment = forms.FileField(required=False,
-        label='Attach any relevant material',
+    attachment = forms.FileField(
+        required=False, label='Attach any relevant material',
         help_text='If you have multiple files to attach, please consider '
         'condensing them into a zipped archive. Size limit: 5MB')
     captcha = CaptchaField(label="Please prove you're not a robot")
@@ -30,8 +34,9 @@ class ContactForm(forms.Form):
         if attachment and attachment._size > settings.MAX_UPLOAD_SIZE:
             readable_filesize = filesizeformat(attachment._size)
             readable_limit = filesizeformat(settings.MAX_UPLOAD_SIZE)
-            raise forms.ValidationError('Please keep your attachments smaller '
-                'than %s. This file is %s' % (readable_limit, readable_filesize)
+            raise forms.ValidationError(
+                'Please keep your attachments smaller than %s. This file is %s'
+                % (readable_limit, readable_filesize)
             )
         return attachment
 
@@ -60,7 +65,7 @@ class ContactForm(forms.Form):
             subject=self.get_subject(),
             body=self.cleaned_data.get('message'),
             to=settings.DEFAULT_CONTACT_EMAILS,
-            headers={'Reply-To':self.cleaned_data.get('email')})
+            headers={'Reply-To': self.cleaned_data.get('email')})
         attachment = self.cleaned_data.get('attachment')
         if attachment:
             email.attach(attachment.name, attachment.read())

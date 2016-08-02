@@ -3,14 +3,16 @@ from datetime import date, datetime, timedelta
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 
 from base import utils, forms
-from base.models import *
+from base.models import (
+    ArtsNews, Audition, Production, ProductionCompany, Review, Reviewer, Venue
+)
 
 
 class HomepageView(TemplateView):
@@ -21,9 +23,10 @@ class HomepageView(TemplateView):
         context = super(HomepageView, self).get_context_data(*args, **kwargs)
 
         # get reviews, productions, auditions, and news to display
-        today = date.today()
-        published_reviews = Review.objects.filter(is_published=True,
-            cover_image__isnull=False).exclude(cover_image='')
+        published_reviews = Review.objects.filter(
+            is_published=True,
+            cover_image__isnull=False
+        ).exclude(cover_image='')
         current_productions = Production.objects.filter_current().exclude(
             poster__isnull=True)
         upcoming_auditions = Audition.objects.filter(
@@ -43,7 +46,7 @@ class HomepageView(TemplateView):
                 if auditions_col_len else [list(auditions)]
         else:
             audition_groups = None
-            
+
         # extract the latest news item with feature media
         media_news = media_news[0] if media_news else None
 
@@ -152,9 +155,11 @@ class LocalTheatresView(ListView):
         # categorize companies by the first letter in their name
         categorized = {}
         for company in active_companies:
-            first_letter = (company.name[len('the ')].upper()
+            first_letter = (
+                company.name[len('the ')].upper()
                 if company.name.lower().startswith('the ')
-                else company.name[0].upper() )
+                else company.name[0].upper()
+            )
             if first_letter in categorized.keys():
                 categorized[first_letter].append(company)
             else:
@@ -304,8 +309,8 @@ class ProductionNewsListView(NewsListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.production = get_object_or_404(Production, slug=kwargs['slug'])
-        return super(ProductionNewsListView, self).dispatch(request,
-            *args, **kwargs)
+        return super(ProductionNewsListView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_queryset(self):
         all_news = super(ProductionNewsListView, self).get_queryset()
@@ -351,7 +356,7 @@ class ProductionDetailView(DetailView):
 class DateRangePerformanceView(TemplateView):
     """
     Base view returning Productions occurring during specified date range
-    
+
     date_format - strptime format to use when reading url parameters
     days_in_range - integer to define the duration of the date range
     """
@@ -577,7 +582,7 @@ class CompanyReviewListView(CompanyObjectListView, ReviewListView):
     template_name = 'reviews/company.html'
 
     def get_queryset(self):
-        queryset =  Review.objects.filter(
+        queryset = Review.objects.filter(
             is_published=True,
             production__production_company=self.company)
         return self.order_queryset(queryset)

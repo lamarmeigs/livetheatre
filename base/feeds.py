@@ -1,14 +1,15 @@
 from django.contrib.syndication.views import Feed
-from django.core.urlresolvers import reverse
 from django.utils import timezone
 
 from base.models import Review, Production, Audition, ArtsNews
 
+
 class AggregatedFeed(Feed):
     """An RSS feed displaying all major content items"""
     title = 'CTX Live Theatre'
-    description = ('CTX Live Theatre is a project - or maybe no more than a '
-        'hobby, bordering on a quiet obsession - devoted to supporting live '
+    description = (
+        'CTX Live Theatre is a project - or maybe no more than a hobby, '
+        'bordering on a quiet obsession - devoted to supporting live '
         'narrative theatre in Central Texas.')
     link = '/'
 
@@ -18,21 +19,28 @@ class AggregatedFeed(Feed):
         auditions = Audition.objects.all()
         news = ArtsNews.objects.all()
         reviews = Review.objects.filter(is_published=True)
-        aggregated = (list(productions) + list(auditions) + 
-            list(news) + list(reviews))
-        return sorted(aggregated, reverse=True,
-            key=lambda item: (item.created_on if hasattr(item, 'created_on')
-            else item.published_on))
+        aggregated = (
+            list(productions) + list(auditions) + list(news) + list(reviews)
+        )
+        return sorted(
+            aggregated, reverse=True,
+            key=lambda item: (
+                item.created_on if hasattr(item, 'created_on')
+                else item.published_on
+            )
+        )
 
     def item_title(self, object):
         return object.title
 
     def item_description(self, object):
-        description = (object.content 
+        description = (
+            object.content
             if hasattr(object, 'content')
-            else object.description)
+            else object.description
+        )
         return description
-        
+
     def item_pubdate(self, item):
         pubdate = timezone.now()
         if hasattr(item, 'created_on'):
