@@ -7,6 +7,7 @@ django-grappelli==2.6.3
 django-haystack==2.3.1
 django-simple-captcha==0.4.5
 django-tinymce==1.5.3
+factory-boy==2.7.0
 gnureadline==6.3.3
 ipdb==0.8
 ipython==2.3.1
