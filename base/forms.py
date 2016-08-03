@@ -1,8 +1,8 @@
 from django import forms
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.defaultfilters import filesizeformat
 from captcha.fields import CaptchaField
-from livetheatre import settings
 
 CONTACT_SUBJECTS = (
     ('inquiry', 'Personal/website inquiry'),
@@ -53,7 +53,8 @@ class ContactForm(forms.Form):
 
         choice = self.cleaned_data.get('subject')
         choice = choice if choice in subjects.keys() else 'default'
-        subject = settings.EMAIL_SUBJECT_PREFIX + subjects[choice]
+        prefix = getattr(settings, 'EMAIL_SUBJECT_PREFIX', '')
+        subject = prefix + subjects[choice]
         return subject
 
     def send_message(self):
