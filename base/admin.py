@@ -1,6 +1,6 @@
-from datetime import datetime
 from django.contrib import admin
 from django.db import models
+from django.utils import timezone
 from django_extensions.admin import ForeignKeyAutocompleteAdmin
 from tinymce.widgets import TinyMCE
 
@@ -33,7 +33,7 @@ class ReviewAdmin(ForeignKeyAutocompleteAdmin):
 
     def publish_reviews(self, request, queryset):
         rows_updated = queryset.update(
-            is_published=True, published_on=datetime.now())
+            is_published=True, published_on=timezone.now())
         message = '%s review%s published.' % (
             rows_updated, '' if rows_updated == 1 else 's')
         self.message_user(request, message)
@@ -56,7 +56,8 @@ class AuditionAdmin(ForeignKeyAutocompleteAdmin):
     search_fields = ['title', 'production_company__name', 'play__title']
     related_search_fields = {
         'play': ('title',),
-        'production_company': ('name',)}
+        'production_company': ('name',)
+    }
 
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
