@@ -75,7 +75,7 @@ class ReviewTestCase(TestCase):
                 'Review.get_absolute_url() unexpectedly raised error: '
                 '{}'.format(str(e))
             )
-        self.assertIsInstance(absolute_url, str)
+        self.assertIsInstance(absolute_url, unicode)
 
     def test_unicode(self):
         review = ReviewFactory()
@@ -331,7 +331,7 @@ class AuditionTestCase(TestCase):
 
     def test_get_absolute_url(self):
         audition = AuditionFactory()
-        self.assertIsInstance(audition.get_absolute_url(), str)
+        self.assertIsInstance(audition.get_absolute_url(), unicode)
 
     def test_unicode(self):
         audition = AuditionFactory()
@@ -417,7 +417,7 @@ class ProductionCompanyTestCase(TestCase):
         self.assertNotIn(unpublished_review, published_reviews)
 
     def test_get_absolute_url(self):
-        self.assertIsInstance(self.company.get_absolute_url(), str)
+        self.assertIsInstance(self.company.get_absolute_url(), unicode)
 
     def test_unicode(self):
         self.assertEqual(
@@ -623,7 +623,7 @@ class ProductionTestCase(TestCase):
 
     def test_get_absolute_url(self):
         production = ProductionFactory()
-        self.assertIsInstance(production.get_absolute_url(), str)
+        self.assertIsInstance(production.get_absolute_url(), unicode)
 
     def test_unicode(self):
         production = ProductionFactory()
@@ -737,7 +737,7 @@ class ArtsNewsTestCase(TestCase):
         news = ArtsNewsFactory(external_url='http://www.google.com/')
         self.assertEqual(news.get_absolute_url(), news.external_url)
         news = ArtsNewsFactory(external_url=None)
-        self.assertIsInstance(news.get_absolute_url(), str)
+        self.assertIsInstance(news.get_absolute_url(), unicode)
 
     def test_unicode(self):
         news = ArtsNewsFactory(title='Short Title')

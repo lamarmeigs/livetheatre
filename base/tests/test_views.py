@@ -1052,7 +1052,7 @@ class ContactFormViewTestCase(TestCase):
         self.assertEqual(ContactFormView.template_name, 'about/contact.html')
 
     def test_get_success_url(self):
-        self.assertIsInstance(ContactFormView().get_success_url(), str)
+        self.assertIsInstance(ContactFormView().get_success_url(), unicode)
 
     def test_form_valid(self):
         view = ContactFormView()
