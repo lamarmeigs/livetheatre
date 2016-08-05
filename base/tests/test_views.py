@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
+from filebrowser.base import FileObject
 from mock import patch
 
 from base.forms import ContactForm
@@ -44,10 +45,16 @@ class HomepageViewTestCase(TestCase):
         self.assertEqual(HomepageView.template_name, 'homepage.html')
 
     def test_get_context_data(self):
-        production = ProductionFactory(poster='poster')
+        production = ProductionFactory(poster=FileObject('poster'))
         no_poster_production = ProductionFactory()
-        review = ReviewFactory(is_published=True, cover_image='image')
-        unpublished_review = ReviewFactory(is_published=False, cover_image='x')
+        review = ReviewFactory(
+            is_published=True,
+            cover_image=FileObject('image')
+        )
+        unpublished_review = ReviewFactory(
+            is_published=False,
+            cover_image=FileObject('x')
+        )
         no_image_review = ReviewFactory(is_published=True)
 
         context = self.view.get_context_data()

@@ -1,9 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from base import views, feeds
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', views.HomepageView.as_view(), name='home'),
 
     # Review pages
@@ -140,4 +139,4 @@ urlpatterns = patterns(
     url(r'^rss/all/$',
         feeds.AggregatedFeed(),
         name='aggregated_rss_feed')
-)
+]

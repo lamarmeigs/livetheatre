@@ -357,7 +357,7 @@ class ProductionCompany(models.Model):
     """A company or theatre group -- those who put on the show """
     name = models.CharField(max_length=150)
     home_venues = models.ManyToManyField(
-        'Venue', null=True, blank=True,
+        'Venue', blank=True,
         help_text='List any venues at which this company regularly performs.')
 
     description = models.TextField(
