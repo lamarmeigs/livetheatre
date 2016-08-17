@@ -64,7 +64,7 @@ class AuditionAdmin(ForeignKeyAutocompleteAdmin):
     }
 
 
-class ProductionCompanyAdmin(admin.ModelAdmin):
+class ProductionCompanyAdmin(ForeignKeyAutocompleteAdmin):
     prepopulated_fields = {'slug': ('name',)}
     actions_on_bottom = True
     save_on_top = True
@@ -125,7 +125,7 @@ class ProductionAdmin(ForeignKeyAutocompleteAdmin):
     inlines = [ProductionPosterInline]
 
 
-class PlayAdmin(admin.ModelAdmin):
+class PlayAdmin(ForeignKeyAutocompleteAdmin):
     actions_on_bottom = True
     save_on_top = True
 
