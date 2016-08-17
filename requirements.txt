@@ -2,8 +2,8 @@ Django==1.9.9
 Pillow==3.3.0
 Whoosh==2.7.4
 django-extensions==1.6.7
-django-filebrowser==3.7.1
-django-grappelli==2.8.1
+django-filebrowser==3.6.4
+django-grappelli==2.7.3
 django-haystack==2.4.1
 django-simple-captcha==0.5.1
 django-tinymce==2.3.0
