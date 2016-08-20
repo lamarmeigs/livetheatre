@@ -15,10 +15,10 @@ class AggregatedFeed(Feed):
 
     def items(self):
         """Return a sorted list of Productions, Auditions, News, and Reviews"""
-        productions = Production.objects.all()
-        auditions = Audition.objects.all()
-        news = ArtsNews.objects.all()
-        reviews = Review.objects.filter(is_published=True)
+        productions = Production.objects.all()[:30]
+        auditions = Audition.objects.all()[:11]
+        news = ArtsNews.objects.all()[:33]
+        reviews = Review.objects.filter(is_published=True)[:6]
         aggregated = (
             list(productions) + list(auditions) + list(news) + list(reviews)
         )
