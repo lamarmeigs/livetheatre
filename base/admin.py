@@ -223,6 +223,10 @@ class ExternalReviewAdmin(ForeignKeyAutocompleteAdmin):
         'production': ('play__title', 'production_company__name')}
 
 
+class AddressAdmin(ForeignKeyAutocompleteAdmin):
+    pass
+
+
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Audition, AuditionAdmin)
 admin.site.register(ProductionCompany, ProductionCompanyAdmin)
@@ -230,6 +234,6 @@ admin.site.register(Production, ProductionAdmin)
 admin.site.register(Play, PlayAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(ArtsNews, ArtsNewsAdmin)
-admin.site.register(Address)
+admin.site.register(Address, AddressAdmin)
 admin.site.register(Reviewer, ReviewerAdmin)
 admin.site.register(ExternalReview, ExternalReviewAdmin)
