@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
@@ -493,9 +494,14 @@ class CityPerformanceView(ListView):
             request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Production.objects.filter_current().filter(
-            venue__address__city=self.city).order_by('start_date') \
-            if self.city else []
+        now = timezone.now()
+        sixty_days = now + timedelta(days=60)
+        current_queryset = Production.objects.filter_in_range(now, sixty_days)
+        queryset = (
+            current_queryset.filter(
+                venue__address__city=self.city
+            ).order_by('start_date') if self.city else []
+        )
         return queryset
 
     def get_context_data(self, *args, **kwargs):
