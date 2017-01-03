@@ -468,8 +468,7 @@ class Production(DaysBase):
         return title
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.slug = self.get_slug()
+        self.slug = self.get_slug()
         return super(Production, self).save(**kwargs)
 
     def duration(self, date_format='%b. %d', conjuction='-', append_year=False):
