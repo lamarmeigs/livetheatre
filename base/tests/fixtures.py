@@ -22,6 +22,7 @@ class ArtsNewsFactory(factory.django.DjangoModelFactory):
     slug = factory.LazyAttributeSequence(
         lambda o, n: '{slug}-{n}'.format(slug=slugify(unicode(o.title)), n=n)
     )
+    created_on = factory.LazyFunction(timezone.now)
 
 
 class AuditionFactory(factory.django.DjangoModelFactory):
