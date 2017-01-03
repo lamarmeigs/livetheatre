@@ -725,13 +725,10 @@ class ArtsNewsTestCase(TestCase):
         mock_save.assert_called_once_with()
 
     def test_get_slug(self):
-        news = ArtsNewsFactory(
-            title='Arts News Title',
-            created_on=datetime(2017, 1, 3),
-        )
+        news = ArtsNewsFactory(title='Arts News Title')
         self.assertEqual(
             news.get_slug(),
-            u'20170103-arts-news-title'
+            u'{}-arts-news-title'.format(timezone.now().strftime('%Y%m%d'))
         )
 
     def test_get_absolute_url(self):

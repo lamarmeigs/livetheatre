@@ -658,7 +658,7 @@ class ArtsNews(models.Model):
 
     def get_slug(self):
         slug = u'{created_on}-{title}'.format(
-            created_on=self.created_on.strftime('%Y%m%d'),
+            created_on=timezone.now().strftime('%Y%m%d'),
             title=self.title,
         )
         return slugify(slug)[:50]
