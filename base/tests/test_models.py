@@ -618,7 +618,18 @@ class ProductionTestCase(TestCase):
         production_2 = ProductionFactory()
         self.assertEqual(
             production_2.get_slug(),
-            '{}1'.format(slugify(unicode(production.title))[:47])
+            '{}1'.format(slugify(unicode(production_2.title))[:47])
+        )
+        production_3 = ProductionFactory()
+        production_2.delete()
+        production_4 = ProductionFactory()
+        self.assertEqual(
+            production_3.get_slug(),
+            '{}2'.format(slugify(unicode(production_3.title))[:47])
+        )
+        self.assertEqual(
+            production_4.get_slug(),
+            '{}3'.format(slugify(unicode(production_4.title))[:47])
         )
 
     def test_get_absolute_url(self):
