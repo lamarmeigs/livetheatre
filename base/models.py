@@ -59,12 +59,15 @@ class Review(models.Model):
         return title
 
     def get_slug(self):
-        slug = slugify(unicode(self.get_title()))[:47]
-        previous_reviews = Review.objects.filter(
-            slug__startswith=slug).exclude(pk=self.pk).count()
-        if previous_reviews:
-            slug += str(previous_reviews)
-        return slug
+        if self.published_on is None:
+            published_text = 'unpublished'
+        else:
+            published_text = self.published_on.strftime('%Y%m%d')
+        slug = u'{published_date}-{title}'.format(
+            published_date=published_text,
+            title=self.get_title(),
+        )
+        return slugify(slug)[:50]
 
     def publish(self):
         self.is_published = True
@@ -78,7 +81,7 @@ class Review(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.title = self.get_title()
-            self.slug = self.get_slug()
+        self.slug = self.get_slug()
         if self.is_published and not self.published_on:
             self.published_on = timezone.now()
         return super(Review, self).save(**kwargs)
@@ -326,16 +329,15 @@ class Audition(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.title = self.get_title()
-            self.slug = self.get_slug()
+        self.slug = self.get_slug()
         return super(Audition, self).save(**kwargs)
 
     def get_slug(self):
-        slug = slugify(unicode(self.get_title()))[:47]
-        previous_auditions = Audition.objects.filter(
-            slug__startswith=slug).exclude(pk=self.pk).count()
-        if previous_auditions:
-            slug += str(previous_auditions)
-        return slug
+        slug = u'{start_date}-{title}'.format(
+            start_date=self.start_date.strftime('%Y%m%d'),
+            title=self.get_title(),
+        )
+        return slugify(slug)[:50]
 
     def get_absolute_url(self):
         return reverse('audition_detail', kwargs={'slug': self.slug})
@@ -651,17 +653,15 @@ class ArtsNews(models.Model):
         return self.video_embed or self.newsslideshowimage_set.exists()
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.slug = self.get_slug()
+        self.slug = self.get_slug()
         return super(ArtsNews, self).save(**kwargs)
 
     def get_slug(self):
-        slug = slugify(unicode(self.title))[:47]
-        previous_news = ArtsNews.objects.filter(
-            slug__startswith=slug).exclude(pk=self.pk).count()
-        if previous_news:
-            slug += str(previous_news)
-        return slug
+        slug = u'{created_on}-{title}'.format(
+            created_on=self.created_on.strftime('%Y%m%d'),
+            title=self.title,
+        )
+        return slugify(slug)[:50]
 
     def get_absolute_url(self):
         url = (

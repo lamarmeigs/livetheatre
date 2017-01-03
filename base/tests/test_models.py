@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.text import slugify
 from mock import patch
 
 from base.models import (
@@ -28,12 +27,15 @@ class ReviewTestCase(TestCase):
         )
 
     def test_get_slug(self):
-        review = ReviewFactory()
-        self.assertEqual(review.get_slug(), slugify(review.get_title()[:47]))
-        review_2 = ReviewFactory()
+        review = ReviewFactory(title='Test Review Title')
         self.assertEqual(
-            review_2.get_slug(),
-            '{}1'.format(slugify(review.get_title()[:47]))
+            review.get_slug(),
+            u'unpublished-test-review-title',
+        )
+        review.published_on = datetime(2017, 1, 3)
+        self.assertEqual(
+            review.get_slug(),
+            u'20170103-test-review-title',
         )
 
     def test_publish(self):
@@ -318,15 +320,13 @@ class AuditionTestCase(TestCase):
         self.assertEqual(audition.slug, audition.get_slug())
 
     def test_get_slug(self):
-        audition = AuditionFactory()
+        audition = AuditionFactory(
+            title='Test Audition Title',
+            start_date=datetime(2017, 1, 3),
+        )
         self.assertEqual(
             audition.get_slug(),
-            slugify(unicode(audition.get_title()))[:47]
-        )
-        audition_2 = AuditionFactory()
-        self.assertEqual(
-            audition_2.get_slug(),
-            '{}1'.format(slugify(unicode(audition.get_title()))[:47])
+            u'20170103-test-audition-title',
         )
 
     def test_get_absolute_url(self):
@@ -618,7 +618,7 @@ class ProductionTestCase(TestCase):
         )
         self.assertEqual(
             production.get_slug(),
-            '20170103-test-play-title-by-company-name'
+            u'20170103-test-play-title-by-company-name'
         )
 
     def test_get_absolute_url(self):
@@ -725,12 +725,13 @@ class ArtsNewsTestCase(TestCase):
         mock_save.assert_called_once_with()
 
     def test_get_slug(self):
-        news = ArtsNewsFactory()
-        self.assertEqual(news.slug, slugify(unicode(news.title))[:47])
-        news_2 = ArtsNewsFactory()
+        news = ArtsNewsFactory(
+            title='Arts News Title',
+            created_on=datetime(2017, 1, 3),
+        )
         self.assertEqual(
-            news_2.slug,
-            '{}1'.format(slugify(unicode(news_2.title))[:47])
+            news.get_slug(),
+            u'20170103-arts-news-title'
         )
 
     def test_get_absolute_url(self):
