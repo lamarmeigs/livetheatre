@@ -505,20 +505,11 @@ class Production(DaysBase):
 
     def get_slug(self):
         """Return a unique slug for this Production"""
-        base_slug = slugify(unicode(self.title))[:47]
-        previous_productions = Production.objects.filter(
-            slug__startswith=base_slug
-        ).exclude(pk=self.pk)
-        previous_slugs = [prod.slug for prod in previous_productions]
-
-        slug_index = len(previous_slugs)
-        if slug_index == 0:
-            return base_slug
-        new_slug = base_slug + str(slug_index)
-        while new_slug in previous_slugs:
-            slug_index += 1
-            new_slug = base_slug + str(slug_index)
-        return new_slug
+        slug = u'{start_date}-{title}'.format(
+            start_date=self.start_date.strftime('%Y%m%d'),
+            title=self.title,
+        )
+        return slugify(slug)[:50]
 
     def get_absolute_url(self):
         return reverse('production_detail', kwargs={'slug': self.slug})

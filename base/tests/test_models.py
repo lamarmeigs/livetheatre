@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.utils import timezone
@@ -610,26 +610,15 @@ class ProductionTestCase(TestCase):
         self.assertNotIn(unpublished_review, published_reviews)
 
     def test_get_slug(self):
-        production = ProductionFactory()
+        company = ProductionCompanyFactory(name='Company Name')
+        production = ProductionFactory(
+            start_date=datetime(2017, 1, 3),
+            play__title='Test Play Title',
+            production_company=company,
+        )
         self.assertEqual(
             production.get_slug(),
-            slugify(unicode(production.title))[:47]
-        )
-        production_2 = ProductionFactory()
-        self.assertEqual(
-            production_2.get_slug(),
-            '{}1'.format(slugify(unicode(production_2.title))[:47])
-        )
-        production_3 = ProductionFactory()
-        production_2.delete()
-        production_4 = ProductionFactory()
-        self.assertEqual(
-            production_3.get_slug(),
-            '{}2'.format(slugify(unicode(production_3.title))[:47])
-        )
-        self.assertEqual(
-            production_4.get_slug(),
-            '{}3'.format(slugify(unicode(production_4.title))[:47])
+            '20170103-test-play-title-by-company-name'
         )
 
     def test_get_absolute_url(self):
