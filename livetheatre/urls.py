@@ -6,7 +6,7 @@ from filebrowser.sites import site
 from livetheatre import settings
 
 urlpatterns = [
-    url(r'^admin/filebrowser/', include(site.urls)),
+    url(r'^bossman/filebrowser/', include(site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^bossman/', include(admin.site.urls)),
     url(r'^tinymce/', include('tinymce.urls')),
