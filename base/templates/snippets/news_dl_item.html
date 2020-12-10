@@ -1,3 +1,4 @@
+{% load bleach_tags %}
 {% load tz %}
 <dt>
     <a href="{{ news.get_absolute_url }}">
@@ -14,4 +15,4 @@
     </a>
 </dt>
 <dd class="small"><em>Created on {{ news.created_on|localtime|date:"M. j" }} at {{ news.created_on|localtime|time:"g:ia" }}</em></dd>
-<dd class="nested">{{ news.content|removetags:"img iframe br"|truncatewords_html:10|safe }} <a href="{{ news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
+<dd class="nested">{{ news.content|bleach:"img iframe br"|truncatewords_html:10|safe }} <a href="{{ news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>

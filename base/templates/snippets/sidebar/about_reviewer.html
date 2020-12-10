@@ -1,7 +1,8 @@
+{% load bleach_tags %}
 <div class="module">
     <h4>About the Reviewer</h4>
     {% if reviewer.bio %}
-        <small class="nested">{{ reviewer.bio|removetags:"img iframe br"|truncatewords_html:30|safe }}</small>
+        <small class="nested">{{ reviewer.bio|bleach:"img iframe br"|truncatewords_html:30|safe }}</small>
     {% else %}
         <small>No biographical is available for {{ reviewer.full_name }}.</small>
     {% endif %}

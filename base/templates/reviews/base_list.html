@@ -1,4 +1,5 @@
 {% extends 'base_internal.html' %}
+{% load bleach_tags %}
 {% load tz %}
 
 {% block page_title %}Reviews | {% endblock %}
@@ -39,7 +40,7 @@
                     <p><em>{{ review.lede }}</em></p>
                     {% endif %}
 
-                    {{ review.content|removetags:"img iframe br div"|truncatewords_html:75|safe }}
+                    {{ review.content|bleach:"img iframe br div"|truncatewords_html:75|safe }}
                     <a href="{% url 'review_detail' slug=review.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
                 </div>
                 {% endblock %}

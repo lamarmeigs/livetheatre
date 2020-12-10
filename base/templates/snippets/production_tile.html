@@ -1,3 +1,4 @@
+{% load bleach_tags %}
 <div class="thumbnail production col-md-4 col-sm-4 col-lg-3">
     <div class="row">
         <div class="col-md-12">
@@ -26,9 +27,9 @@
     {% if production.description or production.play.synopsis %}
     <div class="caption">
         {% if production.description %}
-        <p>{{ production.description|removetags:"img iframe br div"|truncatewords_html:25|safe }}</p>
+        <p>{{ production.description|bleach:"img iframe br div"|truncatewords_html:25|safe }}</p>
         {% elif production.play.synopsis %}
-        <p>{{ production.play.synopsis|removetags:"img iframe br div"|truncatewords_html:25|safe }}</p>
+        <p>{{ production.play.synopsis|bleach:"img iframe br div"|truncatewords_html:25|safe }}</p>
         {% endif %}
     </div>
     {% if production.review_set.exists or production.externalreview_set.exists %}

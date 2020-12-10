@@ -1,4 +1,5 @@
 {% extends 'base_internal.html' %}
+{% load bleach_tags %}
 
 {% block page_title %}{% if page_title %}{{ page_title }}{% else %}Auditions{% endif %} | {% endblock %}
 {% block body_classes %}section-audition{% endblock %}
@@ -29,7 +30,7 @@
                     <dd class="small"><em>{{ audition.duration }}</em></dd>
                     <dd>
                         {% if audition.content %}
-                        {{ audition.content|removetags:"img iframe br div"|truncatewords_html:15|safe }}
+                        {{ audition.content|bleach:"img iframe br div"|truncatewords_html:15|safe }}
                         {% else %}
                         {{ audition.get_alt_description }}
                         {% endif %}
