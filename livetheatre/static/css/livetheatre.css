@@ -218,6 +218,7 @@ dl.news-list dd h4 {font-size:14px;}
 .production .caption h1, .production .caption h2, .production .caption h3, .production .caption h4, .production .caption h5, .production .caption h6 {font-family:inherit; margin-top:10px;}
 .production .caption h3 {font-size:15px;}
 .production .caption h4 {font-size:14px;}
+.production .caption {padding: 20px 9px 9px;}
 h4.more {text-transform:uppercase; font-weight:bold; letter-spacing:1px;}
 
 

@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'grappelli',
     'filebrowser',
-    'django_bleach',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -145,8 +144,9 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+
 # Import local settings
 try:
-    from local_settings import *
+    from local_settings import *  # noqa
 except ImportError:
     pass

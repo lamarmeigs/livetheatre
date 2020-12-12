@@ -1,5 +1,4 @@
 {% extends 'base_internal.html' %}
-{% load bleach_tags %}
 
 {% block page_title %}Search | {% endblock %}
 {% block main_title %}
@@ -20,9 +19,9 @@
                 {% if result.object.lede %}
                     {{ result.object.lede }}
                 {% elif result.object.content %}
-                    {{ result.object.content|bleach:"img iframe br div"|truncatewords_html:50|safe }}
+                    {{ result.object.content|striptags|truncatewords_html:50|safe }}
                 {% elif result.object.description %}
-                    {{ result.object.description|bleach:"img iframe br div"|truncatewords_html:50|safe }}
+                    {{ result.object.description|striptags|truncatewords_html:50|safe }}
                 {% endif %}
                 <a href="{{ result.object.get_absolute_url }}">Read more &raquo;</a>
                 </p>

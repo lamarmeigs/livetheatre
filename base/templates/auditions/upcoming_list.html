@@ -1,5 +1,4 @@
 {% extends 'base_internal.html' %}
-{% load bleach_tags %}
 
 {% block page_title %}{% if page_title %}{{ page_title }}{% else %}Auditions{% endif %} | {% endblock %}
 {% block body_classes %}section-audition{% endblock %}
@@ -28,12 +27,14 @@
                     </a>
                 {% endif %}
                 <p><em>{{ audition.duration }}</em></p>
-                {% if audition.content %}
-                    {{ audition.content|bleach:"img iframe br div"|truncatewords_html:50|safe }}
-                {% else %}
-                    {{ audition.get_alt_description }}
-                {% endif %}
-                <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a></p>
+                <p>
+                  {% if audition.content %}
+                      {{ audition.content|striptags|truncatewords_html:50|safe }}
+                  {% else %}
+                      {{ audition.get_alt_description }}
+                  {% endif %}
+                </p>
+                <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a>
             </div>
 
         {% empty %}

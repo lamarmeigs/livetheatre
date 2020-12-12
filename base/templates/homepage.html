@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load bleach_tags %}
 
 {% block body_id %}homepage{% endblock %}
 {% block body_attributes %}data-spy="scroll" data-target=".navbar"{% endblock %}
@@ -61,7 +60,7 @@
                                         {% if review.lede %}
                                         {{ review.lede }}
                                         {% else %}
-                                        {{ review.content|bleach:"img iframe br"|truncatewords_html:50|safe }}
+                                        {{ review.content|striptags|truncatewords_html:50|safe }}
                                         {% endif %}
                                     </p>
                                 </div>
@@ -106,11 +105,13 @@
                     {% endif %}
                     <dd class="small"><em>{{ audition.duration }}</em></p>
                     <dd>
-                        {% if audition.content %}
-                        {{ audition.content|bleach:"img iframe br"|truncatewords_html:15|safe }}
-                        {% else %}
-                        {{ audition.get_alt_description }}
-                        {% endif %}
+                        <p>
+                          {% if audition.content %}
+                          {{ audition.content|striptags|truncatewords_html:15|safe }}
+                          {% else %}
+                          {{ audition.get_alt_description }}
+                          {% endif %}
+                        </p>
                         <a href="{% url 'audition_detail' slug=audition.slug %}">Read&nbsp;more&nbsp;&raquo;</a>
                     </dd>
                 </dl>
@@ -174,7 +175,7 @@
                 <dl class="news-list">
                     <dt><a href="{{ media_news.get_absolute_url }}">{{ media_news.title }}</a></dt>
                     <dd class="small"><em>Created on {{ media_news.created_on|date:"M. j" }} at {{ media_news.created_on|time:"g:ia" }}</em></dd>
-                    <dd>{{ media_news.content|bleach:"img iframe br"|truncatewords_html:10|safe }} <a href="{{ media_news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
+                    <dd>{{ media_news.content|striptags|truncatewords_html:10|safe }} <a href="{{ media_news.get_absolute_url }}">Read&nbsp;more&nbsp;&raquo;</a></dd>
             </div>
         </div>
         {% endif %}

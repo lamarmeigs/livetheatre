@@ -1,7 +1,6 @@
-{% load bleach_tags %}
 <div class="module">
     <h4>About {{ company.name }}</h4>
-    <small class="nested">{{ company.description|bleach:"img iframe br"|truncatewords_html:30|safe }}</small>
+    <small class="nested"><p>{{ company.description|striptags|truncatewords_html:30|safe }}</p></small>
 
     <p class="small">This company has:</p>
     <ul>
