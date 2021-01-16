@@ -1,7 +1,7 @@
 from datetime import timedelta
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from filebrowser.fields import FileBrowseField
@@ -26,8 +26,8 @@ class Review(models.Model):
         'at the top of the review and in the homepage feature area'
     )
 
-    production = models.ForeignKey('Production')
-    reviewer = models.ForeignKey('Reviewer')
+    production = models.ForeignKey('Production', on_delete=models.CASCADE)
+    reviewer = models.ForeignKey('Reviewer', on_delete=models.CASCADE)
     content = models.TextField()
 
     lede = models.CharField(
@@ -242,10 +242,14 @@ class Audition(models.Model):
         help_text="If none, defaults to 'Auditions for *play*, by *company*'")
 
     production_company = models.ForeignKey(
-        'ProductionCompany', null=True, blank=True,
-        help_text='The production company conducting the audition.')
+        'ProductionCompany',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text='The production company conducting the audition.'
+    )
 
-    play = models.ForeignKey('Play', null=True, blank=True)
+    play = models.ForeignKey('Play', null=True, blank=True, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField(
         null=True, blank=True,
@@ -432,13 +436,16 @@ class ProductionManager(models.Manager):
 
 class Production(DaysBase):
     """A company's interpretation & performance of a play"""
-    play = models.ForeignKey('Play')
+    play = models.ForeignKey('Play', on_delete=models.CASCADE)
     production_company = models.ForeignKey(
-        'ProductionCompany', null=True, blank=True,
-        help_text='Leave this field blank if the production '
-        'is a one-person show.')
+        'ProductionCompany',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text='Leave this field blank if the production is a one-person show.',
+    )
 
-    venue = models.ForeignKey('Venue')
+    venue = models.ForeignKey('Venue', on_delete=models.CASCADE)
 
     event_details = models.TextField(
         null=True, blank=True,
@@ -553,7 +560,7 @@ class VenueManager(models.Manager):
 class Venue(models.Model):
     """A location in which a production can be performed"""
     name = models.CharField(max_length=80)
-    address = models.OneToOneField('Address')
+    address = models.OneToOneField('Address', on_delete=models.CASCADE)
     map_url = models.URLField(null=True, blank=True)
     slug = models.SlugField(
         help_text='This field will be used in the URL for '
@@ -626,14 +633,20 @@ class ArtsNews(models.Model):
         'attributes.')
 
     related_production = models.ForeignKey(
-        Production, null=True, blank=True,
-        help_text='If appropriate, specify the production that this story '
-        'addresses.')
+        Production,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text='If appropriate, specify the production that this story addresses.',
+    )
 
     related_company = models.ForeignKey(
-        ProductionCompany, null=True, blank=True,
-        help_text='If appropriate, specify the production company '
-        'that this story addresses.')
+        ProductionCompany,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text='If appropriate, specify the production company that this story addresses.',
+    )
 
     created_on = models.DateTimeField(auto_now_add=True)
     created_on.editable = True  # force editable while migrating old data
@@ -696,7 +709,7 @@ class ReviewerManager(models.Manager):
 
 class Reviewer(models.Model):
     """Contains bio information for those who write reviews"""
-    user = models.OneToOneField('auth.User', null=True, blank=True)
+    user = models.OneToOneField('auth.User', null=True, blank=True, on_delete=models.SET_NULL)
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     headshot = FileBrowseField(
@@ -724,7 +737,7 @@ class ExternalReview(models.Model):
     source_name = models.CharField(
         max_length=100, help_text='Provide the name '
         'of the reviewer or the group that published it.')
-    production = models.ForeignKey(Production)
+    production = models.ForeignKey(Production, on_delete=models.CASCADE)
 
     def __str__(self):
         return u"%s's review of %s" % (self.source_name, self.production)
@@ -746,7 +759,7 @@ class SlideshowImage(models.Model):
 
 class NewsSlideshowImage(SlideshowImage):
     """Represents a slideshow image tied a news story"""
-    news = models.ForeignKey(ArtsNews)
+    news = models.ForeignKey(ArtsNews, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['news', 'order']
@@ -754,7 +767,7 @@ class NewsSlideshowImage(SlideshowImage):
 
 class ProductionPoster(SlideshowImage):
     """Represents a secondary poster for a production"""
-    production = models.ForeignKey(Production)
+    production = models.ForeignKey(Production, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['production', 'order']

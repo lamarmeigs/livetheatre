@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(null=True, blank=True)),
                 ('poster', models.ImageField(null=True, upload_to=b'posters', blank=True)),
                 ('slug', models.SlugField(help_text=b"This field will be used in the URL for this production's detail page.")),
-                ('play', models.ForeignKey(to='base.Play')),
+                ('play', models.ForeignKey(to='base.Play', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -120,7 +120,7 @@ class Migration(migrations.Migration):
                 ('is_published', models.BooleanField(default=False, help_text=b'If false, this review will not be visible on the site', verbose_name=b'Published')),
                 ('published_on', models.DateTimeField(help_text=b'Stores the time when this review was published.', null=True, blank=True)),
                 ('slug', models.SlugField(help_text=b"This field will be used in the URL for this review's page.")),
-                ('production', models.ForeignKey(to='base.Production')),
+                ('production', models.ForeignKey(to='base.Production', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -133,7 +133,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=80)),
                 ('map_url', models.URLField(null=True, blank=True)),
                 ('slug', models.SlugField(help_text=b"This field will be used in the URL for this venue's detail page.")),
-                ('address', models.OneToOneField(to='base.Address')),
+                ('address', models.OneToOneField(to='base.Address', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -148,13 +148,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='production',
             name='production_company',
-            field=models.ForeignKey(to='base.ProductionCompany'),
+            field=models.ForeignKey(to='base.ProductionCompany', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='production',
             name='venue',
-            field=models.ForeignKey(to='base.Venue'),
+            field=models.ForeignKey(to='base.Venue', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -184,13 +184,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='audition',
             name='play',
-            field=models.ForeignKey(blank=True, to='base.Play', null=True),
+            field=models.ForeignKey(blank=True, to='base.Play', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='audition',
             name='production_company',
-            field=models.ForeignKey(blank=True, to='base.ProductionCompany', help_text=b'The production company conducting the audition.', null=True),
+            field=models.ForeignKey(blank=True, to='base.ProductionCompany', help_text=b'The production company conducting the audition.', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

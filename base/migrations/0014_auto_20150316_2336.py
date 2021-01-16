@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='artsnews',
             name='related_company',
-            field=models.ForeignKey(blank=True, to='base.ProductionCompany', help_text=b'If appropriate, specify the production company that this story addresses.', null=True),
+            field=models.ForeignKey(blank=True, to='base.ProductionCompany', on_delete=models.CASCADE, help_text=b'If appropriate, specify the production company that this story addresses.', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='artsnews',
             name='related_production',
-            field=models.ForeignKey(blank=True, to='base.Production', help_text=b'If appropriate, specify the production that this story addresses.', null=True),
+            field=models.ForeignKey(blank=True, to='base.Production', on_delete=models.CASCADE, help_text=b'If appropriate, specify the production that this story addresses.', null=True),
             preserve_default=True,
         ),
         migrations.AlterField(

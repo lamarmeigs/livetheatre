@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('review_url', models.URLField()),
                 ('source_name', models.CharField(max_length=100)),
-                ('production', models.ForeignKey(to='base.Production')),
+                ('production', models.ForeignKey(to='base.Production', on_delete=models.CASCADE)),
             ],
             options={
             },

@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('image', filebrowser.fields.FileBrowseField(max_length=200)),
                 ('order', models.IntegerField(default=0, help_text=b'Optional: set the order in which this image should be displayed.')),
-                ('production', models.ForeignKey(to='base.Production')),
+                ('production', models.ForeignKey(to='base.Production', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['production', 'order'],

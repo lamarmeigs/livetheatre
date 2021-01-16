@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(max_length=64)),
                 ('headshot', filebrowser.fields.FileBrowseField(max_length=200, null=True, blank=True)),
                 ('bio', models.TextField(null=True, blank=True)),
-                ('user', models.OneToOneField(null=True, blank=True, to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(null=True, blank=True, to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='review',
             name='reviewer',
-            field=models.ForeignKey(default=0, to='base.Reviewer'),
+            field=models.ForeignKey(default=0, to='base.Reviewer', on_delete=models.CASCADE),
             preserve_default=False,
         ),
     ]
