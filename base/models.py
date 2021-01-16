@@ -89,8 +89,8 @@ class Review(models.Model):
     def get_absolute_url(self):
         return reverse('review_detail', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
-        return unicode(self.get_title())
+    def __str__(self):
+        return self.get_title()
 
 
 class DaysBase(models.Model):
@@ -291,7 +291,7 @@ class Audition(models.Model):
             title = 'Auditions for %s' % (self.play or self.production_company)
         else:
             title = 'Auditions'
-        return unicode(title)
+        return title
 
     def get_alt_description(self):
         """
@@ -342,8 +342,8 @@ class Audition(models.Model):
     def get_absolute_url(self):
         return reverse('audition_detail', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
-        return unicode(self.get_title())
+    def __str__(self):
+        return self.get_title()
 
 
 class ProductionCompanyManager(models.Manager):
@@ -409,8 +409,8 @@ class ProductionCompany(models.Model):
     def get_absolute_url(self):
         return reverse('production_company', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return self.name
 
 
 class ProductionManager(models.Manager):
@@ -464,7 +464,7 @@ class Production(DaysBase):
 
     @property
     def title(self):
-        title = unicode(self.play)
+        title = self.play.title
         if self.production_company:
             title += u' by %s' % self.production_company
         return title
@@ -515,8 +515,8 @@ class Production(DaysBase):
     def get_absolute_url(self):
         return reverse('production_detail', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
-        return unicode(self.title)
+    def __str__(self):
+        return self.title
 
 
 class Play(models.Model):
@@ -528,8 +528,8 @@ class Play(models.Model):
     class Meta:
         ordering = ['title']
 
-    def __unicode__(self):
-        return unicode(self.title)
+    def __str__(self):
+        return self.title
 
 
 class VenueManager(models.Manager):
@@ -564,8 +564,8 @@ class Venue(models.Model):
     class Meta:
         ordering = ['name']
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return self.name
 
 
 class Address(models.Model):
@@ -579,7 +579,7 @@ class Address(models.Model):
         ordering = ['line_1']
         verbose_name_plural = 'addresses'
 
-    def __unicode__(self):
+    def __str__(self):
         address_str = '%s,' % self.line_1
         if self.line_2:
             address_str += ' %s,' % self.line_2
@@ -671,7 +671,7 @@ class ArtsNews(models.Model):
         )
         return url
 
-    def __unicode__(self):
+    def __str__(self):
         title = (
             self.title
             if len(self.title) < 20
@@ -714,8 +714,8 @@ class Reviewer(models.Model):
     def review_count(self):
         return self.review_set.count()
 
-    def __unicode__(self):
-        return unicode(self.full_name)
+    def __str__(self):
+        return self.full_name
 
 
 class ExternalReview(models.Model):
@@ -726,7 +726,7 @@ class ExternalReview(models.Model):
         'of the reviewer or the group that published it.')
     production = models.ForeignKey(Production)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s's review of %s" % (self.source_name, self.production)
 
 
@@ -740,8 +740,8 @@ class SlideshowImage(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
-        return unicode(self.image)
+    def __str__(self):
+        return self.image
 
 
 class NewsSlideshowImage(SlideshowImage):

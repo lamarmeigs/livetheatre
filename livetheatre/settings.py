@@ -147,6 +147,6 @@ HAYSTACK_CONNECTIONS = {
 
 # Import local settings
 try:
-    from local_settings import *  # noqa
+    from .local_settings import *  # noqa
 except ImportError:
     pass

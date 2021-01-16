@@ -57,7 +57,7 @@ class HomepageView(TemplateView):
         news = news.exclude(pk=media_news.pk) if media_news else news
         if news:
             news = news[:news_columns * max_news_per_column]
-            news_column_length = len(news)/news_columns
+            news_column_length = int(len(news)/news_columns)
             news_groups = utils.chunks(news, news_column_length) \
                 if news_column_length else [list(news)]
             news_groups = list(news_groups)[:news_columns]
