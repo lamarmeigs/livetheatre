@@ -118,9 +118,14 @@ STATICFILES_DIRS = (
 # TinyMCE configuration
 # https://django-tinymce.readthedocs.org/en/latest/installation.html#configuration
 TINYMCE_DEFAULT_CONFIG = {
-    'theme': 'advanced',
-    'relative_urls': False,
     'height': 600,
+    'menubar': 'edit view insert format tools',
+    'plugins': 'code image imagetools link lists media table',
+    'relative_urls': False,
+    'toolbar': (
+        'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | '
+        'bullist numlist outdent indent | image link unlink | source'
+    ),
 }
 
 # FileBrowser configuration
