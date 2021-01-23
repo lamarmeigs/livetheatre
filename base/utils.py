@@ -1,8 +1,13 @@
-def chunks(l, n):
-    """
-    Yield successive n-sized chunks from l.
-    Courtesy of Ned Batchelder:
-    http://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks-in-python
-    """
-    for i in xrange(0, len(l), n):
-        yield l[i:i+n]
+import itertools
+
+
+def chunks(iterable, n):
+    """Split iterable into chunks with n or fewer items."""
+    it = iter(iterable)
+    while True:
+        chunk = itertools.islice(it, n)
+        try:
+            first_item = next(chunk)
+        except StopIteration:
+            return
+        yield itertools.chain((first_item,), chunk)

@@ -42,7 +42,7 @@ class HomepageView(TemplateView):
         # format data for display in columns, etc.
         auditions = upcoming_auditions.order_by('start_date')[:8]
         if auditions:
-            auditions_col_len = len(auditions)/2
+            auditions_col_len = int(len(auditions)/2)
             audition_groups = utils.chunks(auditions, auditions_col_len) \
                 if auditions_col_len else [list(auditions)]
         else:
