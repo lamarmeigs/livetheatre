@@ -43,8 +43,9 @@ class HomepageView(TemplateView):
         auditions = upcoming_auditions.order_by('start_date')[:8]
         if auditions:
             auditions_col_len = int(len(auditions)/2)
-            audition_groups = utils.chunks(auditions, auditions_col_len) \
-                if auditions_col_len else [list(auditions)]
+            audition_groups = [
+                list(group) for group in utils.chunks(auditions, auditions_col_len)
+            ]
         else:
             audition_groups = None
 
@@ -58,9 +59,10 @@ class HomepageView(TemplateView):
         if news:
             news = news[:news_columns * max_news_per_column]
             news_column_length = int(len(news)/news_columns)
-            news_groups = utils.chunks(news, news_column_length) \
-                if news_column_length else [list(news)]
-            news_groups = list(news_groups)[:news_columns]
+            news_groups = [
+                list(news_column) for news_column in utils.chunks(news, news_column_length)
+            ]
+            news_groups = news_groups[:news_columns]
         else:
             news_groups = None
 
