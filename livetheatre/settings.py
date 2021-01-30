@@ -118,13 +118,35 @@ STATICFILES_DIRS = (
 # TinyMCE configuration
 # https://django-tinymce.readthedocs.org/en/latest/installation.html#configuration
 TINYMCE_DEFAULT_CONFIG = {
+    'formats': {
+        'removeformat': [
+            {
+                'selector': (
+                    'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,del,'
+                    'ins,div,span'
+                ),
+                'remove': 'all',
+                'split': True,
+                'block_expand': True,
+                'expand': False,
+                'deep': True,
+            },
+            {
+                'selector': '*',
+                'attributes': ['style', 'class'],
+                'split': False,
+                'expand': False,
+                'deep': True,
+            },
+        ]
+    },
     'height': 600,
     'menubar': 'edit view insert format tools',
     'plugins': 'code image imagetools link lists media table',
     'relative_urls': False,
     'toolbar': (
         'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | '
-        'bullist numlist outdent indent | image link unlink | source'
+        'bullist numlist outdent indent | image link unlink | code removeformat'
     ),
 }
 
